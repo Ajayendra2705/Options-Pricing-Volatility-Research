@@ -57,17 +57,20 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 
 ---
 
-## What's Next (after gate passes)
+### Day 2 — Repo scaffold + tooling (Done)
 
-**Day 2 — Repo scaffold + tooling:**
+**Status:** Completed.
 - `requirements.txt` pinned
 - `README.md` stub
-- Fixed seed utility
+- Fixed seed utility (`src/utils/seed.py`)
 - `main.py` skeleton
-- CI config
-- `pytest` green (empty)
+- CI config (`.github/workflows/ci.yml`)
+- `pytest` green (placeholder test)
 
-**Day 3 — Black-Scholes pricing + first-order Greeks**
+### Day 3 — Black-Scholes pricing + first-order Greeks (Next)
+
+**Goal:** `src/greeks/black_scholes.py`: price, delta, gamma, vega, theta, rho. Forward-based.
+**Test:** known textbook values; put-call parity holds.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -97,4 +100,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-01 — Day 1 Completed*
+*Last updated: 2026-07-01 — Day 2 Completed*
