@@ -31,8 +31,9 @@ data/processed/
 # Keep manifest and directory structure
 !data/raw/manifest.json
 
-# Results are generated artifacts
+# Results are generated artifacts (but track key deliverables)
 results/
+!results/data_quality.json
 
 # Jupyter
 .ipynb_checkpoints/
