@@ -31,8 +31,8 @@ data/processed/
 # Keep manifest and directory structure
 !data/raw/manifest.json
 
-# Results are generated artifacts (but track key deliverables)
-results/
+# Results — ignore generated artifacts except explicit deliverables
+results/*
 !results/data_quality.json
 
 # Jupyter

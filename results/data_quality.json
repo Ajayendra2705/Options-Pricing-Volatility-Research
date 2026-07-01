@@ -1,0 +1,90 @@
+{
+  "audit_timestamp": "2026-07-01T20:40:10.846427",
+  "data_dir": "C:\\Users\\ajiit\\Desktop\\Future\\Projects\\Options Trading\\data\\raw",
+  "spread_threshold": 0.5,
+  "raw_schema": [
+    "date",
+    "act_symbol",
+    "expiration",
+    "strike",
+    "call_put",
+    "bid",
+    "ask",
+    "vol",
+    "delta",
+    "gamma",
+    "theta",
+    "vega",
+    "rho"
+  ],
+  "column_mapping": {
+    "date": "date",
+    "expiry": "expiration",
+    "strike": "strike",
+    "option_type": "call_put",
+    "bid": "bid",
+    "ask": "ask",
+    "volume": "vol"
+  },
+  "quality": {
+    "total_rows": 714,
+    "filters": {
+      "missing_bid_ask": 0,
+      "zero_bid": 12,
+      "crossed_quotes": 2,
+      "wide_spread": 105
+    },
+    "total_dropped": 107,
+    "total_clean": 607,
+    "drop_rate": 0.1499
+  },
+  "coverage_raw": {
+    "date_range": [
+      "2023-06-02",
+      "2023-06-14"
+    ],
+    "unique_dates_count": 5,
+    "date_gaps_gt_4d": [
+      {
+        "from": "2023-06-02",
+        "to": "2023-06-07",
+        "gap_days": 5
+      }
+    ],
+    "unique_expiries_count": 8,
+    "strike_range": [
+      125.0,
+      240.0
+    ],
+    "unique_strikes_count": 38,
+    "option_type_counts": {
+      "Call": 357,
+      "Put": 357
+    }
+  },
+  "coverage_clean": {
+    "date_range": [
+      "2023-06-02",
+      "2023-06-14"
+    ],
+    "unique_dates_count": 5,
+    "date_gaps_gt_4d": [
+      {
+        "from": "2023-06-02",
+        "to": "2023-06-07",
+        "gap_days": 5
+      }
+    ],
+    "unique_expiries_count": 8,
+    "strike_range": [
+      125.0,
+      240.0
+    ],
+    "unique_strikes_count": 38,
+    "option_type_counts": {
+      "Put": 311,
+      "Call": 296
+    }
+  },
+  "gate_decision": "PROCEED"
+}
