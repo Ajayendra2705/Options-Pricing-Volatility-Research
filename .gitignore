@@ -26,7 +26,8 @@ Thumbs.db
 data/raw/*.parquet
 data/raw/*.csv
 data/raw/*.gz
-data/processed/
+data/processed/*
+!data/processed/.gitkeep
 
 # Keep manifest and directory structure
 !data/raw/manifest.json
