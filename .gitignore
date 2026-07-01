@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (tracked via SHA256 manifest, not git — too large)
+data/raw/*.parquet
+data/raw/*.csv
+data/raw/*.gz
+data/processed/
+
+# Keep manifest and directory structure
+!data/raw/manifest.json
+
+# Results are generated artifacts
+results/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Agents
+.agents/
