@@ -113,16 +113,30 @@ def _g_finite(k, p):
     return (1.0 - k * wp / (2.0 * w)) ** 2 - (wp**2 / 4.0) * (1.0 / w + 0.25) + wpp / 2.0
 
 
-def fit_svi_constrained(k, iv, T, k_span: float = K_SPAN, n_constraint: int = 201):
-    """Fit raw SVI under the no-butterfly constraint.
+CAL_MARGIN = 1e-5      # min total-variance gap between consecutive expiries
 
-    1. Unconstrained fit (Day 9 machinery). If already arb-free on the
-       constraint grid -> return it (constraint_active=False).
-    2. Else SLSQP: minimize sum of squared total-variance residuals s.t.
-       g(k_i) >= G_MARGIN and w(k_i) >= W_FLOOR on the grid.
+
+def _floor_ok(p, kg, w_floor) -> bool:
+    if w_floor is None:
+        return True
+    return bool((svi_total_variance(kg, p) >= w_floor).all())
+
+
+def fit_svi_constrained(k, iv, T, k_span: float = K_SPAN, n_constraint: int = 201,
+                        w_floor=None):
+    """Fit raw SVI under no-butterfly (and optional calendar-floor) constraints.
+
+    w_floor: optional array on the internal constraint grid
+    linspace(-k_span, k_span, n_constraint) — the previous expiry's total
+    variance; enforces w(k) >= w_floor + CAL_MARGIN (calendar no-arb).
+
+    1. Unconstrained fit (Day 9 machinery). If already feasible -> done.
+    2. Else SLSQP: min sum sq total-variance residuals s.t. g >= G_MARGIN,
+       w >= W_FLOOR, and the calendar floor, all on the grid.
     3. If SLSQP fails/violates: escalating soft-hinge penalty fallback.
 
-    Returns (params, report). report['arb_free'] is the post-fit verdict.
+    Returns (params, report). report['arb_free'] is the post-fit butterfly
+    verdict; report['floor_ok'] the calendar-floor verdict.
     """
     from scipy.optimize import minimize
 
@@ -131,6 +145,9 @@ def fit_svi_constrained(k, iv, T, k_span: float = K_SPAN, n_constraint: int = 20
     k = np.asarray(k, float)
     w_mkt = np.asarray(iv, float) ** 2 * T
     kg = np.linspace(-k_span, k_span, n_constraint)
+    if w_floor is not None:
+        w_floor = np.asarray(w_floor, float)
+        assert w_floor.shape == kg.shape, "w_floor must live on the constraint grid"
 
     params0, rep0 = fit_svi_slice(k, iv, T)
     pre = check_butterfly(params0, (-k_span, k_span))
@@ -138,49 +155,58 @@ def fit_svi_constrained(k, iv, T, k_span: float = K_SPAN, n_constraint: int = 20
         "rmse_iv_unconstrained": rep0["rmse_iv"],
         "pre_arb_free": pre["arb_free"],
         "pre_min_g": pre["min_g"],
+        "pre_floor_ok": _floor_ok(params0.as_array(), kg, w_floor),
     }
-    if pre["arb_free"]:
-        post = check_butterfly(params0, (-k_span, k_span))
+    if pre["arb_free"] and base["pre_floor_ok"]:
         return params0, {**base, "constraint_active": False, "method": "unconstrained",
-                         "arb_free": True, "min_g": post["min_g"],
+                         "arb_free": True, "floor_ok": True, "min_g": pre["min_g"],
                          "rmse_iv": rep0["rmse_iv"]}
 
     def obj(p):
         return float(np.sum((svi_total_variance(k, p) - w_mkt) ** 2))
 
     span = max(k.max() - k.min(), 1e-3)
-    w_max = w_mkt.max()
+    w_max = max(w_mkt.max(), float(w_floor.max()) if w_floor is not None else 0.0)
     bounds = [(-w_max, 2 * w_max + 1e-8), (1e-8, 10.0 * (w_max / span + 1.0)),
               (-0.999, 0.999), (k.min() - span, k.max() + span), (1e-4, 4.0 * span + 1.0)]
     cons = [{"type": "ineq", "fun": lambda p: _g_finite(kg, p) - G_MARGIN},
             {"type": "ineq", "fun": lambda p: svi_total_variance(kg, p) - W_FLOOR}]
+    if w_floor is not None:
+        cons.append({"type": "ineq",
+                     "fun": lambda p: svi_total_variance(kg, p) - w_floor - CAL_MARGIN})
 
     sol = minimize(obj, params0.as_array(), method="SLSQP", bounds=bounds,
                    constraints=cons, options={"maxiter": 500, "ftol": 1e-12})
     cand, method = sol.x, "slsqp"
 
-    post = check_butterfly(cand, (-k_span, k_span))
-    if not post["arb_free"]:
+    def feasible(p):
+        return check_butterfly(p, (-k_span, k_span))["arb_free"] and _floor_ok(p, kg, w_floor)
+
+    if not feasible(cand):
         # penalty fallback: escalate hinge weight until clean
         for lam in (1e2, 1e4, 1e6):
             def pobj(p, lam=lam):
                 gviol = np.minimum(_g_finite(kg, p) - G_MARGIN, 0.0)
                 wviol = np.minimum(svi_total_variance(kg, p) - W_FLOOR, 0.0)
-                return obj(p) + lam * (np.sum(gviol**2) + np.sum(wviol**2))
+                pen = np.sum(gviol**2) + np.sum(wviol**2)
+                if w_floor is not None:
+                    cviol = np.minimum(svi_total_variance(kg, p) - w_floor - CAL_MARGIN, 0.0)
+                    pen += np.sum(cviol**2)
+                return obj(p) + lam * pen
             sol = minimize(pobj, cand, method="L-BFGS-B", bounds=bounds,
                            options={"maxiter": 1000})
             cand = sol.x
-            post = check_butterfly(cand, (-k_span, k_span))
-            if post["arb_free"]:
+            if feasible(cand):
                 method = f"penalty_{lam:g}"
                 break
 
     params = SVIParams(*cand)
+    post = check_butterfly(cand, (-k_span, k_span))
     w_fit = svi_total_variance(k, params)
     rmse_iv = float(np.sqrt(np.mean((np.sqrt(np.maximum(w_fit, 0.0) / T) - np.asarray(iv, float)) ** 2)))
     return params, {**base, "constraint_active": True, "method": method,
-                    "arb_free": post["arb_free"], "min_g": post["min_g"],
-                    "rmse_iv": rmse_iv}
+                    "arb_free": post["arb_free"], "floor_ok": _floor_ok(cand, kg, w_floor),
+                    "min_g": post["min_g"], "rmse_iv": rmse_iv}
 
 
 def refit_all_constrained(surf: pd.DataFrame, k_span: float = K_SPAN) -> pd.DataFrame:
@@ -239,6 +265,127 @@ def run_constrained_refit(surface_path: Path | None = None) -> pd.DataFrame:
     return fits
 
 
+# ---------------------------------------------------------------------------
+# Day 13 — no-calendar constraint (joint across slices per quote date)
+# ---------------------------------------------------------------------------
+# Coordinate note: slices are parameterized in per-expiry forward moneyness
+# k = ln(K/F_T) (Gatheral convention). Under the martingale measure the
+# calendar condition is monotonicity of total variance in T at fixed k in
+# THIS coordinate: w(k, T2) >= w(k, T1) for T2 > T1.
+
+
+def check_calendar(fits: pd.DataFrame, k_span: float = K_SPAN,
+                   n: int = N_GRID) -> pd.DataFrame:
+    """Pairwise calendar check for consecutive expiries per quote date.
+
+    Returns one row per (date, T_short, T_long) pair with the max total-
+    variance decrease (severity, in variance units) and violating fraction.
+    """
+    kg = np.linspace(-k_span, k_span, n)
+    rows = []
+    ok = fits[fits["fit_ok"] == True]  # noqa: E712 (object dtype)
+    for date, g in ok.groupby("date"):
+        g = g.sort_values("T")
+        ws = [svi_total_variance(kg, (f.a, f.b, f.rho, f.m, f.sigma))
+              for f in g.itertuples()]
+        for i in range(len(ws) - 1):
+            dec = ws[i] - ws[i + 1]                     # >0 where calendar violated
+            rows.append({
+                "date": date,
+                "T_short": float(g["T"].iloc[i]), "T_long": float(g["T"].iloc[i + 1]),
+                "expiry_short": g["expiry"].iloc[i], "expiry_long": g["expiry"].iloc[i + 1],
+                "max_severity": float(max(dec.max(), 0.0)),
+                "frac_violating": float((dec > 0).mean()),
+                "k_at_max": float(kg[np.argmax(dec)]),
+                "violated": bool(dec.max() > 0),
+            })
+    return pd.DataFrame(rows)
+
+
+def fit_all_joint(surf: pd.DataFrame, k_span: float = K_SPAN,
+                  n_constraint: int = N_GRID) -> pd.DataFrame:
+    """Joint (butterfly + calendar) fit: per date, fit slices short->long T,
+    each floored by the previous slice's total variance on the grid.
+
+    n_constraint defaults to the CHECK grid density (N_GRID): a coarser
+    fit grid lets sub-node violations slip through the stricter check
+    (caught on real data: 201-pt fit grid vs 1001-pt check grid)."""
+    from src.surface.svi import MIN_POINTS, otm_side
+
+    kg = np.linspace(-k_span, k_span, n_constraint)
+    rows = []
+    for date, gd in surf.groupby("date"):
+        floor = None
+        # order expiries by T
+        slices = sorted(gd.groupby("expiry"), key=lambda kv: kv[1]["T"].iloc[0])
+        for expiry, g in slices:
+            sl = otm_side(g)
+            if len(sl) < MIN_POINTS:
+                rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
+                             "fit_ok": False})
+                continue
+            T = float(sl["T"].iloc[0])
+            params, rep = fit_svi_constrained(sl["log_moneyness"], sl["iv"], T,
+                                              k_span, n_constraint, w_floor=floor)
+            rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
+                         "fit_ok": True, "T": T, "a": params.a, "b": params.b,
+                         "rho": params.rho, "m": params.m, "sigma": params.sigma, **rep})
+            # next slice must clear this one (only if this fit is usable)
+            if rep["arb_free"] and rep["floor_ok"]:
+                floor = svi_total_variance(kg, params)
+    return pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+
+
+def run_arb_check(surface_path: Path | None = None) -> dict:
+    """Day 13 deliverable: joint fit + full violation report ->
+    results/arb_violations.json (counts, max severity)."""
+    import json
+
+    surf = pd.read_parquet(surface_path or PROCESSED_DIR / "iv_surface.parquet")
+    fits = fit_all_joint(surf)
+    ok = fits[fits["fit_ok"] == True]  # noqa: E712
+
+    out = PROCESSED_DIR / "svi_params_joint.parquet"
+    fits.to_parquet(out, index=False)
+
+    cal = check_calendar(fits)
+    bfly_bad = int((~ok["arb_free"].astype(bool)).sum())
+    floor_bad = int((~ok["floor_ok"].astype(bool)).sum())
+    report = {
+        "n_slices_fitted": int(len(ok)),
+        "butterfly": {
+            "n_violations": bfly_bad,
+            "min_g_across_slices": float(ok["min_g"].min()) if len(ok) else None,
+        },
+        "calendar": {
+            "n_pairs_checked": int(len(cal)),
+            "n_pairs_violated": int(cal["violated"].sum()) if len(cal) else 0,
+            "max_severity_w": float(cal["max_severity"].max()) if len(cal) else 0.0,
+            "n_floor_failures_in_fit": floor_bad,
+        },
+        "rmse_iv_median": float(ok["rmse_iv"].median()) if len(ok) else None,
+        "pairs": [
+            {"date": str(pd.Timestamp(r["date"]).date()),
+             "expiry_short": str(pd.Timestamp(r["expiry_short"]).date()),
+             "expiry_long": str(pd.Timestamp(r["expiry_long"]).date()),
+             "max_severity": r["max_severity"], "frac_violating": r["frac_violating"],
+             "violated": r["violated"]}
+            for _, r in cal.iterrows()
+        ],
+    }
+    path = PROJECT_ROOT / "results" / "arb_violations.json"
+    path.write_text(json.dumps(report, indent=2))
+
+    print(f"joint fit: {len(ok)} slices | butterfly violations {bfly_bad} | "
+          f"calendar pairs violated {report['calendar']['n_pairs_violated']}"
+          f"/{report['calendar']['n_pairs_checked']} "
+          f"(max severity {report['calendar']['max_severity_w']:.2e}) | "
+          f"median RMSE {report['rmse_iv_median'] * 100:.2f} volpts")
+    print(f"-> {out}")
+    print(f"-> {path}")
+    return report
+
+
 def run_butterfly_check(params_path: Path | None = None) -> pd.DataFrame:
     fits = pd.read_parquet(params_path or PROCESSED_DIR / "svi_params.parquet")
     rep = check_all_slices(fits)
@@ -253,7 +400,9 @@ def run_butterfly_check(params_path: Path | None = None) -> pd.DataFrame:
 if __name__ == "__main__":
     import sys
 
-    if "--refit" in sys.argv:
+    if "--joint" in sys.argv:
+        run_arb_check()
+    elif "--refit" in sys.argv:
         run_constrained_refit()
     else:
         run_butterfly_check()

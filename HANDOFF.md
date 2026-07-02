@@ -180,9 +180,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - Outputs: `svi_params_constrained.parquet` + `results/svi_butterfly_log.json` (violation log)
 - Full suite: 515 passed
 
-### Day 13 — No-calendar constraint (Next)
+### Day 13 — No-calendar constraint (Done)
 
-**Goal:** Total variance w(k,T) monotone non-decreasing in T on shared k-grid, joint across slices. Calendar-violation check → `results/arb_violations.json` (count, max severity).
+**Status:** Completed.
+- `fit_svi_constrained` generalized with `w_floor` (previous expiry's w on constraint grid, ≥ floor + CAL_MARGIN=1e-5)
+- `check_calendar` (pairwise consecutive expiries per date, severity = max w decrease), `fit_all_joint` (per date, short→long T, sequential floors), `run_arb_check` CLI `--joint`
+- Coordinate: per-expiry forward moneyness k=ln(K/F_T) (Gatheral convention), documented
+- **Real violation found & fixed:** 06-12 pair 07-07→07-28 violated between constraint-grid nodes (201-pt fit grid vs 1001-pt check grid) — joint fit now constrains on full check grid. Second instance of the "optimizer grid coarser than check grid" bug class (Day 12 = margin, Day 13 = density).
+- Real run: 14 slices, **0 butterfly / 0 of 9 calendar pairs violated, max severity 0**, median RMSE 0.33 volpts unchanged
+- Outputs: `svi_params_joint.parquet`, **`results/arb_violations.json`** (PLAN deliverable, tracked)
+- `tests/test_svi_calendar.py` — synthetic violating pair detected w/ exact severity, clean pair passes, floor-refit clears floor + stays butterfly-free, joint fit on violating synthetic surface → clean, real-surface gates
+- Full suite: 522 passed
+
+### Day 14 — Surface assembly + QC (Next)
+
+**Goal:** Stitch arb-free slices → full surface. 3D surface plot, smile-vs-market panel, QC json.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -212,4 +224,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 12 Completed*
+*Last updated: 2026-07-02 — Day 13 Completed*
