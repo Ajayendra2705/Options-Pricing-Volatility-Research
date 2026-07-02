@@ -137,9 +137,20 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_iv_surface.py` — full-path synthetic smile recovery (Days 5+6+7+8 integrated), failure classification, real-data: success >90%, IV band, C/P parity consistency near ATM (median <2 vol pts), failures live in wings
 - Full suite: 491 passed
 
-### Day 9 — Raw SVI calibration, one slice (Next)
+### Day 9 — Raw SVI calibration, one slice (Done)
 
-**Goal:** `src/surface/svi.py` — raw SVI (a,b,ρ,m,σ), least-squares fit one maturity. Fitted smile vs market scatter, per-slice RMSE printed.
+**Status:** Completed.
+- `src/surface/svi.py` — raw SVI (Gatheral): `svi_total_variance`, `svi_iv`, `fit_svi_slice`
+  - LS in total-variance space, bounded trf, 6-point multistart over (m,σ) (loss multimodal there)
+  - `otm_side` helper: fits **OTM quotes only** (puts K<F, calls K≥F) — EEP-clean side per Day-7/8 finding
+  - Butterfly/calendar no-arb NOT enforced (Days 11–13 by design)
+- Real fit (most-quoted slice 2023-06-02 → 06-16, 24 OTM quotes): **RMSE 0.40 vol pts**; params a=−0.0089 b=0.065 ρ=−0.15 m=−0.024 σ=0.169; global min w = +0.0019 > 0 ✓; plot `results/plots/svi_fit_*.png`
+- `tests/test_svi.py` — formula anchors (w at k=m, asymptotic wing slopes), exact curve recovery (RMSE <1e-6), noise robustness, bounds, real-slice RMSE <2 vol pts + w≥0
+- Full suite: 497 passed
+
+### Day 10 — SVI all slices + param time-series (Next)
+
+**Goal:** Loop all maturities/dates. Param time-series across dates (smoothness = overfit proxy). RMSE table, param-stability plot.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -169,4 +180,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 8 Completed*
+*Last updated: 2026-07-02 — Day 9 Completed*
