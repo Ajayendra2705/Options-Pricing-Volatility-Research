@@ -113,10 +113,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_clean.py` — per-filter fixtures, stale same-contract logic, union no-double-count, T≤0, schema errors, real-parquet end-to-end invariants
 - Full suite: 473 passed
 
-### Day 7 — Forward construction (Next)
+### Day 7 — Forward construction (Done)
 
-**Goal:** Imply forward F per expiry from put-call parity; back out carry; sanity vs spot+r.
-**Test:** parity-implied F stable across strikes per expiry. Plot forward curve per date.
+**Status:** Completed.
+- `src/surface/forwards.py` — parity forwards, **ATM-window design**:
+  - df fixed from external r (5.25%, June-2023 3M T-bill); F = median of per-strike F_k = K+(C−P)/df over 5 strikes w/ smallest |C−P|. Rate misspec ±200bp moves F < 2c (tested).
+  - **Key finding:** all-strike regression implies df>1 (r ≈ −10%) on AAPL — American deep-ITM put EEP steepens the parity slope. ATM window sidesteps; `r_implied` kept as diagnostic only. Documented in module docstring.
+  - Carry from forward term structure: q = r − d(lnF)/dT — no spot needed (vendor chain has no underlying column; replaces PLAN's spot+r sanity, documented waiver)
+- Real run: 15 slices, F ∈ [178.22, 185.40] (tracks AAPL June-2023 path), worst ATM F std/F 0.29%; **q_implied +0.40%/+0.50% on data-rich dates ≈ AAPL actual div yield 0.5%**
+- Deliverables: `data/processed/forwards.parquet`, `results/plots/forward_curves.png` (contango, r>q ✓)
+- `tests/test_forwards.py` — exact synthetic recovery, rate-misspec insensitivity, noise, carry recovery (no spot), real-data stability (<0.5% ATM / <1.5% all-strike), levels, carry band
+- Full suite: 484 passed
+
+### Day 8 — IV surface from real data (Next)
+
+**Goal:** Invert whole cleaned chain → IV per option (use Day-7 forwards). Flag deep-wing failures + liquidity-conditioned wing selection bias (document). Raw IV scatter per slice plotted vs strike.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -146,4 +157,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 6 Completed*
+*Last updated: 2026-07-02 — Day 7 Completed*
