@@ -88,10 +88,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - Also FD-verified Day 3 Greeks before starting (8-decimal match)
 - Full suite: 288 passed
 
-### Day 5 — IV inversion + validation suite (Next)
+### Day 5 — IV inversion + validation suite (Done)
 
-**Goal:** `src/greeks/iv_invert.py` — Brent w/ Newton fallback, forwards/carry handled.
-**Tests:** round-trip price→IV→price err < 1e-6; synthetic known-σ recovery.
+**Status:** Completed.
+- `src/greeks/iv_invert.py` — `implied_vol` (Black-76 forward core) + `implied_vol_spot` (carry via forward)
+  - Newton (vega-based, σ-step convergence 1e-12) → Brent bracket fallback [1e-9, 5.0]
+  - No-arb bounds: below discounted intrinsic / above σ→∞ limit → nan; at intrinsic → 0.0
+  - Vectorized via `np.frompyfunc` over scalar core
+- `tests/test_iv_roundtrip.py` — 160-pt grid roundtrip: reprice err < 1e-6 (PLAN gate) always; σ recovery rel 1e-6 where time value resolvable (deep-ITM: tv ~ ulp(p) → σ only ~1e-4, double-precision floor, documented in test); no-arb nan/zero-vol edges; spot+carry
+- `tests/test_synthetic_recovery.py` — quadratic smile recovery, 500-pt seeded random sweep, tenor structure
+- Real-data smoke: 46/46 June-2023 AAPL quotes inverted, median 0.28 vol pts vs vendor IV (S/r guessed; parity forwards come Day 7)
+- Full suite: 458 passed
+
+### Day 6 — Quote cleaning pipeline (Next)
+
+**Goal:** `src/surface/clean.py` — crossed/zero-bid/stale/wide-spread filters, mids; real drop counts → `results/data_quality.json`; cleaned parquet → `data/processed/`.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -121,4 +132,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 4 Completed*
+*Last updated: 2026-07-02 — Day 5 Completed*
