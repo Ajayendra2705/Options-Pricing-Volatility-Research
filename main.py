@@ -23,10 +23,12 @@ def main():
     set_global_seed()
     
     print(f"Starting pipeline... Stage: {args.stage}")
-    
+
+    if args.stage in ("all", "clean"):
+        from src.surface.clean import run_cleaning
+        run_cleaning()
+
     # TODO: Implement stages
-    # if args.stage in ("all", "clean"):
-    #     run_cleaning()
     # if args.stage in ("all", "surface"):
     #     run_surface()
     # if args.stage in ("all", "backtest"):

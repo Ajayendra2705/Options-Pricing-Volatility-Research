@@ -100,9 +100,23 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - Real-data smoke: 46/46 June-2023 AAPL quotes inverted, median 0.28 vol pts vs vendor IV (S/r guessed; parity forwards come Day 7)
 - Full suite: 458 passed
 
-### Day 6 — Quote cleaning pipeline (Next)
+### Day 6 — Quote cleaning pipeline (Done)
 
-**Goal:** `src/surface/clean.py` — crossed/zero-bid/stale/wide-spread filters, mids; real drop counts → `results/data_quality.json`; cleaned parquet → `data/processed/`.
+**Status:** Completed.
+- `src/surface/clean.py` — pure `clean_chain(df)` core + `run_cleaning()` CLI
+  - Filters: missing / zero_bid / crossed / wide (>50% of mid) / **stale** (identical bid+ask vs same contract's previous date) / expired (T≤0)
+  - Union drop semantics; per-filter counts pre-union
+  - Normalizes any alias schema → canonical (date, expiry, strike, option_type C/P, bid, ask); adds `mid`, `T` (ACT/365)
+  - Outputs `data/processed/chain_clean.parquet` + appends real counts under `"cleaning"` in `results/data_quality.json`
+- Wired into `main.py --stage clean` (runs in `all` too)
+- Real run: 714 → 607 clean, 15.0% drop (matches Day 1 audit exactly; 6 stale rows all overlap other filters)
+- `tests/test_clean.py` — per-filter fixtures, stale same-contract logic, union no-double-count, T≤0, schema errors, real-parquet end-to-end invariants
+- Full suite: 473 passed
+
+### Day 7 — Forward construction (Next)
+
+**Goal:** Imply forward F per expiry from put-call parity; back out carry; sanity vs spot+r.
+**Test:** parity-implied F stable across strikes per expiry. Plot forward curve per date.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -132,4 +146,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 5 Completed*
+*Last updated: 2026-07-02 — Day 6 Completed*

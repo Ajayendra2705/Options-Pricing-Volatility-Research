@@ -86,5 +86,25 @@
       "Call": 296
     }
   },
-  "gate_decision": "PROCEED"
+  "gate_decision": "PROCEED",
+  "cleaning": {
+    "timestamp": "2026-07-02T13:08:10.675636",
+    "source_files": [
+      "aapl_options.parquet"
+    ],
+    "output": "data\\processed\\chain_clean.parquet",
+    "total_rows": 714,
+    "max_spread_pct": 0.5,
+    "filters": {
+      "missing": 0,
+      "zero_bid": 12,
+      "crossed": 2,
+      "wide": 105,
+      "stale": 6
+    },
+    "expired_nonpos_T": 0,
+    "total_dropped": 107,
+    "total_clean": 607,
+    "drop_rate": 0.1499
+  }
 }
