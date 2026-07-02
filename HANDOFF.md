@@ -168,9 +168,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_svi_butterfly.py` — **Axel Vogt known-bad params flagged** (PLAN gate); flat-smile g≡1; analytic derivs vs FD; **independent Breeden–Litzenberger detector** (FD density from Black calls) agrees with g's verdict + >99% pointwise sign match
 - Full suite: 509 passed
 
-### Day 12 — Constrained optimizer (Next)
+### Day 12 — Constrained optimizer (Done)
 
-**Goal:** Refit SVI under butterfly constraint (SLSQP + penalty). Reject/log violators. Arb-free per-slice fits + violation log.
+**Status:** Completed.
+- `fit_svi_constrained` + `refit_all_constrained` + `run_constrained_refit` in `no_arb.py` (CLI `--refit`)
+  - Unconstrained first; if arb-free → constraint inactive (zero cost). Else SLSQP w/ vector ineq g(k)≥margin, w(k)≥floor on 201-pt grid; escalating hinge-penalty L-BFGS-B fallback
+  - **G_MARGIN=2e-4**: SLSQP satisfies constraints only to ~ftol — landed −2.8e-5 below zero vs the stricter 1001-pt post-check until margin added
+  - Gotcha fixed: mixed-dtype DataFrame cols made `~bool_col` arithmetic (−2 each) — astype(bool) before negation
+- Vogt arbitrable market: unconstrained fit inherits violation; constrained → arb-free at RMSE < 0.6 volpts (G-J report ~0.3 for this case)
+- Real run: 14/15 fitted, 0 pre / 0 post violations (constraint unbinding on this window), median RMSE 0.33 volpts unchanged
+- Outputs: `svi_params_constrained.parquet` + `results/svi_butterfly_log.json` (violation log)
+- Full suite: 515 passed
+
+### Day 13 — No-calendar constraint (Next)
+
+**Goal:** Total variance w(k,T) monotone non-decreasing in T on shared k-grid, joint across slices. Calendar-violation check → `results/arb_violations.json` (count, max severity).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -200,4 +212,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 11 Completed*
+*Last updated: 2026-07-02 — Day 12 Completed*
