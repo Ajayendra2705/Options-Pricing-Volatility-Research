@@ -1,7 +1,7 @@
 {
   "n_slices": 15,
-  "n_fitted": 14,
-  "n_pre_violations": 0,
+  "n_fitted": 15,
+  "n_pre_violations": 1,
   "n_post_violations": 0,
   "slices": [
     {
@@ -83,6 +83,16 @@
       "min_g": 0.02544878534355307,
       "rmse_unconstrained": 0.0032463390371209083,
       "rmse_constrained": 0.0032463390371209083
+    },
+    {
+      "date": "2023-06-09",
+      "expiry": "2023-07-28",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.9999951432033948,
+      "rmse_unconstrained": 0.009394143247768712,
+      "rmse_constrained": 0.024420834472395108
     },
     {
       "date": "2023-06-12",

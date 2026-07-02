@@ -34,12 +34,13 @@ def main():
         from src.surface.forwards import run_forwards
         from src.surface.iv_surface import run_iv_surface
         from src.surface.svi import run_svi_all
-        from src.surface.no_arb import run_arb_check
+        from src.surface.no_arb import run_arb_check, run_constrained_refit
         from src.surface.assemble import run_assembly
         run_forwards()
         run_iv_surface()
         run_svi_all()
-        run_arb_check()
+        run_constrained_refit()   # Day-12 per-slice diagnostic + butterfly log
+        run_arb_check()           # Day-13 joint fit (authoritative surface)
         run_assembly()
 
     # TODO: Implement stages

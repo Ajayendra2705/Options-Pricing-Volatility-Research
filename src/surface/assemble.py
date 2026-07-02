@@ -4,14 +4,18 @@ Day 14 — Surface assembly + QC.
 Stitch the arb-free joint SVI slices (Day 13) into a queryable vol surface
 per quote date:
 
-- In T, between expiry nodes: LINEAR interpolation of total variance w at
-  fixed forward moneyness k = ln(K/F_T). Linear-in-w of calendar-ordered
-  nodes is automatically calendar-monotone; no-butterfly of interpolated
-  slices is NOT guaranteed by theory, so QC re-checks Durrleman g
-  numerically (FD) on a dense T grid.
-- Outside the node range: flat-IV extrapolation, w(k,T) = w(k,T_edge)*T/T_edge
-  (keeps implied vol constant, preserves calendar monotonicity in both
-  directions since w scales with T).
+- In T, between expiry nodes: LINEAR interpolation of NORMALIZED OPTION
+  PRICES at fixed forward moneyness k = ln(K/F_T), then invert back to
+  total variance. A convex combination of two arb-free call-price curves
+  is convex and calendar-ordered, so interpolated slices are statically
+  arb-free BY CONSTRUCTION (linear-in-w has no such guarantee and produced
+  a real interpolated butterfly violation on the 2023-06-09 surface).
+- Beyond the last node: flat total variance, w(k,T) = w(k,T_last) — same
+  slice, so butterfly-free and weakly calendar-monotone by construction
+  (flat-IV scaling w*T/T_last broke Durrleman g at 1.25*T_last on real
+  data). Conservative: no variance growth past the quoted range.
+- Before the first node: flat-IV scaling w(k,T) = w(k,T_first)*T/T_first
+  (scaling DOWN; no construction guarantee, so QC checks it numerically).
 - Forwards: ln F linear in T between the Day-7 implied forwards (constant
   carry between nodes); edge-pair slope extrapolated outside.
 
@@ -40,6 +44,49 @@ K_QC_SPAN = 1.0        # QC/plot range in log-moneyness (data lives within ~±0.
 N_T_QC = 21            # interpolated T slices per date in the QC scan
 
 
+def _black_norm(k, w, cp):
+    """Undiscounted normalized Black price (F=1, K=e^k, total variance w)."""
+    from scipy.stats import norm
+    s = np.sqrt(w)
+    d1 = -k / s + s / 2.0
+    return cp * (norm.cdf(cp * d1) - np.exp(k) * norm.cdf(cp * (d1 - s)))
+
+
+def _w_price_interp(k, w1, w2, lam):
+    """Total variance from linear-in-T interpolation of normalized OTM-side
+    option prices at fixed k. Statically arb-free by construction: a convex
+    combination of two convex, calendar-ordered price curves stays convex
+    and ordered.
+
+    Far wings where the time value underflows double precision invert
+    degenerately; there ANY w in [w1, w2] reprices identically to machine
+    precision, so linear-in-w is substituted (price-identical, arb-free at
+    machine precision)."""
+    from scipy.stats import norm
+
+    k = np.asarray(k, float)
+    cp = np.where(k < 0.0, -1, 1)                  # OTM side: absolute price,
+    p1 = _black_norm(k, w1, cp)                    # not a difference of larges
+    p2 = _black_norm(k, w2, cp)
+    p = (1.0 - lam) * p1 + lam * p2
+    lo, hi = np.minimum(w1, w2), np.maximum(w1, w2)
+    # vectorized Newton in w: C is increasing and concave-free in w with
+    # dC/dw = phi(d1)/(2 sqrt(w)); bracketed by [lo, hi], seeded at linear-w
+    w = np.clip((1.0 - lam) * w1 + lam * w2, lo, hi)
+    for _ in range(60):
+        s = np.sqrt(w)
+        d1 = -k / s + s / 2.0
+        diff = _black_norm(k, w, cp) - p
+        vega_w = norm.pdf(d1) / (2.0 * s)
+        step = np.where(vega_w > 1e-30, diff / np.maximum(vega_w, 1e-300), 0.0)
+        w_new = np.clip(w - step, lo, hi)
+        if np.max(np.abs(w_new - w)) < 1e-15:
+            w = w_new
+            break
+        w = w_new
+    return w
+
+
 @dataclass
 class VolSurface:
     """Arb-free vol surface for one quote date: SVI slices + forward curve.
@@ -62,11 +109,12 @@ class VolSurface:
         if T <= Ts[0]:
             return svi_total_variance(k, self.params[0]) * (T / Ts[0])
         if T >= Ts[-1]:
-            return svi_total_variance(k, self.params[-1]) * (T / Ts[-1])
+            return svi_total_variance(k, self.params[-1]) + 0.0 * k
         i = int(np.searchsorted(Ts, T, side="right") - 1)
         lam = (T - Ts[i]) / (Ts[i + 1] - Ts[i])
-        return ((1.0 - lam) * svi_total_variance(k, self.params[i])
-                + lam * svi_total_variance(k, self.params[i + 1]))
+        w1 = svi_total_variance(k, self.params[i])
+        w2 = svi_total_variance(k, self.params[i + 1])
+        return _w_price_interp(k, w1, w2, lam)
 
     def iv(self, k, T: float):
         return np.sqrt(np.maximum(self.w(k, T), 0.0) / T)

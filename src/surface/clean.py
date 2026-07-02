@@ -22,7 +22,6 @@ per-filter counts are reported pre-union (a row can trip several).
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -160,8 +159,8 @@ def run_cleaning(
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     dq_path = RESULTS_DIR / "data_quality.json"
     dq = json.loads(dq_path.read_text()) if dq_path.exists() else {}
+    # no timestamp: keeps the tracked json byte-stable across identical reruns
     dq["cleaning"] = {
-        "timestamp": datetime.now().isoformat(),
         "source_files": [f.name for f in files],
         "output": str(out_path.relative_to(PROJECT_ROOT)),
         **report,

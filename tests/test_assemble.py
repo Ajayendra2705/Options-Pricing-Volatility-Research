@@ -3,8 +3,8 @@ Day 14 tests: surface assembly + QC.
 
 Synthetic: two arb-free calendar-ordered slices ->
 - exact recovery at node expiries;
-- linear-in-w interpolation between nodes;
-- flat-IV extrapolation outside;
+- price-space (linear in normalized price) interpolation between nodes;
+- flat-IV extrapolation before first node, flat-w after last;
 - calendar monotone in T everywhere;
 - forward curve: ln F linear in T, iv_strike consistent with iv(k).
 Real: assembled surfaces pass interpolated butterfly + calendar QC,
@@ -45,16 +45,24 @@ def test_nodes_recovered_exactly(vs):
     np.testing.assert_allclose(vs.iv(K, 0.50), svi_iv(K, 0.50, P_LONG), rtol=1e-14)
 
 
-def test_linear_w_interpolation_between_nodes(vs):
+def test_price_space_interpolation_between_nodes(vs):
+    # interpolation contract: normalized OTM price is LINEAR in T at fixed k
+    from src.surface.assemble import _black_norm
+    cp = np.where(K < 0, -1, 1)
+    p1 = _black_norm(K, svi_total_variance(K, P_SHORT), cp)
+    p2 = _black_norm(K, svi_total_variance(K, P_LONG), cp)
+    p_mid = _black_norm(K, vs.w(K, 0.375), cp)
+    np.testing.assert_allclose(p_mid, 0.5 * (p1 + p2), atol=1e-12)
+    # and the result lies between the node variances (calendar order)
     w_mid = vs.w(K, 0.375)
-    expected = 0.5 * (svi_total_variance(K, P_SHORT) + svi_total_variance(K, P_LONG))
-    np.testing.assert_allclose(w_mid, expected, rtol=1e-14)
+    assert (w_mid >= svi_total_variance(K, P_SHORT) - 1e-12).all()
+    assert (w_mid <= svi_total_variance(K, P_LONG) + 1e-12).all()
 
 
-def test_flat_iv_extrapolation(vs):
-    # short end: same IV as first node; long end: same IV as last node
+def test_extrapolation(vs):
+    # short end: flat IV (w scales with T); long end: flat total variance
     np.testing.assert_allclose(vs.iv(K, 0.10), svi_iv(K, 0.25, P_SHORT), rtol=1e-14)
-    np.testing.assert_allclose(vs.iv(K, 0.80), svi_iv(K, 0.50, P_LONG), rtol=1e-14)
+    np.testing.assert_allclose(vs.w(K, 0.80), svi_total_variance(K, P_LONG), rtol=1e-14)
 
 
 def test_calendar_monotone_everywhere(vs):
@@ -121,28 +129,26 @@ def test_build_surfaces_wires_forwards():
 # --- Real surface -------------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def real_surfaces():
+def real_qc():
     fits_path = PROCESSED_DIR / "svi_params_joint.parquet"
     if not fits_path.exists():
         pytest.skip("joint fits not built")
     fits = pd.read_parquet(fits_path)
     forwards = pd.read_parquet(PROCESSED_DIR / "forwards.parquet")
     market = pd.read_parquet(PROCESSED_DIR / "iv_surface.parquet")
-    return build_surfaces(fits, forwards), market
+    surfaces = build_surfaces(fits, forwards)
+    return [qc_surface(vs, market) for vs in surfaces.values()]
 
 
-def test_real_interp_arb_free(real_surfaces):
-    surfaces, market = real_surfaces
-    assert len(surfaces) == 5
-    for vs in surfaces.values():
-        qc = qc_surface(vs, market)
+def test_real_interp_arb_free(real_qc):
+    assert len(real_qc) == 5
+    for qc in real_qc:
         assert qc["interp_butterfly_ok"], qc
         assert qc["interp_calendar_ok"], qc
 
 
-def test_real_market_residuals_small(real_surfaces):
-    surfaces, market = real_surfaces
-    rmses = [qc_surface(vs, market)["rmse_iv"] for vs in surfaces.values()]
+def test_real_market_residuals_small(real_qc):
+    rmses = [qc["rmse_iv"] for qc in real_qc]
     assert np.median(rmses) * 100 < 1.0
     assert max(rmses) * 100 < 2.0
 

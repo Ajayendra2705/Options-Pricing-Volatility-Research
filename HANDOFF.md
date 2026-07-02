@@ -215,6 +215,17 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - README: stage usage + reproducibility note
 - Full suite: 535 passed
 
+### Hardening pass — full-audit caveat fixes (Done, post-Day-15)
+
+**Status:** Completed. Full independent audit (Days 1–15) passed; every known caveat then fixed:
+- **Thin-slice rescue:** `fit_points` in svi.py — OTM side; if < MIN_POINTS, augment with near-ATM ITM quotes (|k| ≤ ATM_AUGMENT_BAND=0.10, where EEP contamination < 0.3 volpts on real data). 06-09/07-28 now fits → **15/15 slices**, calendar pairs 9→10. Its unconstrained fit was **genuinely arbitrable** (BL min density −146, spiky σ=0.007/b=10.3) — detection flagged it, constrained refit repaired it ("pre-violations 1, post 0"): the Days 11–13 machinery proven on live data.
+- **Interp made arb-free BY CONSTRUCTION:** flat-IV long-end extrapolation of the new slice broke Durrleman (g=−0.021 at 1.25·T_last — QC caught it). VolSurface now: interior = linear in normalized OTM option price at fixed k (convex combo of convex ordered price curves ⇒ static-arb-free), long end = flat total variance (same slice ⇒ safe), short end = flat-IV scaling down (QC-checked numerically). Inversion via vectorized bracketed Newton (assembly 4min→17s). QC: worst interp g **+2.0e-4**, all clean.
+- **Object-dtype bug class killed at source:** `fit_ok` cast `astype(bool)` in all three fit-table producers (fit_all_slices, refit_all_constrained, fit_all_joint).
+- **Pipeline completeness:** `run_constrained_refit` wired into `main.py --stage surface` (Day-12 deliverables regenerate).
+- **Timestamp churn:** removed from data_quality.json cleaning section — all tracked results now byte-stable across identical reruns (verified: 10/10 outputs bit-identical on full rerun).
+- **Verify suite moved into repo:** `scripts/verify/` (Days 3–14 independent checks + `audit_full.py` + `run_all.py` runner), paths portable. **10/10 pass.** verify_day11 upgraded: curvature-scaled FD tolerance + detection-consistency check (negative density ⟺ durrleman flag) + densities validated on the authoritative joint params.
+- Full suite: 537 passed. vs market: max abs err 2.50→**1.44 volpts**, within-1-volpt 97.4→**98.0%**.
+
 ### Day 16 — Realized vol estimator (Next)
 
 **Goal:** `src/backtest/realized_vol.py` — Yang-Zhang (OHLC), trailing window only, no lookahead. Test: recovers known σ on synthetic GBM path. Needs AAPL OHLC spot data for June 2023 window (check data/raw coverage first).
@@ -247,4 +258,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 15 Completed*
+*Last updated: 2026-07-02 — Day 15 + hardening pass Completed*

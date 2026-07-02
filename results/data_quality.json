@@ -88,7 +88,6 @@
   },
   "gate_decision": "PROCEED",
   "cleaning": {
-    "timestamp": "2026-07-02T19:34:01.710111",
     "source_files": [
       "aapl_options.parquet"
     ],

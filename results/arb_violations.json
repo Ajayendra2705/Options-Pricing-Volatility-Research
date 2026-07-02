@@ -1,16 +1,16 @@
 {
-  "n_slices_fitted": 14,
+  "n_slices_fitted": 15,
   "butterfly": {
     "n_violations": 0,
-    "min_g_across_slices": 0.018528490131548163
+    "min_g_across_slices": 0.00020001030204595815
   },
   "calendar": {
-    "n_pairs_checked": 9,
+    "n_pairs_checked": 10,
     "n_pairs_violated": 0,
     "max_severity_w": 0.0,
     "n_floor_failures_in_fit": 0
   },
-  "rmse_iv_median": 0.0032761351665835372,
+  "rmse_iv_median": 0.003305931296046166,
   "pairs": [
     {
       "date": "2023-06-02",
@@ -48,6 +48,14 @@
       "date": "2023-06-09",
       "expiry_short": "2023-06-23",
       "expiry_long": "2023-07-07",
+      "max_severity": 0.0,
+      "frac_violating": 0.0,
+      "violated": false
+    },
+    {
+      "date": "2023-06-09",
+      "expiry_short": "2023-07-07",
+      "expiry_long": "2023-07-28",
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false

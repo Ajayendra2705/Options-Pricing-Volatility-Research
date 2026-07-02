@@ -66,6 +66,30 @@ def otm_side(slice_df: pd.DataFrame) -> pd.DataFrame:
     return ok[is_otm]
 
 
+ATM_AUGMENT_BAND = 0.10   # |k| band where American EEP contamination of ITM
+                          # quotes is negligible (real data: <0.3 volpts vs
+                          # the OTM quote at the same strike; deep ITM blows
+                          # up to tens of volpts and stays excluded)
+
+
+def fit_points(slice_df: pd.DataFrame,
+               atm_band: float = ATM_AUGMENT_BAND) -> tuple[pd.DataFrame, bool]:
+    """Quotes to fit a slice on: OTM side; if that leaves fewer than
+    MIN_POINTS, augment with near-ATM ITM quotes (|log_moneyness| <= atm_band).
+
+    Returns (points, augmented). Slices with a healthy OTM side are returned
+    unchanged, so augmentation never perturbs an already-fittable slice.
+    """
+    otm = otm_side(slice_df)
+    if len(otm) >= MIN_POINTS:
+        return otm, False
+    ok = slice_df[slice_df["status"] == "ok"] if "status" in slice_df.columns else slice_df
+    near_itm = ok.drop(otm.index)
+    near_itm = near_itm[near_itm["log_moneyness"].abs() <= atm_band]
+    pts = pd.concat([otm, near_itm]).sort_values("log_moneyness")
+    return pts, True
+
+
 def fit_svi_slice(k, iv, T, weights=None) -> tuple[SVIParams, dict]:
     """Least-squares raw-SVI fit of one maturity slice.
 
@@ -121,14 +145,15 @@ MIN_POINTS = 6
 def fit_all_slices(surf: pd.DataFrame) -> pd.DataFrame:
     """Day 10: raw-SVI fit for every (date, expiry) slice of an IV surface.
 
-    Uses OTM side only. Slices with < MIN_POINTS quotes are skipped and
-    reported with fit_ok = False. Returns one row per slice with params,
-    RMSE and diagnostics.
+    Uses fit_points (OTM side, near-ATM ITM fallback for thin slices).
+    Slices still below MIN_POINTS are skipped with fit_ok = False.
+    Returns one row per slice with params, RMSE and diagnostics.
     """
     rows = []
     for (date, expiry), g in surf.groupby(["date", "expiry"]):
-        sl = otm_side(g)
-        row = {"date": date, "expiry": expiry, "n_points": len(sl)}
+        sl, augmented = fit_points(g)
+        row = {"date": date, "expiry": expiry, "n_points": len(sl),
+               "augmented": augmented}
         if len(sl) < MIN_POINTS:
             rows.append({**row, "fit_ok": False})
             continue
@@ -144,7 +169,9 @@ def fit_all_slices(surf: pd.DataFrame) -> pd.DataFrame:
             "m": params.m, "sigma": params.sigma,
             "rmse_iv": report["rmse_iv"], "min_w_on_grid": report["min_w_on_grid"],
         })
-    return pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out = pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out["fit_ok"] = out["fit_ok"].astype(bool)      # never object dtype
+    return out
 
 
 def plot_param_stability(fits: pd.DataFrame, out_path: Path) -> None:

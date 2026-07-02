@@ -15,8 +15,10 @@ import pytest
 from src.surface.clean import PROCESSED_DIR
 from src.surface.iv_surface import build_iv_surface  # noqa: F401  (path check)
 from src.surface.svi import (
+    MIN_POINTS,
     SVIParams,
     fit_all_slices,
+    fit_points,
     fit_svi_slice,
     otm_side,
     svi_iv,
@@ -75,6 +77,36 @@ def test_otm_side_selection():
     sel = otm_side(df)
     assert len(sel) == 4
     assert ((sel["strike"] < 100) == (sel["option_type"] == "P")).all()
+
+
+def _chain(strikes, types, F=100.0):
+    strikes = np.asarray(strikes, float)
+    return pd.DataFrame({
+        "strike": strikes, "option_type": types, "F": F, "status": "ok",
+        "log_moneyness": np.log(strikes / F), "iv": 0.25, "T": 0.1,
+    })
+
+
+def test_fit_points_healthy_slice_unchanged():
+    # 8 OTM quotes -> no augmentation, identical to otm_side
+    df = _chain([80, 85, 90, 95, 105, 110, 115, 120],
+                ["P"] * 4 + ["C"] * 4)
+    pts, augmented = fit_points(df)
+    assert not augmented
+    pd.testing.assert_frame_equal(pts, otm_side(df))
+
+
+def test_fit_points_thin_slice_augments_near_atm_itm_only():
+    # 4 OTM quotes + ITM quotes at near-ATM and deep strikes
+    df = _chain([90, 95, 105, 110,            # OTM: P P C C
+                 92, 97, 103, 60, 150],       # ITM: C C P + deep C, deep P
+                ["P", "P", "C", "C", "C", "C", "P", "C", "P"])
+    pts, augmented = fit_points(df)
+    assert augmented
+    assert len(pts) == 4 + 3 >= MIN_POINTS    # near-ATM ITM added
+    # deep ITM (|k| > band: 60 -> k=-0.51, 150 -> k=+0.41) stays excluded
+    assert not pts["strike"].isin([60.0, 150.0]).any()
+    assert (pts["log_moneyness"].diff().dropna() > 0).all()   # sorted
 
 
 # --- Real data ----------------------------------------------------------------

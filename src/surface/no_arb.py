@@ -211,20 +211,24 @@ def fit_svi_constrained(k, iv, T, k_span: float = K_SPAN, n_constraint: int = 20
 
 def refit_all_constrained(surf: pd.DataFrame, k_span: float = K_SPAN) -> pd.DataFrame:
     """Constrained fit for every slice; one row per slice incl. violation log."""
-    from src.surface.svi import MIN_POINTS, otm_side
+    from src.surface.svi import MIN_POINTS, fit_points
 
     rows = []
     for (date, expiry), g in surf.groupby(["date", "expiry"]):
-        sl = otm_side(g)
+        sl, augmented = fit_points(g)
         if len(sl) < MIN_POINTS:
-            rows.append({"date": date, "expiry": expiry, "n_points": len(sl), "fit_ok": False})
+            rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
+                         "augmented": augmented, "fit_ok": False})
             continue
         T = float(sl["T"].iloc[0])
         params, rep = fit_svi_constrained(sl["log_moneyness"], sl["iv"], T, k_span)
-        rows.append({"date": date, "expiry": expiry, "n_points": len(sl), "fit_ok": True,
+        rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
+                     "augmented": augmented, "fit_ok": True,
                      "T": T, "a": params.a, "b": params.b, "rho": params.rho,
                      "m": params.m, "sigma": params.sigma, **rep})
-    return pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out = pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out["fit_ok"] = out["fit_ok"].astype(bool)      # never object dtype
+    return out
 
 
 def run_constrained_refit(surface_path: Path | None = None) -> pd.DataFrame:
@@ -310,7 +314,7 @@ def fit_all_joint(surf: pd.DataFrame, k_span: float = K_SPAN,
     n_constraint defaults to the CHECK grid density (N_GRID): a coarser
     fit grid lets sub-node violations slip through the stricter check
     (caught on real data: 201-pt fit grid vs 1001-pt check grid)."""
-    from src.surface.svi import MIN_POINTS, otm_side
+    from src.surface.svi import MIN_POINTS, fit_points
 
     kg = np.linspace(-k_span, k_span, n_constraint)
     rows = []
@@ -319,21 +323,24 @@ def fit_all_joint(surf: pd.DataFrame, k_span: float = K_SPAN,
         # order expiries by T
         slices = sorted(gd.groupby("expiry"), key=lambda kv: kv[1]["T"].iloc[0])
         for expiry, g in slices:
-            sl = otm_side(g)
+            sl, augmented = fit_points(g)
             if len(sl) < MIN_POINTS:
                 rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
-                             "fit_ok": False})
+                             "augmented": augmented, "fit_ok": False})
                 continue
             T = float(sl["T"].iloc[0])
             params, rep = fit_svi_constrained(sl["log_moneyness"], sl["iv"], T,
                                               k_span, n_constraint, w_floor=floor)
             rows.append({"date": date, "expiry": expiry, "n_points": len(sl),
-                         "fit_ok": True, "T": T, "a": params.a, "b": params.b,
+                         "augmented": augmented, "fit_ok": True, "T": T,
+                         "a": params.a, "b": params.b,
                          "rho": params.rho, "m": params.m, "sigma": params.sigma, **rep})
             # next slice must clear this one (only if this fit is usable)
             if rep["arb_free"] and rep["floor_ok"]:
                 floor = svi_total_variance(kg, params)
-    return pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out = pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+    out["fit_ok"] = out["fit_ok"].astype(bool)      # never object dtype
+    return out
 
 
 def run_arb_check(surface_path: Path | None = None) -> dict:
