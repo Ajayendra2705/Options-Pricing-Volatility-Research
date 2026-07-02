@@ -125,9 +125,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_forwards.py` — exact synthetic recovery, rate-misspec insensitivity, noise, carry recovery (no spot), real-data stability (<0.5% ATM / <1.5% all-strike), levels, carry band
 - Full suite: 484 passed
 
-### Day 8 — IV surface from real data (Next)
+### Day 8 — IV surface from real data (Done)
 
-**Goal:** Invert whole cleaned chain → IV per option (use Day-7 forwards). Flag deep-wing failures + liquidity-conditioned wing selection bias (document). Raw IV scatter per slice plotted vs strike.
+**Status:** Completed.
+- `src/surface/iv_surface.py` — inverts whole cleaned chain vs Day-7 forwards (one F/df per slice)
+  - Per-row status: ok / below_intrinsic / above_upper / no_solution — failures **flagged, never dropped**
+  - `log_moneyness` = ln(K/F) column; wing-coverage diagnostic (quoted range / ±4σ√T band)
+  - **Liquidity-conditioned wing selection bias documented** in module docstring (zero-bid/wide-spread cleaning removes illiquid wings → surviving wing IVs conditioned on liquidity; quantified per slice)
+- Real run: 607 quotes → **97.5% success** (592 ok, 15 below_intrinsic — all wing/EEP artifacts), IV ∈ [0.163, 0.962], ATM ~20-23%
+- Scatter panels per date → `results/plots/iv_scatter_<date>.png` (gitignored, regenerable). Classic skew; C/P IVs agree near/below F, split above F = American ITM-put EEP in vol space (matches Day-7 finding)
+- `tests/test_iv_surface.py` — full-path synthetic smile recovery (Days 5+6+7+8 integrated), failure classification, real-data: success >90%, IV band, C/P parity consistency near ATM (median <2 vol pts), failures live in wings
+- Full suite: 491 passed
+
+### Day 9 — Raw SVI calibration, one slice (Next)
+
+**Goal:** `src/surface/svi.py` — raw SVI (a,b,ρ,m,σ), least-squares fit one maturity. Fitted smile vs market scatter, per-slice RMSE printed.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -157,4 +169,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 7 Completed*
+*Last updated: 2026-07-02 — Day 8 Completed*
