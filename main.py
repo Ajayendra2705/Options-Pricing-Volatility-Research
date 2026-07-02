@@ -28,14 +28,26 @@ def main():
         from src.surface.clean import run_cleaning
         run_cleaning()
 
+    if args.stage in ("all", "surface"):
+        # Part 1 pipeline (Days 7-14): forwards -> IVs -> SVI diagnostics ->
+        # joint arb-free fit -> assembled surface + QC
+        from src.surface.forwards import run_forwards
+        from src.surface.iv_surface import run_iv_surface
+        from src.surface.svi import run_svi_all
+        from src.surface.no_arb import run_arb_check
+        from src.surface.assemble import run_assembly
+        run_forwards()
+        run_iv_surface()
+        run_svi_all()
+        run_arb_check()
+        run_assembly()
+
     # TODO: Implement stages
-    # if args.stage in ("all", "surface"):
-    #     run_surface()
     # if args.stage in ("all", "backtest"):
     #     run_backtest()
     # if args.stage in ("all", "report"):
     #     generate_report()
-        
+
     print("Done.")
 
 if __name__ == "__main__":

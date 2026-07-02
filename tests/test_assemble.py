@@ -94,14 +94,28 @@ def test_build_surfaces_wires_forwards():
          "m": P_LONG.m, "sigma": P_LONG.sigma},
     ])
     forwards = pd.DataFrame([
-        {"date": pd.Timestamp("2023-06-02"), "expiry": "2023-09-15", "F": 100.0},
-        {"date": pd.Timestamp("2023-06-02"), "expiry": "2023-12-15", "F": 101.0},
+        {"date": pd.Timestamp("2023-06-02"), "expiry": "2023-09-15", "T": 0.25, "F": 100.0},
+        {"date": pd.Timestamp("2023-06-02"), "expiry": "2023-12-15", "T": 0.50, "F": 101.0},
     ])
     surfs = build_surfaces(fits, forwards)
     assert len(surfs) == 1
     s = surfs[pd.Timestamp("2023-06-02")]
     np.testing.assert_allclose(s.F_nodes, [100.0, 101.0])
     np.testing.assert_allclose(s.Ts, [0.25, 0.50])
+
+    # forward curve keeps nodes whose vol slice failed to fit
+    fits2 = pd.concat([fits, pd.DataFrame([
+        {"date": pd.Timestamp("2023-06-02"), "expiry": "2024-03-15", "T": 0.75,
+         "fit_ok": False}])], ignore_index=True)
+    forwards2 = pd.concat([forwards, pd.DataFrame([
+        {"date": pd.Timestamp("2023-06-02"), "expiry": "2024-03-15", "T": 0.75,
+         "F": 104.0}])], ignore_index=True)
+    s2 = build_surfaces(fits2, forwards2)[pd.Timestamp("2023-06-02")]
+    np.testing.assert_allclose(s2.Ts, [0.25, 0.50])          # vol nodes unchanged
+    np.testing.assert_allclose(s2.F_Ts, [0.25, 0.50, 0.75])  # forward keeps all
+    assert s2.forward(0.75) == pytest.approx(104.0, rel=1e-12)
+    # beyond-vol-range forward now anchored by the real node, not extrapolation
+    assert s2.forward(0.625) == pytest.approx(np.sqrt(101.0 * 104.0), rel=1e-12)
 
 
 # --- Real surface -------------------------------------------------------------

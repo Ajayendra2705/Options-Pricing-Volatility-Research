@@ -205,9 +205,19 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_assemble.py` — node exactness, linear-w interp, flat-IV extrap, calendar monotone everywhere, interpolated butterfly FD check, ln-F-linear forward + iv_strike consistency, real-surface QC gates
 - Full suite: 533 passed
 
-### Day 15 — Surface buffer / lock Part 1 (Next)
+### Day 15 — Surface buffer / lock Part 1 (Done)
 
-**Goal:** Fix convergence issues, edge expiries, plotting polish. Part 1 reproducible via `main.py` stage 1 (currently only "clean" stage wired — needs forwards/iv/svi/arb/assemble).
+**Status:** Completed. No convergence issues outstanding (Day-13 buffer unneeded); buffer spent on one real fix + pipeline lock.
+- **Fix (found by Day-14 independent verify):** forward curve dropped the valid 06-09/07-28 implied forward because its vol slice failed to fit (4 OTM pts < MIN_POINTS). `VolSurface` forward nodes now decoupled from vol nodes (`F_Ts` field, `build_surfaces` passes ALL date forwards) — was a 1.2e-3 relative F error beyond T=0.077 on that date
+- `main.py --stage surface` wired: forwards → IVs → SVI diagnostics → joint arb-free fit → assembly + QC
+- **Part 1 locked:** full `python main.py --stage all` rerun from raw data reproduces all 6 processed parquets + arb_violations.json + surface_qc.json **bit-identically** (SHA256 snapshot compare)
+- `tests/test_pipeline.py` — stage wiring + cross-artifact consistency (forwards/iv/joint cover exactly the cleaned-chain slices; QC json ↔ parquet counts; 0 violations)
+- README: stage usage + reproducibility note
+- Full suite: 535 passed
+
+### Day 16 — Realized vol estimator (Next)
+
+**Goal:** `src/backtest/realized_vol.py` — Yang-Zhang (OHLC), trailing window only, no lookahead. Test: recovers known σ on synthetic GBM path. Needs AAPL OHLC spot data for June 2023 window (check data/raw coverage first).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -237,4 +247,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 14 Completed*
+*Last updated: 2026-07-02 — Day 15 Completed*

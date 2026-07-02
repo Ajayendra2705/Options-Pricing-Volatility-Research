@@ -9,9 +9,15 @@
 
 ```bash
 pip install -r requirements.txt
-python main.py          # regenerates all results from raw data
-pytest                  # run test suite
+python main.py                    # regenerates all results from raw data
+python main.py --stage clean      # cleaning only
+python main.py --stage surface    # Part 1: forwards -> IVs -> SVI -> no-arb -> surface + QC
+pytest                            # run test suite
 ```
+
+Part 1 (vol surface) is locked: a full `python main.py --stage all` rerun
+reproduces every processed parquet and results json bit-identically
+(SHA256-verified).
 
 ## Project structure
 

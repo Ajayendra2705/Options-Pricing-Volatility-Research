@@ -42,12 +42,18 @@ N_T_QC = 21            # interpolated T slices per date in the QC scan
 
 @dataclass
 class VolSurface:
-    """Arb-free vol surface for one quote date: SVI slices + forward curve."""
+    """Arb-free vol surface for one quote date: SVI slices + forward curve.
+
+    The forward curve is decoupled from the vol nodes: an expiry whose vol
+    slice failed to fit (too few OTM quotes) still carries a valid implied
+    forward, so F_Ts/F_nodes may hold MORE nodes than Ts/params.
+    """
     date: pd.Timestamp
-    Ts: np.ndarray                 # node expiry times, sorted ascending
-    params: list                   # SVIParams per node
-    F_nodes: np.ndarray            # implied forwards at the SAME Ts
+    Ts: np.ndarray                 # vol node expiry times, sorted ascending
+    params: list                   # SVIParams per vol node
+    F_nodes: np.ndarray            # implied forwards, sorted by F_Ts
     expiries: list = field(default_factory=list)
+    F_Ts: np.ndarray | None = None  # forward node times; defaults to Ts
 
     def w(self, k, T: float):
         """Total variance at forward moneyness k, time T (interp/extrap in T)."""
@@ -67,7 +73,8 @@ class VolSurface:
 
     def forward(self, T: float) -> float:
         """ln F linear in T between nodes; edge slope extrapolated outside."""
-        Ts, lnF = self.Ts, np.log(self.F_nodes)
+        Ts = self.Ts if self.F_Ts is None else self.F_Ts
+        lnF = np.log(self.F_nodes)
         if len(Ts) == 1:
             return float(self.F_nodes[0])
         if T <= Ts[0]:
@@ -88,15 +95,16 @@ def build_surfaces(fits: pd.DataFrame, forwards: pd.DataFrame) -> dict:
     """One VolSurface per quote date from joint fits + implied forwards."""
     surfaces = {}
     ok = fits[fits["fit_ok"] == True]  # noqa: E712 (object dtype)
-    fwd = forwards.set_index(["date", "expiry"])["F"]
     for date, g in ok.groupby("date"):
         g = g.sort_values("T")
+        fw = forwards[forwards["date"] == date].sort_values("T")
         surfaces[date] = VolSurface(
             date=date,
             Ts=g["T"].to_numpy(float),
             params=[SVIParams(f.a, f.b, f.rho, f.m, f.sigma) for f in g.itertuples()],
-            F_nodes=np.array([fwd.loc[(date, e)] for e in g["expiry"]], float),
+            F_nodes=fw["F"].to_numpy(float),
             expiries=list(g["expiry"]),
+            F_Ts=fw["T"].to_numpy(float),
         )
     return surfaces
 
