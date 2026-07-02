@@ -43,9 +43,12 @@ def main():
         run_arb_check()           # Day-13 joint fit (authoritative surface)
         run_assembly()
 
+    if args.stage in ("all", "backtest"):
+        # Part 2 pipeline (Days 16+): realized vol (more stages follow)
+        from src.backtest.realized_vol import run_realized_vol
+        run_realized_vol()
+
     # TODO: Implement stages
-    # if args.stage in ("all", "backtest"):
-    #     run_backtest()
     # if args.stage in ("all", "report"):
     #     generate_report()
 
