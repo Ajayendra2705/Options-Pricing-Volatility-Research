@@ -76,10 +76,22 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_bs_pricing.py` (13 tests): Hull textbook prices + Greeks, put-call parity grid (forward + spot w/ carry), spot↔forward consistency (chain rule), zero-vol/deep-ITM limits
 - Full suite: 14 passed
 
-### Day 4 — Second-order Greeks (Next)
+### Day 4 — Second-order Greeks (Done)
 
-**Goal:** Add vanna (∂Δ/∂σ), volga/vomma (∂vega/∂σ) — analytic.
-**Test:** finite-difference cross-check vs analytic, all Greeks, tight tol (`tests/test_greeks_fd.py`).
+**Status:** Completed.
+- `vanna` (∂²V/∂F∂σ = −df·φ(d1)·d2/σ) + `volga` (vega·d1·d2/σ) added to `black_scholes.py`, forward core + spot wrappers. cp-independent. Zero-vol limit → 0, finite.
+- `tests/test_greeks_fd.py` — FD cross-check ALL Greeks, tight tol (rtol 1e-6):
+  - 1st-order (Δ, vega, θ, ρ) vs central FD of price
+  - 2nd-order (Γ, vanna, volga) vs central FD of analytic 1st-order fns; vanna Schwarz symmetry (∂Δ/∂σ = ∂vega/∂F); Γ vs price 2nd-diff (looser)
+  - Grid: {80,100,120} × T{0.05,0.5,2} × σ{0.1,0.3,0.8} × cp±, forward + spot(carry)
+  - Sign-structure tests (vanna sign flip across forward-moneyness, volga ≥ 0, zero at d1·d2=0)
+- Also FD-verified Day 3 Greeks before starting (8-decimal match)
+- Full suite: 288 passed
+
+### Day 5 — IV inversion + validation suite (Next)
+
+**Goal:** `src/greeks/iv_invert.py` — Brent w/ Newton fallback, forwards/carry handled.
+**Tests:** round-trip price→IV→price err < 1e-6; synthetic known-σ recovery.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -109,4 +121,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 3 Completed*
+*Last updated: 2026-07-02 — Day 4 Completed*

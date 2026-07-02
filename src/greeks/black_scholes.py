@@ -91,6 +91,34 @@ def rho(F, K, T, sigma, r, cp):
 
 
 # ---------------------------------------------------------------------------
+# Second-order Greeks (Day 4). Same for call/put.
+# ---------------------------------------------------------------------------
+
+
+def vanna(F, K, T, sigma, r, cp=None):
+    """d2V/dFdsigma = dDelta_fwd/dsigma = -exp(-r*T) * phi(d1) * d2 / sigma.
+
+    Derivation: d(d1)/dsigma = -d2/sigma, and delta_fwd = df*cp*N(cp*d1) whose
+    sigma-derivative is df*phi(d1)*d(d1)/dsigma for both cp signs.
+    """
+    d1, d2, s = _d1_d2(F, K, T, sigma)
+    df = np.exp(-np.asarray(r, float) * np.asarray(T, float))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        v = -df * norm.pdf(d1) * d2 / np.where(np.asarray(sigma, float) > 0, np.asarray(sigma, float), 1.0)
+    return np.where(s > 0, v, 0.0)
+
+
+def volga(F, K, T, sigma, r, cp=None):
+    """d2V/dsigma2 = dvega/dsigma = vega * d1 * d2 / sigma. Also called vomma."""
+    d1, d2, s = _d1_d2(F, K, T, sigma)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        v = vega(F, K, T, sigma, r) * d1 * d2 / np.where(
+            np.asarray(sigma, float) > 0, np.asarray(sigma, float), 1.0
+        )
+    return np.where(s > 0, v, 0.0)
+
+
+# ---------------------------------------------------------------------------
 # Spot wrappers: S, r, q -> F = S*exp((r-q)*T). Standard textbook Greeks.
 # ---------------------------------------------------------------------------
 
@@ -149,3 +177,19 @@ def rho_spot(S, K, T, sigma, r, q, cp):
     cp = np.asarray(cp, float)
     _, d2, _ = _d1_d2(forward(S, r, q, T), K, T, sigma)
     return cp * K * T * np.exp(-r * T) * norm.cdf(cp * d2)
+
+
+def vanna_spot(S, K, T, sigma, r, q, cp=None):
+    """d2V/dSdsigma = dDelta_spot/dsigma = -exp(-q*T) * phi(d1) * d2 / sigma."""
+    d1, d2, s = _d1_d2(forward(S, r, q, T), K, T, sigma)
+    sigma = np.asarray(sigma, float)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        v = -np.exp(-np.asarray(q, float) * np.asarray(T, float)) * norm.pdf(d1) * d2 / np.where(
+            sigma > 0, sigma, 1.0
+        )
+    return np.where(s > 0, v, 0.0)
+
+
+def volga_spot(S, K, T, sigma, r, q, cp=None):
+    """d2V/dsigma2 at fixed S: vega * d1 * d2 / sigma (vega is spot==forward)."""
+    return volga(forward(S, r, q, T), K, T, sigma, r)
