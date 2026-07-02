@@ -67,10 +67,19 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - CI config (`.github/workflows/ci.yml`)
 - `pytest` green (placeholder test)
 
-### Day 3 — Black-Scholes pricing + first-order Greeks (Next)
+### Day 3 — Black-Scholes pricing + first-order Greeks (Done)
 
-**Goal:** `src/greeks/black_scholes.py`: price, delta, gamma, vega, theta, rho. Forward-based.
-**Test:** known textbook values; put-call parity holds.
+**Status:** Completed.
+- `src/greeks/black_scholes.py` — forward-based core (Black-76): `price`, `delta`, `gamma`, `vega`, `theta`, `rho` on (F, K, T, sigma, r, cp)
+- Spot wrappers `*_spot` on (S, K, T, sigma, r, q, cp) via F = S·e^((r−q)T); standard textbook Greeks
+- Vectorized (numpy); sigma·√T = 0 collapses to discounted intrinsic (no nan — needed for Day 5 IV inversion edges)
+- `tests/test_bs_pricing.py` (13 tests): Hull textbook prices + Greeks, put-call parity grid (forward + spot w/ carry), spot↔forward consistency (chain rule), zero-vol/deep-ITM limits
+- Full suite: 14 passed
+
+### Day 4 — Second-order Greeks (Next)
+
+**Goal:** Add vanna (∂Δ/∂σ), volga/vomma (∂vega/∂σ) — analytic.
+**Test:** finite-difference cross-check vs analytic, all Greeks, tight tol (`tests/test_greeks_fd.py`).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -100,4 +109,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-01 — Day 2 Completed*
+*Last updated: 2026-07-02 — Day 3 Completed*
