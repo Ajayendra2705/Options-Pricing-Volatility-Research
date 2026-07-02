@@ -192,9 +192,22 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_svi_calendar.py` — synthetic violating pair detected w/ exact severity, clean pair passes, floor-refit clears floor + stays butterfly-free, joint fit on violating synthetic surface → clean, real-surface gates
 - Full suite: 522 passed
 
-### Day 14 — Surface assembly + QC (Next)
+### Day 14 — Surface assembly + QC (Done)
 
-**Goal:** Stitch arb-free slices → full surface. 3D surface plot, smile-vs-market panel, QC json.
+**Status:** Completed.
+- `src/surface/assemble.py`: `VolSurface` per quote date — Day-13 joint SVI slices + Day-7 forwards, queryable `w(k,T)` / `iv(k,T)` / `iv_strike(K,T)`
+- T-interpolation: **linear in total variance at fixed forward moneyness k** (calendar-monotone by construction); flat-IV extrapolation outside node range (`w·T/T_edge`, monotone both directions)
+- Forward curve: ln F linear in T between implied-forward nodes (constant carry), edge slope extrapolated
+- Interpolated-slice arbitrage NOT assumed from theory — QC re-checks Durrleman g via FD on 21 T-slices per date + calendar monotonicity on dense grid
+- Real run: 5 dates / 14 slices, **interp butterfly clean (worst g +1.2e-2), interp calendar clean**, vs market: median RMSE 0.39 volpts, 97.4% of OTM quotes within 1 volpt, max abs err 2.5 volpts (short-T wing)
+- Outputs: **`results/surface_qc.json`** (PLAN deliverable, tracked), 5× `surface_3d_<date>.png` + 5× `smile_vs_market_<date>.png` (plots regenerable, gitignored)
+- Smile panels show grey ITM-side quotes diverging above F — the documented American-EEP contamination, visibly excluded from fits
+- `tests/test_assemble.py` — node exactness, linear-w interp, flat-IV extrap, calendar monotone everywhere, interpolated butterfly FD check, ln-F-linear forward + iv_strike consistency, real-surface QC gates
+- Full suite: 533 passed
+
+### Day 15 — Surface buffer / lock Part 1 (Next)
+
+**Goal:** Fix convergence issues, edge expiries, plotting polish. Part 1 reproducible via `main.py` stage 1 (currently only "clean" stage wired — needs forwards/iv/svi/arb/assemble).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -224,4 +237,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 13 Completed*
+*Last updated: 2026-07-02 — Day 14 Completed*

@@ -1,0 +1,92 @@
+{
+  "n_dates": 5,
+  "n_slices_total": 14,
+  "all_interp_butterfly_ok": true,
+  "all_interp_calendar_ok": true,
+  "worst_interp_min_g": 0.01242979006022904,
+  "rmse_iv_median": 0.0038943845292127043,
+  "max_abs_err_iv": 0.025040342903735108,
+  "frac_within_1volpt": 0.9742715278762943,
+  "dates": [
+    {
+      "date": "2023-06-02",
+      "n_expiries": 3,
+      "T_range": [
+        0.038356164383561646,
+        0.13424657534246576
+      ],
+      "n_market_quotes": 69,
+      "rmse_iv": 0.0038943845292127043,
+      "max_abs_err_iv": 0.009463026378327216,
+      "frac_within_1volpt": 1.0,
+      "interp_min_g": 0.047748196916102735,
+      "interp_butterfly_ok": true,
+      "interp_max_calendar_decrease": 0.0,
+      "interp_calendar_ok": true
+    },
+    {
+      "date": "2023-06-07",
+      "n_expiries": 3,
+      "T_range": [
+        0.043835616438356165,
+        0.12054794520547946
+      ],
+      "n_market_quotes": 53,
+      "rmse_iv": 0.0036003734893695506,
+      "max_abs_err_iv": 0.010417897758130928,
+      "frac_within_1volpt": 0.9811320754716981,
+      "interp_min_g": 0.014728560212648477,
+      "interp_butterfly_ok": true,
+      "interp_max_calendar_decrease": 0.0,
+      "interp_calendar_ok": true
+    },
+    {
+      "date": "2023-06-09",
+      "n_expiries": 2,
+      "T_range": [
+        0.038356164383561646,
+        0.07671232876712329
+      ],
+      "n_market_quotes": 35,
+      "rmse_iv": 0.005842563183571133,
+      "max_abs_err_iv": 0.025040342903735108,
+      "frac_within_1volpt": 0.9428571428571428,
+      "interp_min_g": 0.016177226739827,
+      "interp_butterfly_ok": true,
+      "interp_max_calendar_decrease": 0.0,
+      "interp_calendar_ok": true
+    },
+    {
+      "date": "2023-06-12",
+      "n_expiries": 3,
+      "T_range": [
+        0.030136986301369864,
+        0.12602739726027398
+      ],
+      "n_market_quotes": 38,
+      "rmse_iv": 0.004127247728898579,
+      "max_abs_err_iv": 0.011110367784391229,
+      "frac_within_1volpt": 0.9473684210526315,
+      "interp_min_g": 0.01242979006022904,
+      "interp_butterfly_ok": true,
+      "interp_max_calendar_decrease": 0.0,
+      "interp_calendar_ok": true
+    },
+    {
+      "date": "2023-06-14",
+      "n_expiries": 3,
+      "T_range": [
+        0.043835616438356165,
+        0.1780821917808219
+      ],
+      "n_market_quotes": 55,
+      "rmse_iv": 0.00307536694698992,
+      "max_abs_err_iv": 0.0061249984518279565,
+      "frac_within_1volpt": 1.0,
+      "interp_min_g": 0.026279306737381443,
+      "interp_butterfly_ok": true,
+      "interp_max_calendar_decrease": 0.0,
+      "interp_calendar_ok": true
+    }
+  ]
+}
