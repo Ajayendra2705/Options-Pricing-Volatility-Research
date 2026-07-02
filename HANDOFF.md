@@ -159,9 +159,18 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - Tests: synthetic 2-slice fit_all, thin-slice skip, real all-slice gates (median <1 / max <3 volpts, bounds, w≥0), per-expiry ATM-IV stability across dates
 - Full suite: 501 passed
 
-### Day 11 — No-butterfly constraint (Next)
+### Day 11 — No-butterfly constraint (Done)
 
-**Goal:** Durrleman g(k) ≥ 0 per slice; violation detection. `tests/test_svi_butterfly.py` — known-bad params flagged.
+**Status:** Completed.
+- `src/surface/no_arb.py` — `durrleman_g` (analytic w′ = b(ρ+d/R), w″ = bσ²/R³), `check_butterfly` grid scan (k∈±1.5, 1001 pts), `check_all_slices`, CLI runner
+- g = −inf where w ≤ 0 (negative variance flagged, not masked)
+- Real run: **14/14 slices arb-free**, min g ≥ 0.023 — raw fits clean on this window; Day 12 constraint still needed as guarantee
+- `tests/test_svi_butterfly.py` — **Axel Vogt known-bad params flagged** (PLAN gate); flat-smile g≡1; analytic derivs vs FD; **independent Breeden–Litzenberger detector** (FD density from Black calls) agrees with g's verdict + >99% pointwise sign match
+- Full suite: 509 passed
+
+### Day 12 — Constrained optimizer (Next)
+
+**Goal:** Refit SVI under butterfly constraint (SLSQP + penalty). Reject/log violators. Arb-free per-slice fits + violation log.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -191,4 +200,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 10 Completed*
+*Last updated: 2026-07-02 — Day 11 Completed*
