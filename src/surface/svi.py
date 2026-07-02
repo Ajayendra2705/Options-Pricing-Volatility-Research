@@ -115,6 +115,92 @@ def fit_svi_slice(k, iv, T, weights=None) -> tuple[SVIParams, dict]:
     return params, report
 
 
+MIN_POINTS = 6
+
+
+def fit_all_slices(surf: pd.DataFrame) -> pd.DataFrame:
+    """Day 10: raw-SVI fit for every (date, expiry) slice of an IV surface.
+
+    Uses OTM side only. Slices with < MIN_POINTS quotes are skipped and
+    reported with fit_ok = False. Returns one row per slice with params,
+    RMSE and diagnostics.
+    """
+    rows = []
+    for (date, expiry), g in surf.groupby(["date", "expiry"]):
+        sl = otm_side(g)
+        row = {"date": date, "expiry": expiry, "n_points": len(sl)}
+        if len(sl) < MIN_POINTS:
+            rows.append({**row, "fit_ok": False})
+            continue
+        T = float(sl["T"].iloc[0])
+        try:
+            params, report = fit_svi_slice(sl["log_moneyness"], sl["iv"], T)
+        except RuntimeError:
+            rows.append({**row, "fit_ok": False, "T": T})
+            continue
+        rows.append({
+            **row, "fit_ok": True, "T": T,
+            "a": params.a, "b": params.b, "rho": params.rho,
+            "m": params.m, "sigma": params.sigma,
+            "rmse_iv": report["rmse_iv"], "min_w_on_grid": report["min_w_on_grid"],
+        })
+    return pd.DataFrame(rows).sort_values(["date", "expiry"]).reset_index(drop=True)
+
+
+def plot_param_stability(fits: pd.DataFrame, out_path: Path) -> None:
+    """Param time-series across quote dates, one series per expiry.
+
+    Smooth series across dates = stable calibration; jumps = overfit proxy
+    (params trading off against each other on similar smiles).
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    ok = fits[fits["fit_ok"]].copy()
+    ok["date"] = pd.to_datetime(ok["date"])
+    fig, axes = plt.subplots(5, 1, figsize=(9, 13), sharex=True)
+    for ax, param in zip(axes, ["a", "b", "rho", "m", "sigma"]):
+        for expiry, g in ok.groupby("expiry"):
+            ax.plot(g["date"], g[param], marker="o",
+                    label=str(pd.Timestamp(expiry).date()))
+        ax.set_ylabel(param)
+        ax.grid(alpha=0.3)
+    axes[0].legend(title="Expiry", fontsize=7, ncol=3)
+    axes[0].set_title("Raw-SVI param time-series per expiry (smoothness = overfit proxy)")
+    axes[-1].set_xlabel("Quote date")
+    fig.autofmt_xdate()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=110, bbox_inches="tight")
+    plt.close(fig)
+
+
+def run_svi_all(surface_path: Path | None = None) -> pd.DataFrame:
+    """Day 10 deliverable: all-slice fit, RMSE table, param-stability plot."""
+    surf = pd.read_parquet(surface_path or PROCESSED_DIR / "iv_surface.parquet")
+    fits = fit_all_slices(surf)
+
+    out_path = PROCESSED_DIR / "svi_params.parquet"
+    fits.to_parquet(out_path, index=False)
+    plot_param_stability(fits, PLOTS_DIR / "svi_param_stability.png")
+
+    ok = fits[fits["fit_ok"]]
+    print(f"SVI all-slice fit: {len(ok)}/{len(fits)} slices fitted")
+    print("\nRMSE table (vol pts):")
+    tab = ok.assign(
+        date=lambda d: pd.to_datetime(d["date"]).dt.date,
+        expiry=lambda d: pd.to_datetime(d["expiry"]).dt.date,
+        rmse_volpts=lambda d: (d["rmse_iv"] * 100).round(2),
+    )[["date", "expiry", "T", "n_points", "rmse_volpts", "rho", "min_w_on_grid"]]
+    print(tab.to_string(index=False))
+    print(f"\nmedian RMSE {ok['rmse_iv'].median() * 100:.2f} volpts | "
+          f"max {ok['rmse_iv'].max() * 100:.2f} | "
+          f"negative-w slices: {(ok['min_w_on_grid'] < 0).sum()}")
+    print(f"-> {out_path}")
+    print(f"-> {PLOTS_DIR / 'svi_param_stability.png'}")
+    return fits
+
+
 def fit_one_real_slice(surface_path: Path | None = None, plot: bool = True) -> tuple[SVIParams, dict]:
     """Day 9 deliverable: fit the most-quoted real slice, plot, print RMSE."""
     surf = pd.read_parquet(surface_path or PROCESSED_DIR / "iv_surface.parquet")
@@ -153,4 +239,9 @@ def fit_one_real_slice(surface_path: Path | None = None, plot: bool = True) -> t
 
 
 if __name__ == "__main__":
-    fit_one_real_slice()
+    import sys
+
+    if "--all" in sys.argv:
+        run_svi_all()
+    else:
+        fit_one_real_slice()

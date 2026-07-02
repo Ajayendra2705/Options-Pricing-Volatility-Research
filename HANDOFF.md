@@ -148,9 +148,20 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - `tests/test_svi.py` — formula anchors (w at k=m, asymptotic wing slopes), exact curve recovery (RMSE <1e-6), noise robustness, bounds, real-slice RMSE <2 vol pts + w≥0
 - Full suite: 497 passed
 
-### Day 10 — SVI all slices + param time-series (Next)
+### Day 10 — SVI all slices + param time-series (Done)
 
-**Goal:** Loop all maturities/dates. Param time-series across dates (smoothness = overfit proxy). RMSE table, param-stability plot.
+**Status:** Completed.
+- `fit_all_slices` + `plot_param_stability` + `run_svi_all` added to `svi.py` (CLI: `python -m src.surface.svi --all`)
+- Real run: **14/15 slices fitted** (skip: 06-09→07-28, 4 OTM pts < MIN_POINTS=6)
+  - **median RMSE 0.33 volpts, max 0.51**, zero negative-w slices
+  - Params smooth across dates for T ≳ 0.07; shortest tenor (06-23 exp, T=0.03, 11 pts) shows param trade-off (ρ→−0.47, σ→0.11) while ATM IV stays stable — raw-SVI degeneracy documented, motivates Day 11–13 constraints
+- Outputs: `data/processed/svi_params.parquet`, `results/plots/svi_param_stability.png`
+- Tests: synthetic 2-slice fit_all, thin-slice skip, real all-slice gates (median <1 / max <3 volpts, bounds, w≥0), per-expiry ATM-IV stability across dates
+- Full suite: 501 passed
+
+### Day 11 — No-butterfly constraint (Next)
+
+**Goal:** Durrleman g(k) ≥ 0 per slice; violation detection. `tests/test_svi_butterfly.py` — known-bad params flagged.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -180,4 +191,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 9 Completed*
+*Last updated: 2026-07-02 — Day 10 Completed*

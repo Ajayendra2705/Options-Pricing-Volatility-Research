@@ -16,6 +16,7 @@ from src.surface.clean import PROCESSED_DIR
 from src.surface.iv_surface import build_iv_surface  # noqa: F401  (path check)
 from src.surface.svi import (
     SVIParams,
+    fit_all_slices,
     fit_svi_slice,
     otm_side,
     svi_iv,
@@ -87,6 +88,71 @@ def real_slice():
     ok = surf[surf["status"] == "ok"]
     date, expiry = ok.groupby(["date", "expiry"]).size().idxmax()
     return otm_side(ok[(ok["date"] == date) & (ok["expiry"] == expiry)])
+
+
+# --- Day 10: all slices ---------------------------------------------------
+
+def synth_surface_two_slices():
+    """Two synthetic slices as an iv_surface-shaped frame (OTM rows only)."""
+    rows = []
+    for expiry, T, params in (("2023-07-21", 0.15, TRUE),
+                              ("2023-09-15", 0.30, SVIParams(0.02, 0.30, -0.55, 0.02, 0.22))):
+        for k in K_GRID:
+            rows.append({"date": "2023-06-02", "expiry": expiry, "T": T,
+                         "strike": 100 * np.exp(k), "F": 100.0,
+                         "option_type": "P" if k < 0 else "C",
+                         "log_moneyness": k, "iv": float(svi_iv(k, T, params)),
+                         "status": "ok"})
+    return pd.DataFrame(rows)
+
+
+def test_fit_all_slices_synthetic():
+    fits = fit_all_slices(synth_surface_two_slices())
+    assert len(fits) == 2
+    assert fits["fit_ok"].all()
+    assert (fits["rmse_iv"] < 1e-5).all()
+
+
+def test_fit_all_skips_thin_slices():
+    surf = synth_surface_two_slices()
+    thin = surf[surf["expiry"] == "2023-07-21"].head(3)      # < MIN_POINTS
+    full = surf[surf["expiry"] == "2023-09-15"]
+    fits = fit_all_slices(pd.concat([thin, full], ignore_index=True))
+    assert len(fits) == 2
+    assert fits.set_index("expiry")["fit_ok"].to_dict() == {
+        "2023-07-21": False, "2023-09-15": True}
+
+
+@pytest.fixture(scope="module")
+def real_fits():
+    path = PROCESSED_DIR / "iv_surface.parquet"
+    if not path.exists():
+        pytest.skip("iv surface not built")
+    return fit_all_slices(pd.read_parquet(path))
+
+
+def test_real_all_slices_fit(real_fits):
+    ok = real_fits[real_fits["fit_ok"]]
+    assert len(ok) >= 12                                     # 15 slices, allow few thin
+    assert (ok["rmse_iv"].median() * 100) < 1.0              # median < 1 volpt
+    assert (ok["rmse_iv"].max() * 100) < 3.0                 # worst < 3 volpts
+    assert ok["rho"].between(-1, 1).all()
+    assert (ok["b"] >= 0).all()
+    assert (ok["min_w_on_grid"] >= 0).all()                  # no negative variance on quotes
+
+
+def test_real_param_time_series_stable(real_fits):
+    # same expiry across quote dates: ATM total variance drifts smoothly.
+    # Overfit proxy: w_atm = a + b*(rho*(0-m)+sqrt(m^2+sigma^2)) should not
+    # swing wildly date-to-date for the same expiry (smile itself is stable).
+    ok = real_fits[real_fits["fit_ok"]].copy()
+    ok["w_atm"] = ok["a"] + ok["b"] * (ok["rho"] * (0 - ok["m"])
+                                       + np.sqrt(ok["m"] ** 2 + ok["sigma"] ** 2))
+    ok["atm_iv"] = np.sqrt(ok["w_atm"] / ok["T"])
+    for expiry, g in ok.groupby("expiry"):
+        if len(g) < 2:
+            continue
+        assert g["atm_iv"].std() < 0.05, (expiry, g["atm_iv"].tolist())
 
 
 def test_real_slice_fit_quality(real_slice):
