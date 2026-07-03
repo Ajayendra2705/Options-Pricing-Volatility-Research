@@ -25,7 +25,26 @@ Forward-core Greeks hold F fixed; spot Greeks hold S fixed (standard textbook).
 from __future__ import annotations
 
 import numpy as np
-from scipy.stats import norm
+from scipy.special import ndtr
+
+_INV_SQRT_2PI = 1.0 / np.sqrt(2.0 * np.pi)
+
+
+class _Norm:
+    """Standard-normal cdf/pdf via scipy.special (identical values to
+    scipy.stats.norm, without its ~1ms-per-call framework overhead — the
+    Day-19 engine prices leg-by-leg, so per-call cost dominates)."""
+    @staticmethod
+    def cdf(x):
+        return ndtr(x)
+
+    @staticmethod
+    def pdf(x):
+        x = np.asarray(x, float)
+        return _INV_SQRT_2PI * np.exp(-0.5 * x * x)
+
+
+norm = _Norm()
 
 
 def _d1_d2(F, K, T, sigma):

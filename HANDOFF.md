@@ -259,9 +259,20 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 
 Tests (9): **exact identities** — synthetic forward (long C + short P, r=0) hedges to equity ≡ 0 at 1e-9 on every bar; flat path keeps exactly the entry premium; ledger algebra (equity column identity, Δcash = −traded·S, fully-settled end state). **Hedging physics** (GBM MC, SE-scaled asserts) — RV=IV → mean PnL ≈ 0; RV<IV → short vol wins; RV>IV → loses; hedge_every=5 inflates PnL dispersion ~√5 (Leland). Plus no-lookahead invariance + validation. Demo deliverable: `results/plots/engine_demo.png` (short 180 straddle, IV 25/RV 20, +$618 grind — classic short-gamma profile). Suite: **569 passed, 2 skipped**.
 
-### Day 20 — Per-leg PnL + dollar-gamma-weighted RV (Next)
+### Day 20 — Per-leg PnL + dollar-gamma-weighted RV
 
-**Goal:** per-leg PnL ledger; dollar-gamma-weighted realized vol per position (≠ signal RV); break-even vol per position documented.
+**Status:** Completed. Engine now emits a per-leg ledger (`run_hedged(..., return_legs=True)`): per (leg, date) value, delta, **dollar_gamma = qty·mult·Γ·S²**, vega, theta, and daily mark PnL (settlement included). `src/backtest/pnl.py`:
+- `gamma_weighted_rv`: σ²_gw = Σ|$Γ_{t−1}|·ret²_t / Σ|$Γ_{t−1}|·dt_t (calendar ACT/365, same clock theta accrues on). **This is the RV that drives hedged PnL — not the signal's Yang-Zhang/HAR** (SPEC's two-RV distinction).
+- `theta_gamma_pnl`: first-order per-bar hedged PnL ½$Γ_{t−1}(ret² − σ²_mark·dt) — seed of Day-23 attribution.
+- `breakeven_report`: σ_gw **is** the position's break-even vol; short-gamma book profits iff σ_gw < σ_mark. Report: book mark, σ_gw, gap in volpts, per-leg PnL, sign-consistency flag.
+
+Tests (7): per-leg marks sum exactly to book; **per-leg PnL + hedge-holding PnL reproduces equity bar-by-bar at 1e-9**; σ_gw recovers σ on GBM; theta-gamma twin tracks equity (corr>0.95, slope≈1, cumulative gap <15% premium); break-even sign-consistency >85% across 60 paths at RV=IV (first-order, not 100% — honest); flat path σ_gw=0 + each leg keeps its premium. Deliverable plot `results/plots/pnl_decomposition.png` (twin tracks equity, diverges only near expiry where higher-order terms bite). Demo breakeven: σ_gw 16.1% vs mark 25% → +$618, per-leg +139 (call) / +728 (put), hedge −249.
+
+**Perf fix (durable):** `black_scholes.py` switched `scipy.stats.norm` → `scipy.special.ndtr` + local pdf (identical values, no per-call framework overhead): engine run 0.95s → 0.035s (27×). Verify suite re-run after the swap: **10/10**. Suite: **578 passed in ~72s**.
+
+### Day 21 — Costs (Next)
+
+**Goal:** apply the pre-registered cost model (half effective spread + $0.65/contract; underlying at close) to engine trades; PLAN Day 21 (check PLAN.md exact wording).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -291,4 +302,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-03 — Day 19 completed (delta-hedge engine); OHLC download in progress for Days 16–18 real-data follow-up. Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
+*Last updated: 2026-07-03 — Day 20 completed (per-leg PnL, gamma-weighted RV, break-even); real data landed for Days 16–18. Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*

@@ -33,7 +33,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.greeks.black_scholes import delta_spot, price_spot
+from src.greeks.black_scholes import (delta_spot, gamma_spot, price_spot,
+                                      theta_spot, vega_spot)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 PLOTS_DIR = PROJECT_ROOT / "results" / "plots"
@@ -69,11 +70,16 @@ def _leg_value_delta(leg: Leg, S: float, date: pd.Timestamp,
 
 
 def run_hedged(dates, S, legs: list[Leg], r: float = 0.0, q: float = 0.0,
-               hedge_every: int = 1) -> pd.DataFrame:
+               hedge_every: int = 1, return_legs: bool = False):
     """Daily self-financing ledger. equity == cumulative PnL (starts at 0).
 
     dates: ascending trading dates covering entry .. >= max expiry.
     S:     underlying closes aligned with dates.
+
+    return_legs=True additionally returns a per-leg ledger with position-
+    scaled Greeks (dollar_gamma = qty*mult*gamma*S^2) and the leg's own
+    daily mark-to-market PnL (settlement flows included on expiry day) —
+    the raw material for Day-20 gamma-weighted RV and Day-23 attribution.
     """
     dates = pd.DatetimeIndex(dates)
     S = np.asarray(S, float)
@@ -86,15 +92,28 @@ def run_hedged(dates, S, legs: list[Leg], r: float = 0.0, q: float = 0.0,
     if any(l.expiry not in dates for l in legs):
         raise ValueError("every expiry must be a path date (settlement bar)")
 
+    if len({id(l) for l in legs}) != len(legs):
+        raise ValueError("pass distinct Leg instances (duplicate object)")
+    leg_no = {id(l): j for j, l in enumerate(legs)}
     alive = list(legs)
     cash = 0.0
     shares = 0.0
     rows = []
+    leg_rows = []
+    prev_value = {id(l): 0.0 for l in legs}     # yesterday's mark, per leg
     for i, (d, s) in enumerate(zip(dates, S)):
         # settle legs expiring today: intrinsic to cash
         settled = [l for l in alive if l.expiry == d]
         for l in settled:
-            cash += l.qty * l.mult * max(l.cp * (s - l.K), 0.0)
+            intr = l.qty * l.mult * max(l.cp * (s - l.K), 0.0)
+            cash += intr
+            if return_legs:
+                leg_rows.append({
+                    "date": d, "leg": leg_no[id(l)], "value": 0.0,
+                    "delta": 0.0, "dollar_gamma": 0.0, "vega": 0.0,
+                    "theta": 0.0,
+                    "pnl_day": intr - prev_value[id(l)]})
+            prev_value[id(l)] = 0.0
         alive = [l for l in alive if l.expiry != d]
 
         # mark the book
@@ -103,6 +122,17 @@ def run_hedged(dates, S, legs: list[Leg], r: float = 0.0, q: float = 0.0,
             v, dd = _leg_value_delta(l, s, d, r, q)
             v_opt += v
             d_opt += dd
+            if return_legs:
+                t = _tau(d, l.expiry)
+                scale = l.qty * l.mult
+                leg_rows.append({
+                    "date": d, "leg": leg_no[id(l)], "value": v, "delta": dd,
+                    "dollar_gamma": scale * gamma_spot(
+                        s, l.K, t, l.mark_vol, r, q) * s * s,
+                    "vega": scale * vega_spot(s, l.K, t, l.mark_vol, r, q),
+                    "theta": scale * theta_spot(s, l.K, t, l.mark_vol, r, q, l.cp),
+                    "pnl_day": v - prev_value[id(l)] if i else 0.0})
+            prev_value[id(l)] = v
 
         if i == 0:
             cash -= v_opt                       # entry: premium funds the book
@@ -123,7 +153,10 @@ def run_hedged(dates, S, legs: list[Leg], r: float = 0.0, q: float = 0.0,
         if i + 1 < len(dates):                  # overnight financing
             cash *= np.exp(r * (dates[i + 1] - d).days / DAYS_PER_YEAR)
 
-    return pd.DataFrame(rows)
+    ledger = pd.DataFrame(rows)
+    if return_legs:
+        return ledger, pd.DataFrame(leg_rows)
+    return ledger
 
 
 def plot_pnl_path(ledger: pd.DataFrame, title: str,
