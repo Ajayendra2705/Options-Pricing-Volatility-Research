@@ -253,9 +253,15 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 
 **Pending:** real signal table needs `aapl_ohlc.parquet` (download in progress, resumable).
 
-### Day 19 — Delta-hedge engine core (Next)
+### Day 19 — Delta-hedge engine core
 
-**Goal:** `src/backtest/engine.py` — open position, daily delta-hedge with underlying, mark-to-market; hedge frequency a parameter (default daily). Deliverable: single-position hedged PnL path, sanity-plotted.
+**Status:** Completed. `src/backtest/engine.py`: `Leg` (K, expiry, cp, qty, mark_vol, mult) + `run_hedged(dates, S, legs, r, q, hedge_every)` → daily self-financing ledger (`equity = cash + shares·S + V_opt`, starts at 0 = cumulative PnL). Marking at constant per-leg entry IV (keeps Day-20 attribution clean); hedge to flat delta every `hedge_every` bars (always at entry); expiry settles intrinsic to cash, dead book liquidates hedge; cash accrues at r ACT/365. **No costs yet by design** — ledger records `traded` shares so the Day-21 cost model bolts on without touching accounting. Rebalancing trades cash↔stock at the same price, so it can never move equity: self-financing by construction.
+
+Tests (9): **exact identities** — synthetic forward (long C + short P, r=0) hedges to equity ≡ 0 at 1e-9 on every bar; flat path keeps exactly the entry premium; ledger algebra (equity column identity, Δcash = −traded·S, fully-settled end state). **Hedging physics** (GBM MC, SE-scaled asserts) — RV=IV → mean PnL ≈ 0; RV<IV → short vol wins; RV>IV → loses; hedge_every=5 inflates PnL dispersion ~√5 (Leland). Plus no-lookahead invariance + validation. Demo deliverable: `results/plots/engine_demo.png` (short 180 straddle, IV 25/RV 20, +$618 grind — classic short-gamma profile). Suite: **569 passed, 2 skipped**.
+
+### Day 20 — Per-leg PnL + dollar-gamma-weighted RV (Next)
+
+**Goal:** per-leg PnL ledger; dollar-gamma-weighted realized vol per position (≠ signal RV); break-even vol per position documented.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -285,4 +291,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-03 — Day 18 completed (signal + pre-registered primary.yaml); OHLC download in progress for Days 16–18 real-data follow-up*
+*Last updated: 2026-07-03 — Day 19 completed (delta-hedge engine); OHLC download in progress for Days 16–18 real-data follow-up. Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
