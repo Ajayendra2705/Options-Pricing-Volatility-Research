@@ -1,0 +1,59 @@
+# =============================================================================
+# PRE-REGISTERED PRIMARY CONFIGURATION
+# Locked: 2026-07-03 (Day 18), BEFORE any PnL was computed.
+# =============================================================================
+# Rules of engagement (SPEC "Pre-registration"):
+#   - This is the single primary spec. Anything else that touches results
+#     (alternative estimators, hedge frequencies, cost sweeps, regime splits)
+#     is labeled ROBUSTNESS and never promoted to headline.
+#   - Any later edit to this file must be additive + documented in HANDOFF.md
+#     with the reason; the signal/side definitions below do not change.
+
+data:
+  underlying: AAPL
+  options_chain: DoltHub post-no-preference/options, June 2023 (cleaned, Day 2-6)
+  quote_dates: [2023-06-02, 2023-06-07, 2023-06-09, 2023-06-12, 2023-06-14]
+  ohlc: DoltHub post-no-preference/stocks ohlcv, 2022-01-01 .. 2023-06-30
+
+signal:
+  iv: ATM (k=0) implied vol from the joint arb-free SVI fit, per (date, expiry)
+  rv_forecast: HAR log-vol, EXPANDING out-of-sample column only (har_oos);
+    horizon matched to the option, h = clamp(round(252*T), 5, 63) trading days
+  raw: signal = atm_iv - har_forecast_h        # vol points; comparable across tenors
+  normalization: none
+  # Rationale, declared up front: 5 quote dates means a trailing per-bucket
+  # z-score has <= 4 observations - pure noise. The z-score per tenor bucket
+  # (expanding, trailing-only, min 3 prior obs) IS computed and reported, as a
+  # DIAGNOSTIC/robustness column, never for trade selection in the primary.
+  ranking: within each quote date, rank slices by raw signal, descending
+  sides:
+    rank_1: short_vol          # richest IV vs forecast
+    rank_last: long_vol        # cheapest
+    middle: flat
+  # PLAN says "rich/cheap deciles"; with a 3-slice cross-section per date
+  # (single name, one month) deciles collapse to ranks. Documented adaptation,
+  # not a post-hoc choice.
+
+instrument:
+  type: ATM straddle (nearest listed strike to forward), one per selected slice
+  hedge: delta with the underlying
+
+hedging:
+  frequency: daily at close        # hedge-interval sweeps = robustness only
+
+costs:
+  options_fill: mid +/- half the quoted effective spread (cross the half-spread)
+  commission_per_contract_usd: 0.65
+  underlying_fill: close, zero spread (AAPL penny-wide; stress in robustness)
+
+margin:
+  short_options: reg-T proxy, 20% underlying notional +/- OTM adjustment
+  capital_base: peak margin over the trade window (SPEC: margin-based returns)
+
+tenor_buckets:                     # by year-fraction T at quote date
+  short: T <= 0.06
+  mid:   0.06 < T <= 0.10
+  long:  T > 0.10
+
+headline_metric: DSR-adjusted Sharpe replacement per SPEC v1; trial count N
+  must count every robustness variant above.

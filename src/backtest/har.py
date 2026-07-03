@@ -105,20 +105,32 @@ def fit_har(ds: pd.DataFrame) -> dict:
 
 def expanding_forecast(ds: pd.DataFrame, h: int = HORIZON,
                        min_train: int = MIN_TRAIN) -> pd.Series:
-    """No-lookahead HAR forecast: at t, fit on rows i <= t - h only."""
+    """No-lookahead HAR forecast: at t, fit on rows i <= t - h only.
+
+    Incremental normal equations (rows only ever enter the training set as t
+    advances), so the whole expanding refit is O(n) instead of O(n^2).
+    """
     X, y, ok = _design(ds)
-    n = len(ds)
+    n, p = X.shape
     out = np.full(n, np.nan)
+    G = np.zeros((p, p))       # X'X over training rows
+    b = np.zeros(p)            # X'y
+    yy = 0.0                   # y'y  (for the residual variance)
+    m = 0
+    ptr = 0
     for t in range(n):
-        if not (np.isfinite(X[t]).all()):
-            continue
-        train = ok.copy()
-        train[max(t - h + 1, 0):] = False          # target must be realized by t
-        if train.sum() < min_train:
-            continue
-        beta, *_ = np.linalg.lstsq(X[train], y[train], rcond=None)
-        resid = y[train] - X[train] @ beta
-        out[t] = np.exp(X[t] @ beta + 0.5 * resid.var(ddof=X.shape[1]))
+        while ptr <= t - h:                        # target realized by t
+            if ok[ptr]:
+                xi = X[ptr]
+                G += np.outer(xi, xi)
+                b += xi * y[ptr]
+                yy += y[ptr] ** 2
+                m += 1
+            ptr += 1
+        if m >= min_train and np.isfinite(X[t]).all():
+            beta = np.linalg.solve(G, b)
+            rss = max(yy - beta @ b, 0.0)          # = ||y - X beta||^2 at the OLS solution
+            out[t] = np.exp(X[t] @ beta + 0.5 * rss / (m - p))
     return pd.Series(out, index=ds.index, name="har_oos")
 
 

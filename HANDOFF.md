@@ -241,9 +241,21 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - Outputs: `data/processed/har_forecast.parquet`, `results/har_stats.json`, forecast-vs-realized plot. Wired into `--stage backtest` after realized vol.
 - Tests (8): proxy recovers σ² (bias-aware one-sided band), constant-vol level unbiased vs own proxy scale, R²>0.45 on persistent log-vol-AR(1) synthetic (observed 0.504; OOS corr 0.627 with realized), OLS matches normal-equations recompute, no-lookahead invariance on expanding forecast, warm-up/target NaN structure. Full suite 553 passed, 2 skipped (real-data).
 
-### Day 18 — Signal construction (Next)
+### Day 18 — Signal construction + pre-registration
 
-**Goal:** `IV − forecast(RV)` (use `har_oos`), z-score per tenor bucket, cross-sectional rank → rich/cheap deciles. **Pre-register the single primary config** in `config/primary.yaml`. Deliverable: signal time-series, decile assignment. Needs real OHLC (Day 16/17 data follow-up) before real signals exist.
+**Status:** Code completed, gated on synthetic tests. **`config/primary.yaml` written and locked BEFORE any PnL exists** — genuine pre-registration. Key declared choices:
+- `signal_raw = atm_iv − har_oos(h)` in volpts, ATM IV at k=0 from joint arb-free SVI, HAR horizon matched to tenor `h = clamp(round(252T), 5, 63)`.
+- **Normalization: none in primary.** 5 quote dates → trailing per-bucket z has ≤ 4 obs = noise; z per tenor bucket (expanding, trailing-only, min 3 prior obs) computed as DIAGNOSTIC column only. Declared up front, not post-hoc.
+- Ranking within quote date by raw signal desc: rank 1 → short_vol, last → long_vol, middle flat. PLAN's "deciles" collapse to ranks at a 3-slice cross-section — documented adaptation.
+- Costs/margin/instrument also locked: ATM straddle nearest strike, daily delta hedge, half-spread fills + $0.65/contract, reg-T 20% proxy margin, margin-based capital.
+
+`src/backtest/signal.py`: `build_signal(params, ohlc)` → per (date, expiry): atm_iv, bucket, h, rv_fcst, signal_raw, signal_z, rank, side. Unfitted slices dropped; NaN forecasts excluded from ranking (side=flat). `expanding_forecast` rewritten with incremental normal equations (O(n), 44s→8.5s test module; identical math — RSS via y'y − β'X'y). Tests (7): exact ATM-IV recovery on b=0 SVI, bucket/horizon clamping, manual signal recompute, rank/side per date, z trailing-only + truncation invariance (no lookahead), fit_ok exclusion, NaN-forecast handling. Suite: **560 passed, 2 skipped** (real-data).
+
+**Pending:** real signal table needs `aapl_ohlc.parquet` (download in progress, resumable).
+
+### Day 19 — Delta-hedge engine core (Next)
+
+**Goal:** `src/backtest/engine.py` — open position, daily delta-hedge with underlying, mark-to-market; hedge frequency a parameter (default daily). Deliverable: single-position hedged PnL path, sanity-plotted.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -273,4 +285,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-03 — Day 17 completed (synthetic gate); OHLC download in progress for Days 16–17 real-data follow-up*
+*Last updated: 2026-07-03 — Day 18 completed (signal + pre-registered primary.yaml); OHLC download in progress for Days 16–18 real-data follow-up*
