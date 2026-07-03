@@ -226,9 +226,24 @@ Full plan: [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Tr
 - **Verify suite moved into repo:** `scripts/verify/` (Days 3–14 independent checks + `audit_full.py` + `run_all.py` runner), paths portable. **10/10 pass.** verify_day11 upgraded: curvature-scaled FD tolerance + detection-consistency check (negative density ⟺ durrleman flag) + densities validated on the authoritative joint params.
 - Full suite: 537 passed. vs market: max abs err 2.50→**1.44 volpts**, within-1-volpt 97.4→**98.0%**.
 
-### Day 16 — Realized vol estimator (Next)
+### Day 16 — Realized vol estimator
 
-**Goal:** `src/backtest/realized_vol.py` — Yang-Zhang (OHLC), trailing window only, no lookahead. Test: recovers known σ on synthetic GBM path. Needs AAPL OHLC spot data for June 2023 window (check data/raw coverage first).
+**Status:** Code completed, gated on synthetic tests. `src/backtest/realized_vol.py`: Yang-Zhang (overnight + k·open-close + (1−k)·Rogers-Satchell, k=0.34/(1.34+(n+1)/(n−1))), trailing-only (estimate at t uses bars t−n+1..t), close-to-close baseline, `realized_vol_table` (yz/cc × windows 10/21/63). Tests (8): recovers σ=0.30 on fine-step GBM, YZ variance < 0.75·CC (efficiency), drift-robust, inline-formula recompute 1e-12, **no-lookahead invariance** (future bars ×7 → estimates through t unchanged), NaN warm-up structure, validation errors. Wired as `main.py --stage backtest`.
+
+**Pending (data follow-up):** AAPL OHLC download from DoltHub post-no-preference/stocks (`scripts/download_ohlc.py`, month-paginated, resumable via `data/processed/ohlc_cache/`; API throttles hard). When `data/raw/aapl_ohlc.parquet` lands: run `--stage backtest`, update SHA256 manifest, 2 real-data tests unskip. Fallback if API keeps failing: `--start 2022-10-01` (still covers 63d trailing + HAR warm-up).
+
+### Day 17 — HAR-RV forecast
+
+**Status:** Code completed, gated on synthetic tests (same pattern as Day 16). `src/backtest/har.py`:
+- Daily variance proxy `v_t = 252·(overnight² + Rogers-Satchell_t)` — per-bar, drift-independent. Known ~10% downward discrete-monitoring bias on RS (documented in tests; cancels in the IV−RV signal z-score).
+- Log-vol HAR: `ln σ_fwd ~ 1 + ln σ_d + ln σ_w(5) + ln σ_m(22)`, target = √(mean v over next h=21 bars). Half-variance correction `exp(ŷ+s²/2)` so forecasts target the mean, not the median.
+- **Two forecast columns:** `har_insample` (diagnostics only) and `har_oos` (expanding window, at t fit only on rows whose target is realized by t, i.e. i ≤ t−h) — **Day-18 signal must consume `har_oos`**.
+- Outputs: `data/processed/har_forecast.parquet`, `results/har_stats.json`, forecast-vs-realized plot. Wired into `--stage backtest` after realized vol.
+- Tests (8): proxy recovers σ² (bias-aware one-sided band), constant-vol level unbiased vs own proxy scale, R²>0.45 on persistent log-vol-AR(1) synthetic (observed 0.504; OOS corr 0.627 with realized), OLS matches normal-equations recompute, no-lookahead invariance on expanding forecast, warm-up/target NaN structure. Full suite 553 passed, 2 skipped (real-data).
+
+### Day 18 — Signal construction (Next)
+
+**Goal:** `IV − forecast(RV)` (use `har_oos`), z-score per tenor bucket, cross-sectional rank → rich/cheap deciles. **Pre-register the single primary config** in `config/primary.yaml`. Deliverable: signal time-series, decile assignment. Needs real OHLC (Day 16/17 data follow-up) before real signals exist.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -258,4 +273,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-02 — Day 15 + hardening pass Completed*
+*Last updated: 2026-07-03 — Day 17 completed (synthetic gate); OHLC download in progress for Days 16–17 real-data follow-up*

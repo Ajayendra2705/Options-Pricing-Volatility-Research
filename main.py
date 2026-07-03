@@ -44,9 +44,11 @@ def main():
         run_assembly()
 
     if args.stage in ("all", "backtest"):
-        # Part 2 pipeline (Days 16+): realized vol (more stages follow)
+        # Part 2 pipeline (Days 16+): realized vol -> HAR forecast (more follow)
         from src.backtest.realized_vol import run_realized_vol
+        from src.backtest.har import run_har
         run_realized_vol()
+        run_har()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):

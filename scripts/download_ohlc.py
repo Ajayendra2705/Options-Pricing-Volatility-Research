@@ -43,19 +43,30 @@ def query(sql: str, retries: int = 8) -> list[dict]:
 
 
 def download(ticker: str, start: str, end: str) -> pd.DataFrame:
-    # month-sized BETWEEN windows: wide ranges hit the API's server-side
-    # query deadline ("context deadline exceeded")
+    # Month-sized BETWEEN windows: wide ranges hit the API's server-side
+    # query deadline ("context deadline exceeded"). Each month is cached to
+    # disk immediately so an interrupted run resumes instead of restarting
+    # (the API throttles hard; full pulls take tens of minutes).
+    cache_dir = PROJECT_ROOT / "data" / "processed" / "ohlc_cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
     rows = []
     months = pd.date_range(pd.Timestamp(start).replace(day=1), end, freq="MS")
     for m in months:
         m_end = min(m + pd.offsets.MonthEnd(0), pd.Timestamp(end))
-        sql = (f"SELECT date, open, high, low, close, volume FROM ohlcv "
-               f"WHERE act_symbol='{ticker}' "
-               f"AND date BETWEEN '{m.date()}' AND '{m_end.date()}'")
-        batch = query(sql)
+        cache = cache_dir / f"{ticker.lower()}_{m:%Y-%m}.json"
+        if cache.exists():
+            batch = pd.read_json(cache, convert_dates=False, dtype=False).to_dict("records")
+            print(f"  {m.date()} .. {m_end.date()}  (cached, {len(batch)})")
+        else:
+            sql = (f"SELECT date, open, high, low, close, volume FROM ohlcv "
+                   f"WHERE act_symbol='{ticker}' "
+                   f"AND date BETWEEN '{m.date()}' AND '{m_end.date()}'")
+            batch = query(sql)
+            pd.DataFrame(batch).to_json(cache, orient="records")
+            print(f"  {m.date()} .. {m_end.date()}  (+{len(batch)})")
+            time.sleep(1.5)                          # stay under the rate limit
         rows.extend(batch)
-        print(f"  {m.date()} .. {m_end.date()}  (+{len(batch)})")
-        time.sleep(1.5)                              # stay under the rate limit
 
     df = pd.DataFrame(rows)
     df["date"] = pd.to_datetime(df["date"])
