@@ -1,7 +1,11 @@
 {
-  "generated": "2026-07-01T20:40:11.243518",
+  "generated": "2026-07-03T13:08:00.350587",
   "root": "C:\\Users\\ajiit\\Desktop\\Future\\Projects\\Options Trading\\data\\raw",
   "files": {
+    "aapl_ohlc.parquet": {
+      "sha256": "a6e8d454a190ee720291567388399470dee306e1aaaae75a10f9d581263bf235",
+      "size_bytes": 18422
+    },
     "aapl_options.parquet": {
       "sha256": "d46f8dba4483f258409ec61e3dd4c03c4e5aa6a98511e68dccdf5e8c51e8c755",
       "size_bytes": 35698

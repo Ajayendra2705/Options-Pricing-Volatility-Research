@@ -107,10 +107,11 @@ def test_put_normalization():
 
 
 def test_real_raw_chain_end_to_end():
-    files = [f for f in RAW_DIR.glob("*.parquet")]
-    if not files:
-        pytest.skip("no raw data present")
-    raw = pd.read_parquet(files[0])
+    # data/raw also holds the Day-16 OHLC parquet — pick the options chain
+    path = RAW_DIR / "aapl_options.parquet"
+    if not path.exists():
+        pytest.skip("no raw options data present")
+    raw = pd.read_parquet(path)
     clean, report = clean_chain(raw)
     assert report["total_rows"] == len(raw)
     assert report["total_clean"] == len(clean)

@@ -1,0 +1,20 @@
+{
+  "config": "config/primary.yaml (pre-registered)",
+  "n_slices": 15,
+  "n_with_signal": 15,
+  "signal_volpts": {
+    "mean": -4.748077878057182,
+    "min": -8.183608170878587,
+    "max": 0.6980604956725089
+  },
+  "sides": {
+    "short_vol": 5,
+    "flat": 5,
+    "long_vol": 5
+  },
+  "by_bucket_mean_volpts": {
+    "long": -6.79237961127761,
+    "mid": -4.887743743394214,
+    "short": -2.5641102794997215
+  }
+}
