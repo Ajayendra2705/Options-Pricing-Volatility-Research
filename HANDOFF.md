@@ -270,9 +270,17 @@ Tests (7): per-leg marks sum exactly to book; **per-leg PnL + hedge-holding PnL 
 
 **Perf fix (durable):** `black_scholes.py` switched `scipy.stats.norm` → `scipy.special.ndtr` + local pdf (identical values, no per-call framework overhead): engine run 0.95s → 0.035s (27×). Verify suite re-run after the swap: **10/10**. Suite: **578 passed in ~72s**.
 
-### Day 21 — Costs (Next)
+### Day 21 — Greeks PnL attribution
 
-**Goal:** apply the pre-registered cost model (half effective spread + $0.65/contract; underlying at close) to engine trades; PLAN Day 21 (check PLAN.md exact wording).
+**Status:** Completed. (Correction: earlier stub here guessed "costs" — PLAN Day 21 is **attribution**; costs are Day 24.) `src/backtest/attribution.py`:
+- `leg_attribution(dates, S, legs, sigma_by_leg, r, q)`: per leg, per bar, Taylor terms around the **previous close** (Greeks at S_{t−1}, τ_{t−1}, σ_{t−1}): δ·ΔS + ½Γ·ΔS² + θ·Δt + vega·Δσ + vanna·ΔS·Δσ + ½volga·Δσ² + ρ·Δr. Takes per-leg σ as float **or series** — engine marks are constant-vol today (vol terms exactly 0), but surface re-marking and Day-22 real-data reconciliation reuse this unchanged. ρ term identically 0 until a rate series exists (r constant in engine) — column kept because PLAN pre-registers the decomposition.
+- `book_attribution(ledger, legs, ...)`: adds the two **exact** (no-Taylor-error) terms from the ledger — hedge holding PnL `shares_{t−1}·ΔS` and financing `cash_{t−1}·(e^{rΔt}−1)` — so `residual = actual − explained` is **purely the sum of per-leg option Taylor errors** (proved by test). `attribution_summary` → the numbers Day-22 will threshold.
+
+Tests (9): delta term cancels hedge PnL **exactly** (1e-9) under daily hedging (same pricer both sides); book residual == Σ per-leg Taylor errors (1e-9); financing closes the ledger at r=5%; constant marks → vol columns identically zero; GBM straddle residual <10% premium cumulative (<5% excluding final pre-expiry bars where Γ blows up — known Taylor breakdown, documented); **time-varying σ on a manually re-marked leg: vega/vanna/volga switch on and residual <5% of Σ|PnL|**; no-lookahead invariance; validation. Demo `results/plots/attribution_demo.png`: θ +1124 / Γ −465 / δ+hedge exactly cancel / residual −41 on +618 total, concentrated in last bars before expiry. Suite: **587 passed**.
+
+### Day 22 — Reconciliation gate (Next)
+
+**Goal:** `tests/test_attribution_reconcile.py` green **on real data** — assert `mean(|residual|/|PnL|) < threshold`, plot residual distribution, chase leaks until it closes. PLAN calls this "the gate that validates the whole project"; budget for Day 23 bleed. Needs the real backtest path: positions from `signal.parquet` sides (5 dates × ATM straddle), engine run on real AAPL closes, attribution over it.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -302,4 +310,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-03 — Day 20 completed (per-leg PnL, gamma-weighted RV, break-even); real data landed for Days 16–18. Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
+*Last updated: 2026-07-04 — Day 21 completed (Greeks PnL attribution, residual isolated to per-leg Taylor error). Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
