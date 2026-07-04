@@ -45,12 +45,15 @@ def main():
 
     if args.stage in ("all", "backtest"):
         # Part 2 pipeline (Days 16+): realized vol -> HAR forecast -> signal
+        # -> positions + attribution reconciliation (Day-22 gate)
         from src.backtest.realized_vol import run_realized_vol
         from src.backtest.har import run_har
         from src.backtest.signal import run_signal
+        from src.backtest.reconcile import run_reconcile
         run_realized_vol()
         run_har()
         run_signal()
+        run_reconcile()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):

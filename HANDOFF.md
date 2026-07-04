@@ -278,9 +278,21 @@ Tests (7): per-leg marks sum exactly to book; **per-leg PnL + hedge-holding PnL 
 
 Tests (9): delta term cancels hedge PnL **exactly** (1e-9) under daily hedging (same pricer both sides); book residual == Σ per-leg Taylor errors (1e-9); financing closes the ledger at r=5%; constant marks → vol columns identically zero; GBM straddle residual <10% premium cumulative (<5% excluding final pre-expiry bars where Γ blows up — known Taylor breakdown, documented); **time-varying σ on a manually re-marked leg: vega/vanna/volga switch on and residual <5% of Σ|PnL|**; no-lookahead invariance; validation. Demo `results/plots/attribution_demo.png`: θ +1124 / Γ −465 / δ+hedge exactly cancel / residual −41 on +618 total, concentrated in last bars before expiry. Suite: **587 passed**.
 
-### Day 22 — Reconciliation gate (Next)
+### Day 22 — Reconciliation gate on real data (PLAN: "validates the whole project")
 
-**Goal:** `tests/test_attribution_reconcile.py` green **on real data** — assert `mean(|residual|/|PnL|) < threshold`, plot residual distribution, chase leaks until it closes. PLAN calls this "the gate that validates the whole project"; budget for Day 23 bleed. Needs the real backtest path: positions from `signal.parquet` sides (5 dates × ATM straddle), engine run on real AAPL closes, attribution over it.
+**Status:** Completed — **gate GREEN on first real-data pass** (no leaks to chase; the Day-21 identity test already guaranteed the residual is pure per-leg Taylor error, so the only question was its size). `src/backtest/reconcile.py`:
+- `build_positions()`: pre-registered book from `signal.parquet` — one ATM straddle per non-flat row (10 positions: 5 short_vol + 5 long_vol), strike = nearest listed strike with both sides quoted to the slice forward, marked at the **joint arb-free SVI vol at that strike**, qty ±1.
+- **Rates per slice from real data:** r = market-implied discount from Day-7 forwards; carry q backed out of the traded forward (q = r − ln(F/S₀)/T) so the engine forward matches the market forward at entry — dividends handled implicitly, no external feed.
+- **Hedge-path data extension:** `data/raw/aapl_ohlc_ext.parquet` (2023-07-03..08-31, 43 bars, DoltHub same source, manifest updated) — long-leg expiries (07-21/07-28/08-18) reach settlement. Deliberately a **separate raw file**: signal/HAR/RV inputs still end 2023-06-30, so the no-lookahead boundary between "data the signal saw" and "path the trade lives on" is physical. Original raw hashes untouched. (Additive change, documented per primary.yaml rules.)
+- `run_reconcile()` → `results/attribution_reconcile.json` (tracked, byte-stable) + `results/plots/attribution_residuals.png`; wired into `main.py` backtest stage.
+
+**Real numbers:** book residual abs share **14.4%** of Σ|daily PnL| (gate < 20%); worst position cumulative residual **7.3% of premium** (gate < 10%), 9/10 positions ≤ 2.8%. The worst is the 06-14→08-18 long straddle: +$84.7 residual on 2023-08-04's −4.80% earnings-gap bar — a one-day Taylor expansion undercounts a long-gamma gain on a big move (third-order, correct sign, correct location; physics, not leak). Total book PnL pre-costs: **+$3.87** (shorts +$505.8, longs −$501.9 — the two sides nearly cancel; costs arrive Day 24).
+
+Tests (5, skip wholesale if real files missing): book matches pre-registration (10 positions, 5/5 sides, |ln(K/F)|<0.03, sane implied carry); engine ledger identity on every real path; **Day-21 residual identity re-proven on real data at 1e-9**; the gate itself; vol terms structurally zero under constant marks. Suite: **592 passed** (~27s clean; a 547s run was machine contention again).
+
+### Day 23 — Portfolio assembly + sizing (Next)
+
+**Goal (PLAN):** size by vega + gamma under inventory limits (per-name + portfolio), DD kill-switch → full portfolio PnL series. Building blocks ready: `build_positions()` (qty ±1 now), per-position ledgers, attribution.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -310,4 +322,4 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-04 — Day 21 completed (Greeks PnL attribution, residual isolated to per-leg Taylor error). Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
+*Last updated: 2026-07-04 — Day 22 completed: reconciliation gate GREEN on real data (residual abs share 14.4% < 20%, worst position 7.3% of premium < 10%). Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
