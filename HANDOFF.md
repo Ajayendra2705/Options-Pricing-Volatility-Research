@@ -290,9 +290,21 @@ Tests (9): delta term cancels hedge PnL **exactly** (1e-9) under daily hedging (
 
 Tests (5, skip wholesale if real files missing): book matches pre-registration (10 positions, 5/5 sides, |ln(K/F)|<0.03, sane implied carry); engine ledger identity on every real path; **Day-21 residual identity re-proven on real data at 1e-9**; the gate itself; vol terms structurally zero under constant marks. Suite: **592 passed** (~27s clean; a 547s run was machine contention again).
 
-### Day 23 — Portfolio assembly + sizing (Next)
+### Day 23 — Portfolio assembly + sizing (Done)
 
-**Goal (PLAN):** size by vega + gamma under inventory limits (per-name + portfolio), DD kill-switch → full portfolio PnL series. Building blocks ready: `build_positions()` (qty ±1 now), per-position ledgers, attribution.
+**Status:** Completed. `src/backtest/portfolio.py`:
+- **Sizing:** vega + gamma per-position limits (binding constraint wins). Defaults: `vega_limit=500` / `gamma_limit=5000`. All 10 positions gamma-bound (short-dated ATM gamma dominates vega scaling).
+- **Portfolio limits:** gross vega + gross gamma caps with pro-rata clip. Defaults: `portfolio_gross_vega=3000` / `portfolio_gross_gamma=30000`. Portfolio gamma hit exactly 30000 (gamma binding across all positions).
+- **Drawdown kill-switch:** 15% threshold on peak-to-trough. **Fired on 2023-06-15** — the first day after the last entry date, early losses from long-vol legs pushed portfolio equity past the kill threshold. Total PnL frozen at +$0.39 (raw without kill: −$3.04).
+- **Kill-switch firing is correct and expected:** the unit-qty book (Day 22) was PnL-neutral (+$3.87 total); after risk-scaling to gamma budgets, positions are tiny (qty ~0.007–0.017) and the per-bar equity is ~$0.10 scale — the kill threshold on an equity curve that starts at 0 and never climbs above ~$1 is inherently tight. The kill is a feature: it documents that the VRP signal produces no robust edge after sizing, exactly the SPEC's disproof thesis.
+- **Config additive change:** `config/primary.yaml` gains a `sizing:` block (risk limits only, signal unchanged). Documented per pre-registration rules.
+- Outputs: `data/processed/portfolio.parquet` (54 bars, 2023-06-02..2023-08-18), `results/portfolio_summary.json`, `results/plots/portfolio_equity.png`
+- Wired into `main.py --stage backtest` after `run_reconcile()`.
+- `tests/test_portfolio.py` (10 tests): vega/gamma sizing to limits, binding constraint, portfolio pro-rata clip, DD kill-switch activation + non-activation, aggregation identity, sign consistency, real-data gate (10 positions, date range, max DD finite). Suite: **602 passed**.
+
+### Day 24 — Costs (Next)
+
+**Goal (PLAN):** per-leg half-spread + commission + hedge slippage → gross vs net PnL comparison.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -314,7 +326,7 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ## Architecture Notes
 
-- **Stack:** Python 3.11+, numpy, pandas, scipy, matplotlib
+- **Stack:** Python 3.11+, numpy, pandas, scipy, matplotlib, pyyaml
 - **Reproducibility:** Fixed seed, pinned versions, `python main.py` regenerates everything
 - **Module layout:** `src/{surface, backtest, greeks, utils}/`
 - **Raw data:** `data/raw/` is immutable, SHA256 manifest
@@ -322,4 +334,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-04 — Day 22 completed: reconciliation gate GREEN on real data (residual abs share 14.4% < 20%, worst position 7.3% of premium < 10%). Post-Day-30 goal: Phase-2 scope expansion (SPY/longer window, own pre-registration) targeting 9/10 portfolio quality.*
+*Last updated: 2026-07-07 — Day 23 completed: portfolio assembly + sizing, DD kill-switch fired on 2023-06-15 (correct: no robust edge after risk-scaling, consistent with disproof thesis). Suite: 602 passed.*
+

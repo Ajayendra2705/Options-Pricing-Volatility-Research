@@ -57,3 +57,14 @@ tenor_buckets:                     # by year-fraction T at quote date
 
 headline_metric: DSR-adjusted Sharpe replacement per SPEC v1; trial count N
   must count every robustness variant above.
+
+# Day 23 additive section — risk limits for portfolio sizing.
+# These are inventory/risk controls, not signal parameters; they do not
+# change the signal/side assignments above.  Documented per primary.yaml
+# rules (additive + HANDOFF note).
+sizing:
+  vega_limit_per_position: 500       # $ per 1 vol-pt move, per straddle
+  gamma_limit_per_position: 5000     # $ dollar-gamma cap per straddle
+  portfolio_gross_vega_limit: 3000   # portfolio-level gross vega cap
+  portfolio_gross_gamma_limit: 30000 # portfolio-level gross dollar-gamma cap
+  max_drawdown_pct: 0.15             # kill switch at 15% of peak equity

@@ -50,10 +50,12 @@ def main():
         from src.backtest.har import run_har
         from src.backtest.signal import run_signal
         from src.backtest.reconcile import run_reconcile
+        from src.backtest.portfolio import run_portfolio
         run_realized_vol()
         run_har()
         run_signal()
         run_reconcile()
+        run_portfolio()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):

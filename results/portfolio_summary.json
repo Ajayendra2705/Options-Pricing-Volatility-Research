@@ -1,0 +1,144 @@
+{
+  "n_positions": 10,
+  "sizing_params": {
+    "vega_limit_per_position": 500.0,
+    "gamma_limit_per_position": 5000.0,
+    "portfolio_gross_vega_limit": 3000.0,
+    "portfolio_gross_gamma_limit": 30000.0,
+    "max_drawdown_pct": 0.15
+  },
+  "positions": [
+    {
+      "date": "2023-06-02",
+      "expiry": "2023-06-16",
+      "side": "short_vol",
+      "K": 180.0,
+      "unit_qty": -1.0,
+      "sized_qty": -0.009316092320998429,
+      "sized_vega": 25.90644171298353,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.2251393148866426,
+      "pnl": 1.745908799275611
+    },
+    {
+      "date": "2023-06-02",
+      "expiry": "2023-07-21",
+      "side": "long_vol",
+      "K": 180.0,
+      "unit_qty": 1.0,
+      "sized_qty": 0.01564237956927635,
+      "sized_vega": 81.13514361713963,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.20145800966160524,
+      "pnl": -2.9636754876238456
+    },
+    {
+      "date": "2023-06-07",
+      "expiry": "2023-06-23",
+      "side": "short_vol",
+      "K": 177.5,
+      "unit_qty": -1.0,
+      "sized_qty": -0.00892299584601941,
+      "sized_vega": 26.32280600947473,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.20016300403038087,
+      "pnl": 0.48057550839303076
+    },
+    {
+      "date": "2023-06-07",
+      "expiry": "2023-07-21",
+      "side": "long_vol",
+      "K": 180.0,
+      "unit_qty": 1.0,
+      "sized_qty": 0.013815721261312128,
+      "sized_vega": 67.88622708778627,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.187715703689712,
+      "pnl": -1.4059984653388256
+    },
+    {
+      "date": "2023-06-09",
+      "expiry": "2023-06-23",
+      "side": "short_vol",
+      "K": 180.0,
+      "unit_qty": -1.0,
+      "sized_qty": -0.007400538030008133,
+      "sized_vega": 20.344010928158713,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.1767991425899507,
+      "pnl": 0.5230478758985271
+    },
+    {
+      "date": "2023-06-09",
+      "expiry": "2023-07-28",
+      "side": "long_vol",
+      "K": 180.0,
+      "unit_qty": 1.0,
+      "sized_qty": 0.014903409808773714,
+      "sized_vega": 77.39451192282844,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.1921700466111047,
+      "pnl": -1.6147730752462621
+    },
+    {
+      "date": "2023-06-12",
+      "expiry": "2023-06-23",
+      "side": "short_vol",
+      "K": 185.0,
+      "unit_qty": -1.0,
+      "sized_qty": -0.006456638297804476,
+      "sized_vega": 16.29511356895382,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.1802338318990347,
+      "pnl": 0.8087158820279257
+    },
+    {
+      "date": "2023-06-12",
+      "expiry": "2023-07-28",
+      "side": "long_vol",
+      "K": 185.0,
+      "unit_qty": 1.0,
+      "sized_qty": 0.013591159399556041,
+      "sized_vega": 70.60558147533067,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.18674664665576582,
+      "pnl": -2.4283698663063547
+    },
+    {
+      "date": "2023-06-14",
+      "expiry": "2023-06-30",
+      "side": "short_vol",
+      "K": 185.0,
+      "unit_qty": -1.0,
+      "sized_qty": -0.007324444247837137,
+      "sized_vega": 22.45586623269129,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.17075814947775667,
+      "pnl": 0.5026466913062677
+    },
+    {
+      "date": "2023-06-14",
+      "expiry": "2023-08-18",
+      "side": "long_vol",
+      "K": 185.0,
+      "unit_qty": 1.0,
+      "sized_qty": 0.017146316189543074,
+      "sized_vega": 105.79837579996814,
+      "sized_dgamma": 3000.0,
+      "mark_vol": 0.19803285726660705,
+      "pnl": 1.3083534823170453
+    }
+  ],
+  "total_pnl": 0.3859087911357726,
+  "total_pnl_raw": -3.0435686552968804,
+  "max_drawdown": 0.15427824241356092,
+  "max_drawdown_pct": 0.15427824241356092,
+  "kill_date": "2023-06-15 00:00:00",
+  "gross_vega": 514.1440783553153,
+  "gross_dgamma": 30000.0,
+  "date_range": [
+    "2023-06-02",
+    "2023-08-18"
+  ],
+  "n_bars": 54
+}
