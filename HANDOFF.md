@@ -302,9 +302,22 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Wired into `main.py --stage backtest` after `run_reconcile()`.
 - `tests/test_portfolio.py` (10 tests): vega/gamma sizing to limits, binding constraint, portfolio pro-rata clip, DD kill-switch activation + non-activation, aggregation identity, sign consistency, real-data gate (10 positions, date range, max DD finite). Suite: **602 passed**.
 
-### Day 24 — Costs (Next)
+### Day 24 — Costs (Done)
 
-**Goal (PLAN):** per-leg half-spread + commission + hedge slippage → gross vs net PnL comparison.
+**Status:** Completed. `src/backtest/costs.py` applies the **pre-registered** cost model (config `costs:` block, locked Day 18) to the **unit-qty pre-registered book** (same 10 positions Day 22 gated) → gross vs net PnL:
+- **Option entry half-spread:** cross ½·(ask−bid) per share on BOTH legs at entry (from entry-date `chain_clean` quotes), ×mult×|qty|. Always a positive drag (crossing costs both sides).
+- **Commission:** $0.65/contract × 2 legs on the opening trade. Held to expiry → cash-settled intrinsic, no closing trade/commission (documented).
+- **Hedge slippage:** config declares AAPL penny-wide, **zero underlying spread in primary**. Mechanism implemented + parametrized (`underlying_slippage_bps`, default 0) — robustness-only knob, does not touch primary.
+- Config parsed via same block-slice trick as Day-23 sizing (`_load_cost_params`, primary.yaml's prose colons break strict YAML).
+
+**Real numbers:** gross **+$3.87** − costs **$419.00** = **net −$415.13**. Half-spread $406 (two long-dated 07-28 thin slices dominate: $102.50 + $212.50 — realistic wide long-dated AAPL quotes), commission $13, hedge slippage $0. **This is the disproof punchline: the near-breakeven gross VRP edge is annihilated by realistic entry costs, net clearly negative.** Cost = 28% of total premium.
+
+- Outputs: `results/costs_summary.json` (tracked, byte-stable — verified), `results/plots/gross_vs_net.png`. Wired into `main.py --stage backtest` after `run_portfolio()`.
+- `tests/test_costs.py` (8 tests): half-spread formula + qty scaling, commission, non-negative drag both sides, hedge slippage zero@primary / scaled@bps>0, config parse, real-data gate (10 positions, net = gross − cost identity per-position + book, net < 0). Suite: **610 passed**.
+
+### Day 25 — Capital base + returns (Next)
+
+**Goal (PLAN):** margin denomination (reg-T 20% proxy, peak margin = capital base) → margin-based returns.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -334,5 +347,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-07 — Day 23 completed: portfolio assembly + sizing, DD kill-switch fired on 2023-06-15 (correct: no robust edge after risk-scaling, consistent with disproof thesis). Suite: 602 passed.*
+*Last updated: 2026-07-08 — Day 24 completed: transaction costs, gross +$3.87 → net −$415.13 (half-spread-dominated, long-dated thin slices) — the disproof punchline. Suite: 610 passed.*
 
