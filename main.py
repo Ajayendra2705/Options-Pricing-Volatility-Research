@@ -52,12 +52,14 @@ def main():
         from src.backtest.reconcile import run_reconcile
         from src.backtest.portfolio import run_portfolio
         from src.backtest.costs import run_costs
+        from src.backtest.returns import run_returns
         run_realized_vol()
         run_har()
         run_signal()
         run_reconcile()
         run_portfolio()
         run_costs()
+        run_returns()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):

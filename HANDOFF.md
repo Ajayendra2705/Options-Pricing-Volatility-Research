@@ -315,9 +315,19 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Outputs: `results/costs_summary.json` (tracked, byte-stable — verified), `results/plots/gross_vs_net.png`. Wired into `main.py --stage backtest` after `run_portfolio()`.
 - `tests/test_costs.py` (8 tests): half-spread formula + qty scaling, commission, non-negative drag both sides, hedge slippage zero@primary / scaled@bps>0, config parse, real-data gate (10 positions, net = gross − cost identity per-position + book, net < 0). Suite: **610 passed**.
 
-### Day 25 — Capital base + returns (Next)
+### Day 25 — Capital base + returns (Done)
 
-**Goal (PLAN):** margin denomination (reg-T 20% proxy, peak margin = capital base) → margin-based returns.
+**Status:** Completed. `src/backtest/returns.py` fixes the return denominator (SPEC: "define capital base before quoting any Sharpe") on the **unit-qty pre-registered book**:
+- **Reg-T margin model** (config `margin:` block): naked short-option req/share = `max(0.20·S − OTM, 0.10·S) + premium`; short straddle = larger naked leg + other leg's premium; long straddle = premium debit (fully paid). Recomputed **every bar at Sₜ, τₜ** → procyclical path.
+- **Capital base = peak book Reg-T margin over the window = $27,106** (2023-06-15). Documented denominator string in the JSON.
+- **Returns:** numerator = **net** book equity (engine gross − Day-24 entry costs at each entry bar); `net_return = net_pnl / capital_base`. Gross reported alongside. **Net −$415.13 → −1.53% on capital** (gross +0.014%).
+- **Margin procyclicality — decontaminated:** the raw peak/entry (5.08×) is a *staggered-entry* artifact (2 straddles live 06-02 → 10 by 06-15), NOT stress, and is labeled as such. Genuine market-driven effect isolated two ways: (a) **per-position stress ratio** (single straddle's peak margin / entry margin) = max **1.63×** / mean 1.20× — pure spot move on a fixed leg; (b) **corr(ΔMargin, ΔEquity) = −0.09** computed ONLY on bars where the live set is unchanged (no entry/settlement jump) → weakly procyclical, correct sign (margin rises as equity falls — the "tail hit twice" the SPEC wants surfaced; Day-26 event table quantifies).
+- Outputs: `data/processed/returns.parquet` (54 bars, per-bar margin/equity/return), `results/returns_summary.json` (tracked, byte-stable — verified), `results/plots/margin_returns.png`. Wired into `main.py --stage backtest` after `run_costs()`.
+- `tests/test_returns.py` (8): naked-margin formula + floor-binds-deep-OTM, short-straddle rule, long-straddle debit, settled-leg zero, spot-stress raises short-straddle margin (procyclicality direction), qty scaling, real-data gate (capital base = peak ≥ entry, net_return = net_pnl/base identity, net < 0). Suite: **618 passed**.
+
+### Day 26 — Return-distribution honesty (Next)
+
+**Goal (PLAN/SPEC):** skew/kurt/CVaR(5%)/Calmar/Sortino **alongside** Sharpe; tail stats at trade/weekly horizon; **event PnL table**; margin-procyclicality interaction surfaced on the event table.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -347,5 +357,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-08 — Day 24 completed: transaction costs, gross +$3.87 → net −$415.13 (half-spread-dominated, long-dated thin slices) — the disproof punchline. Suite: 610 passed.*
+*Last updated: 2026-07-08 — Day 25 completed: Reg-T margin capital base $27,106 (peak, documented denominator), net return −1.53% on capital; margin procyclicality decontaminated of staggered-entry (per-position stress 1.63× max, corr −0.09 fixed-book). Suite: 618 passed.*
 

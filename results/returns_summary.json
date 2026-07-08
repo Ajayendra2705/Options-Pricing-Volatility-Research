@@ -1,0 +1,26 @@
+{
+  "capital_base_usd": 27105.53504400264,
+  "denominator": "peak book Reg-T margin over the trade window (config margin.capital_base)",
+  "n_positions": 10,
+  "entry_book_margin_usd": 5332.995565784236,
+  "peak_book_margin_usd": 27105.53504400264,
+  "peak_margin_date": "2023-06-15",
+  "peak_driven_by": "max simultaneous position overlap (staggered entries), not spot stress - see stress ratios below",
+  "gross_pnl_usd": 3.8729871317118523,
+  "total_cost_usd": 419.0,
+  "net_pnl_usd": -415.12701286828815,
+  "gross_return_on_capital": 0.00014288547064001924,
+  "net_return_on_capital": -0.015315211900240242,
+  "per_position_margin_stress_ratio_max": 1.6263741024201803,
+  "per_position_margin_stress_ratio_mean": 1.2044194628820546,
+  "margin_equity_corr_fixed_book": -0.08699662197423136,
+  "margin_procyclical": true,
+  "worst_net_equity_usd": -725.8475824158254,
+  "worst_net_equity_date": "2023-08-01",
+  "book_margin_at_worst_equity_usd": 1164.1708564623618,
+  "date_range": [
+    "2023-06-02",
+    "2023-08-18"
+  ],
+  "n_bars": 54
+}
