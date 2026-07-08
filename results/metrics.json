@@ -1,0 +1,63 @@
+{
+  "capital_base_usd": 27105.53504400264,
+  "denominator": "peak book Reg-T margin over the trade window (config margin.capital_base)",
+  "risk_free_rate": 0.0,
+  "return_convention": "arithmetic on fixed capital base (non-compounding)",
+  "net_pnl_usd": -415.12701286828815,
+  "net_return_on_capital": -0.015315211900240242,
+  "horizons": {
+    "daily": {
+      "n": 54,
+      "mean": -0.0002836150351896341,
+      "std": 0.002647146139734664,
+      "sharpe": -1.7007935601148596,
+      "sharpe_annualized": true,
+      "skew": 2.5986228003245477,
+      "excess_kurtosis": 15.197407321323606,
+      "cvar_5pct": -0.004902412658496516,
+      "max_drawdown": 0.027854132461384375,
+      "calmar": -2.5659025269184643,
+      "sortino": -2.840991977937494,
+      "worst": -0.007785721147278729,
+      "best": 0.013567697112827005,
+      "win_rate": 0.2962962962962963
+    },
+    "weekly": {
+      "n": 12,
+      "mean": -0.0012762676583533532,
+      "std": 0.005429790499253779,
+      "sharpe": -1.6949635475040077,
+      "sharpe_annualized": true,
+      "skew": 1.4079424944069618,
+      "excess_kurtosis": 3.670353074514006,
+      "cvar_5pct": -0.007891297167587255,
+      "max_drawdown": 0.02508784499344965,
+      "calmar": -2.6453415290034785,
+      "sortino": -2.3843298467325145,
+      "worst": -0.007891297167587255,
+      "best": 0.012692137640660437,
+      "win_rate": 0.16666666666666666
+    },
+    "per_trade": {
+      "n": 10,
+      "mean": -0.0015315211900240242,
+      "std": 0.006644544897538521,
+      "sharpe": -0.23049301549476742,
+      "sharpe_annualized": false,
+      "skew": -0.8269788740104486,
+      "excess_kurtosis": -0.20253739442612773,
+      "cvar_5pct": -0.014479432055386795,
+      "max_drawdown": 0.02647304311346883,
+      "calmar": -0.5785210198387899,
+      "sortino": -0.26114066221618837,
+      "worst": -0.014479432055386795,
+      "best": 0.006589349598424815,
+      "win_rate": 0.6
+    }
+  },
+  "notes": {
+    "headline": "Sharpe is NOT the headline for a short-vol book (flatters negative skew); read skew/kurtosis/CVaR/Calmar/Sortino as co-headlines.",
+    "per_trade_sample": "only 10 trades \u2014 tail stats are indicative, not significant (documented).",
+    "sign": "net returns are negative after costs (Day 24), so Sharpe and Sortino are negative by construction; shape stats (skew/kurtosis) still describe the payoff."
+  }
+}

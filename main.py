@@ -53,6 +53,7 @@ def main():
         from src.backtest.portfolio import run_portfolio
         from src.backtest.costs import run_costs
         from src.backtest.returns import run_returns
+        from src.backtest.metrics import run_metrics
         run_realized_vol()
         run_har()
         run_signal()
@@ -60,6 +61,7 @@ def main():
         run_portfolio()
         run_costs()
         run_returns()
+        run_metrics()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):

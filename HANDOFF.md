@@ -325,9 +325,18 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Outputs: `data/processed/returns.parquet` (54 bars, per-bar margin/equity/return), `results/returns_summary.json` (tracked, byte-stable — verified), `results/plots/margin_returns.png`. Wired into `main.py --stage backtest` after `run_costs()`.
 - `tests/test_returns.py` (8): naked-margin formula + floor-binds-deep-OTM, short-straddle rule, long-straddle debit, settled-leg zero, spot-stress raises short-straddle margin (procyclicality direction), qty scaling, real-data gate (capital base = peak ≥ entry, net_return = net_pnl/base identity, net < 0). Suite: **618 passed**.
 
-### Day 26 — Return-distribution honesty (Next)
+### Day 26 — Return-distribution honesty (Done)
 
-**Goal (PLAN/SPEC):** skew/kurt/CVaR(5%)/Calmar/Sortino **alongside** Sharpe; tail stats at trade/weekly horizon; **event PnL table**; margin-procyclicality interaction surfaced on the event table.
+**Status:** Completed. `src/backtest/metrics.py` — co-headline distribution stats on the Day-25 margin-based return series (denominator = peak Reg-T margin, carried through). Sharpe is deliberately **not** the headline (flatters short-vol negative skew); skew/kurtosis/CVaR/Calmar/Sortino reported alongside it, at three horizons (daily aggregation hides the tail):
+- **Primitives** (each unit-tested vs manual/scipy): `max_drawdown` (peak-to-trough of the cumsum level), `cvar` (expected shortfall = mean of worst ⌈αn⌉, k-smallest not quantile-interp so it's exact on tiny samples), `sortino` (downside-dev Sharpe, all-N denominator), `distribution_stats` (mean/std/Sharpe/skew/excess-kurt/CVaR/maxDD/Calmar/Sortino/win-rate).
+- **Horizons:** daily (ppy 252), weekly (daily summed into calendar weeks, ppy 52), per-trade (10 positions' net PnL / capital base, **non-annualized**, thin-sample flagged). Arithmetic returns on a fixed base → horizons add. rf=0 (financing already in engine PnL).
+- **Real numbers:** daily ann Sharpe **−1.70**, skew **+2.60**, excess-kurt **+15.2**, CVaR5% −0.49%, maxDD 2.79%, Calmar −2.57, Sortino −2.84. Weekly Sharpe −1.69. Per-trade skew **−0.83** (classic short-vol negative skew), win-rate 60%, worst −1.45%. Negative Sharpe is by construction (net<0 after costs); shape stats still describe the payoff.
+- Output: `results/metrics.json` (PLAN deliverable, tracked, byte-stable — verified). Wired into `main.py --stage backtest` after `run_returns()`.
+- `tests/test_metrics.py` (10): maxDD known-trough + monotone-zero, CVaR worst-fraction + small-sample, Sortino manual, shape stats vs scipy, Sharpe ann + per-trade non-ann, Calmar identity, real gate (3 horizon blocks finite, 10 trades, daily Sharpe<0, denominator carried). Suite: **628 passed**.
+
+### Day 27 — Event PnL table + alpha isolation (Next)
+
+**Goal (PLAN/SPEC):** **event PnL table** (strategy return in vol-spike windows; surface the margin-procyclicality "tail hit twice" here) + **alpha isolation** — regress strategy returns on a short-straddle/VRP factor, report alpha, Newey-West t-stat (lags = ⌈holding horizon⌉), R². (Note: real data is June–Aug 2023, calm — no Volmageddon/Mar-2020 in-sample; event table will use the in-sample vol moves that exist, e.g. the 2023-08-04 AAPL earnings gap, documented.)
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -357,5 +366,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-08 — Day 25 completed: Reg-T margin capital base $27,106 (peak, documented denominator), net return −1.53% on capital; margin procyclicality decontaminated of staggered-entry (per-position stress 1.63× max, corr −0.09 fixed-book). Suite: 618 passed.*
+*Last updated: 2026-07-08 — Day 26 completed: return-distribution co-headline stats → results/metrics.json (daily ann Sharpe −1.70, skew +2.60, exc-kurt +15.2, CVaR5% −0.49%, Calmar −2.57, Sortino −2.84; per-trade skew −0.83). Suite: 628 passed.*
 
