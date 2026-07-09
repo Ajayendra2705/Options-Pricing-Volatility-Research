@@ -334,9 +334,20 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Output: `results/metrics.json` (PLAN deliverable, tracked, byte-stable — verified). Wired into `main.py --stage backtest` after `run_returns()`.
 - `tests/test_metrics.py` (10): maxDD known-trough + monotone-zero, CVaR worst-fraction + small-sample, Sortino manual, shape stats vs scipy, Sharpe ann + per-trade non-ann, Calmar identity, real gate (3 horizon blocks finite, 10 trades, daily Sharpe<0, denominator carried). Suite: **628 passed**.
 
-### Day 27 — Event PnL table + alpha isolation (Next)
+### Day 27 — Event PnL table + alpha isolation (Done)
 
-**Goal (PLAN/SPEC):** **event PnL table** (strategy return in vol-spike windows; surface the margin-procyclicality "tail hit twice" here) + **alpha isolation** — regress strategy returns on a short-straddle/VRP factor, report alpha, Newey-West t-stat (lags = ⌈holding horizon⌉), R². (Note: real data is June–Aug 2023, calm — no Volmageddon/Mar-2020 in-sample; event table will use the in-sample vol moves that exist, e.g. the 2023-08-04 AAPL earnings gap, documented.)
+**Status:** Completed. `src/backtest/alpha.py` — both deliverables merged into `results/metrics.json`:
+- **Newey-West HAC regression** (`newey_west_ols`, Bartlett kernel, implemented here — no statsmodels): book net daily return ~ 1 + VRP factor.
+  - **Factor construction (stated, SPEC):** daily PnL of ONE delta-hedged, **non-rolled** short ATM straddle on AAPL, entered first trade date → held to last path date, marked at mean short-leg IV, same capital base. Delta-hedging strips direction → pure gamma/theta = harvested vol premium. (Non-rolled → gamma fades off the fixed strike; documented.)
+  - **Lags = ⌈median holding⌉ = 22** trading days (the ~monthly-hold overlap).
+  - **Real result: beta −1.59 (NW t=−10.5), R²=0.53, corr −0.72** — book loads *negatively* on a short-vol factor ⇒ it's net **long-vol** (long legs longer-dated, bigger gamma). **alpha −0.00019/day, NW t=−0.95 → statistically ZERO.** After stripping vol beta, no residual edge — the disproof thesis, quantified.
+- **Event PnL table:** top-5 |move| days in the trade window; only **2023-08-04 AAPL earnings gap (−4.80%)** exceeds 3% (`is_event`). Named events (Volmageddon/COVID/Aug-2024) are pre-2024/pre-window → reported OOS, no data. Each row carries book daily return, book margin, **ΔMargin** (procyclicality). **Honest nuance surfaced:** this net-long-vol book *gained* +1.36% on the 08-04 gap (long gamma) while margin *fell* — the opposite of the short-vol "tail hit twice"; the procyclical margin-up-as-equity-falls pattern shows on short-vol-dominated days (e.g. 06-22) instead. Note documents this rather than overclaiming.
+- Merged into `metrics.json` under `alpha_regression` + `event_table` (byte-stable — verified). Wired into `main.py` after `run_metrics()`.
+- `tests/test_alpha.py` (7): OLS vs lstsq, perfect-fit zero-SE, **NW lag-0 == White HC0** (independent recompute), **autocorrelation inflates HAC SE**, event-table flags the >3% move, real gates (VRP factor finite, |alpha t|<2 no-edge, 08-04 flagged, persisted). Suite: **635 passed**.
+
+### Day 28 — Stats honesty (Next)
+
+**Goal (PLAN/SPEC):** Sharpe with Newey-West SE + bootstrap CI; **Deflated Sharpe** (Bailey/López de Prado) with honest trial count N; IS-vs-OOS Sharpe haircut as a labeled deliverable.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -366,5 +377,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-08 — Day 26 completed: return-distribution co-headline stats → results/metrics.json (daily ann Sharpe −1.70, skew +2.60, exc-kurt +15.2, CVaR5% −0.49%, Calmar −2.57, Sortino −2.84; per-trade skew −0.83). Suite: 628 passed.*
+*Last updated: 2026-07-08 — Day 27 completed: VRP-factor alpha regression (beta −1.59 NW t=−10.5, alpha t=−0.95 → zero edge, R²=0.53) + event PnL table (2023-08-04 earnings gap) → metrics.json. Suite: 635 passed.*
 
