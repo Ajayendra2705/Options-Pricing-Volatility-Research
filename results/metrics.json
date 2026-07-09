@@ -59,5 +59,35 @@
     "headline": "Sharpe is NOT the headline for a short-vol book (flatters negative skew); read skew/kurtosis/CVaR/Calmar/Sortino as co-headlines.",
     "per_trade_sample": "only 10 trades \u2014 tail stats are indicative, not significant (documented).",
     "sign": "net returns are negative after costs (Day 24), so Sharpe and Sortino are negative by construction; shape stats (skew/kurtosis) still describe the payoff."
+  },
+  "statistical_honesty": {
+    "horizon": "daily net margin returns",
+    "sharpe": {
+      "sharpe_annualized": -1.7007935601148596,
+      "nw_se": 1.9706628829970503,
+      "nw_tstat": -0.8630565759315647,
+      "n_lags": 22,
+      "n_obs": 54
+    },
+    "bootstrap_ci_95": {
+      "ci_2.5": -7.430023247915014,
+      "ci_50": -1.7205799651752804,
+      "ci_97.5": 2.002962485287085,
+      "block": 8,
+      "n_boot": 2000
+    },
+    "is_oos_haircut": {
+      "sharpe_is": -5.026731941133364,
+      "sharpe_oos": 1.32061227276657,
+      "haircut_is_minus_oos": -6.347344213899934,
+      "n_is": 27,
+      "n_oos": 27,
+      "note": "chronological split-half; indicative only at this sample size."
+    },
+    "deflated_sharpe": {
+      "computed": false,
+      "reason": "Deflated Sharpe requires an honest multiple-testing trial count N; N is only complete after the v2 robustness sweeps (PLAN v2 Day 37). Deferred, not faked."
+    },
+    "interpretation": "Point Sharpe is negative but its 95% bootstrap CI spans zero and the NW t-stat is small in magnitude (|t|<1) -> the Sharpe is not statistically distinguishable from zero: no reliable edge either way, consistent with the disproof thesis. The negative IS->OOS haircut sign is noise at n=27/side."
   }
 }

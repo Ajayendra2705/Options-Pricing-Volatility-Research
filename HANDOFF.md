@@ -345,9 +345,19 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Merged into `metrics.json` under `alpha_regression` + `event_table` (byte-stable — verified). Wired into `main.py` after `run_metrics()`.
 - `tests/test_alpha.py` (7): OLS vs lstsq, perfect-fit zero-SE, **NW lag-0 == White HC0** (independent recompute), **autocorrelation inflates HAC SE**, event-table flags the >3% move, real gates (VRP factor finite, |alpha t|<2 no-edge, 08-04 flagged, persisted). Suite: **635 passed**.
 
-### Day 28 — Stats honesty (Next)
+### Day 28 — Stats honesty (Done)
 
-**Goal (PLAN/SPEC):** Sharpe with Newey-West SE + bootstrap CI; **Deflated Sharpe** (Bailey/López de Prado) with honest trial count N; IS-vs-OOS Sharpe haircut as a labeled deliverable.
+**Status:** Completed. `src/backtest/stats.py` — Sharpe uncertainty merged into `results/metrics.json` under `statistical_honesty`:
+- **Sharpe + Newey-West SE/t** (`nw_mean_se`, Bartlett, lags = ⌈median holding⌉ = 22): the annualized Sharpe ∝ mean return, so its HAC t = mean/HAC-SE(mean). **Sharpe −1.70, NW SE 1.97, t = −0.86** (|t|<1 → insignificant).
+- **Block-bootstrap 95% CI** (`block_bootstrap_sharpe`, moving-block length ⌈√T⌉=8, 2000 draws, seed 0 → byte-stable): **[−7.43, +2.00]** — spans zero. Sharpe not statistically distinguishable from zero.
+- **IS-vs-OOS haircut** (chronological split-half): SR_is −5.03 → SR_oos +1.32, haircut −6.35. Negative haircut (OOS>IS) is noise at n=27/side — flagged, reported honestly.
+- **Deflated Sharpe deliberately deferred** (`computed:false` + reason): DSR needs an honest multiple-testing N, complete only after v2 robustness sweeps (PLAN v2 Day 37). Computing DSR now with N=1 would understate it → recorded as deferred, not faked. Respects pre-registration.
+- Merged into `metrics.json` (byte-stable — verified). Wired into `main.py` after `run_alpha()`.
+- `tests/test_stats.py` (8): NW-SE lag-0 == √(γ₀/T), autocorrelation inflates HAC SE, Sharpe formula, HAC-t == mean/SE, bootstrap seeded+ordered+brackets-true-SR, IS/OOS split, real gate (Sharpe<0, finite CI, DSR deferred). Suite: **643 passed**.
+
+### Day 29 — report.html + README (Next)
+
+**Goal (PLAN):** single-page HTML report (surface + PnL attribution + return-distribution/event/stats) + README polish. Then Day 30 = final v1 ship.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -377,5 +387,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-08 — Day 27 completed: VRP-factor alpha regression (beta −1.59 NW t=−10.5, alpha t=−0.95 → zero edge, R²=0.53) + event PnL table (2023-08-04 earnings gap) → metrics.json. Suite: 635 passed.*
+*Last updated: 2026-07-08 — Day 28 completed: Sharpe honesty → metrics.json (Sharpe −1.70, NW t=−0.86, bootstrap 95% CI [−7.43,+2.00] spans zero, IS/OOS haircut −6.35; Deflated Sharpe deferred to v2 per pre-registration). Suite: 643 passed.*
 

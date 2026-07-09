@@ -55,6 +55,7 @@ def main():
         from src.backtest.returns import run_returns
         from src.backtest.metrics import run_metrics
         from src.backtest.alpha import run_alpha
+        from src.backtest.stats import run_stats
         run_realized_vol()
         run_har()
         run_signal()
@@ -64,6 +65,7 @@ def main():
         run_returns()
         run_metrics()
         run_alpha()
+        run_stats()
 
     # TODO: Implement stages
     # if args.stage in ("all", "report"):
