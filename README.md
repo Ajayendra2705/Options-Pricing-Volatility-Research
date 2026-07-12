@@ -129,5 +129,12 @@ python main.py            # ~90s: raw quotes -> surface -> backtest -> report.ht
 
 ## Status
 
+**v1 shipped** (tag `v1`): surface, backtest, attribution, costs, margin, statistics and
+report — reproducible from a clean clone, 662 tests green.
+
+Next (v2, planned): SABR cross-calibration, regime split, cost and hedge-frequency
+sensitivity sweeps, and a Deflated Sharpe computed with an honest multiple-testing
+trial count — deliberately deferred rather than faked with N=1.
+
 See [HANDOFF.md](HANDOFF.md) for progress and [PLAN.md](PLAN.md) for the day-by-day
 plan. [SPEC.md](SPEC.md) states the thesis and the honesty rules the project is held to.

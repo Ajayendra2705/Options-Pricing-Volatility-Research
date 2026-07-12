@@ -367,9 +367,26 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Tests: `tests/test_report.py` (15) — formatters, base64 roundtrip, headline numbers trace to JSON, all sections + 10 cost rows present, self-contained, no timestamp + deterministic, JSON prose escaped, README block idempotent / marker-guarded / current, tracked `report.html` reproduces from current JSONs. Plus 2 regression tests in `test_metrics.py` (merge preserves other days' blocks; key order canonical regardless of call order).
 - Suite: **660 passed**. Verify suite: **10/10**.
 
-### Day 30 — Full reproduce + lock v1 (Next)
+### Day 30 — Full reproduce + lock v1 (Done)
 
-**Goal (PLAN):** `python main.py` raw→results end-to-end on a clean clone, fixed seed, all tests green, CI passes → tag `v1`.
+**Status:** Completed. **v1 tagged.** The PLAN gate ("clean clone, `python main.py`, raw→results, all green") was run for real, and it found three genuine defects — which is the point of the gate:
+
+1. **`python main.py` was broken since Day 16.** `run_cleaning()` globbed *every* parquet in `data/raw/` and concatenated them, so the moment the OHLC bars landed the pipeline died: `ValueError: Unrecognized option_type values: ['N']`. Nobody hit it because daily work ran `--stage backtest`/`--stage surface`. Fixed: chains selected explicitly (`CHAIN_GLOB = "*options*.parquet"`), empty match raises. **The stage the whole project claims to reproduce from had never been run end-to-end since Day 15.**
+2. **Tests wrote into tracked artifacts.** `run_cleaning` always wrote `results/data_quality.json`; `run_metrics` overwrote `metrics.json` (Day-29 fix). Both now take an overridable `results_dir` / merge. Running `pytest` on a clean clone now leaves the tree **clean** — verified.
+3. **Artifacts were platform-dependent bytes.** Every JSON writer used text mode with default newlines → CRLF on Windows, LF on Linux: same numbers, different bytes, so "bit-identical" was only true per-OS and CI's reproduce check would have failed. All writers now pass `newline="\n"`; `.gitattributes` pins text to LF.
+
+**Reproducibility, actually verified (not asserted):**
+- **Raw data is now tracked** (60 KB: `aapl_options`, `aapl_ohlc`, `aapl_ohlc_ext`) — a clean clone reproduces the project with one command, and CI can run the real-data tests instead of skipping them. Immutability still enforced by the SHA256 manifest.
+- **Clean-clone gate GREEN:** fresh `git clone` → `python main.py` (70s) → `git status` **empty**. Every tracked artifact (24: processed parquets, results JSONs, `report.html`, README auto-block) reproduces **bit-identically**. Then `pytest` (662 passed) and `scripts/verify/run_all.py` (10/10) in the clone, tree still clean.
+- Results regenerated on current code shifted ~1e-9 vs the previously committed ones (SLSQP/trf tolerance, from the Day-20 `ndtr` pricer swap) — recorded, not hidden.
+
+**CI upgraded** from "run pytest" to the full chain: verify SHA256 manifest → `python main.py` (reproduce every result from raw data) → `pytest` → `scripts/verify/run_all.py`.
+
+**v1 is shipped:** arb-free SVI surface + reconciling Greeks attribution + pre-registered delta-hedged backtest + tail-honest statistics + self-generating report, all reproducible from a clean clone. Headline: gross **+$3.87** → net **−$415.13** (−1.53% on $27,106 peak margin); Sharpe −1.70 with NW t = −0.86 and bootstrap 95% CI [−7.43, +2.00] spanning zero; alpha vs a delta-hedged VRP factor **statistically zero** (t = −0.95). The VRP is visible and not exploitable — the disproof, delivered.
+
+### Next — v2 robustness appendix (PLAN Days 31–38)
+
+SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -399,5 +416,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-12 — Day 29 completed: `results/report.html` + README auto-block, both generated from `results/*.json` (no hand-typed numbers); fixed a pre-existing metrics.json clobber bug (merge + canonical key order → byte-stable). Suite: 660 passed, verify 10/10.*
+*Last updated: 2026-07-12 — **Days 29–30 completed, v1 tagged.** Day 29: `report.html` + README auto-block generated from `results/*.json`. Day 30: clean-clone reproduce gate GREEN (fresh clone → `python main.py` → zero diff), after it caught a broken `--stage clean` (dead since Day 16), tests writing into tracked artifacts, and CRLF/LF platform-dependent bytes. Raw data tracked; CI now reproduces the pipeline. Suite: 662 passed, verify 10/10.*
 
