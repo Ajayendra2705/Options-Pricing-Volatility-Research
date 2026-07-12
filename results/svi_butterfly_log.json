@@ -10,9 +10,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.0700103179769892,
-      "rmse_unconstrained": 0.004017871824995601,
-      "rmse_constrained": 0.004017871824995601
+      "min_g": 0.07001031785076364,
+      "rmse_unconstrained": 0.004017871817731718,
+      "rmse_constrained": 0.004017871817731718
     },
     {
       "date": "2023-06-02",
@@ -20,9 +20,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.05930138900313306,
-      "rmse_unconstrained": 0.0030341489030458442,
-      "rmse_constrained": 0.0030341489030458442
+      "min_g": 0.0593013893468709,
+      "rmse_unconstrained": 0.0030341489090585923,
+      "rmse_constrained": 0.0030341489090585923
     },
     {
       "date": "2023-06-02",
@@ -30,9 +30,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.05556975611575325,
-      "rmse_unconstrained": 0.00450903891881087,
-      "rmse_constrained": 0.00450903891881087
+      "min_g": 0.055569755817295036,
+      "rmse_unconstrained": 0.004509038912458007,
+      "rmse_constrained": 0.004509038912458007
     },
     {
       "date": "2023-06-07",
@@ -40,9 +40,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.08195900305158019,
-      "rmse_unconstrained": 0.003884128802121066,
-      "rmse_constrained": 0.003884128802121066
+      "min_g": 0.08195900225661931,
+      "rmse_unconstrained": 0.0038841287917274793,
+      "rmse_constrained": 0.0038841287917274793
     },
     {
       "date": "2023-06-07",
@@ -50,9 +50,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.05647731859909354,
-      "rmse_unconstrained": 0.004284073508590619,
-      "rmse_constrained": 0.004284073508590619
+      "min_g": 0.056477321302894776,
+      "rmse_unconstrained": 0.004284073506725395,
+      "rmse_constrained": 0.004284073506725395
     },
     {
       "date": "2023-06-07",
@@ -60,9 +60,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.022972359211848183,
-      "rmse_unconstrained": 0.0025848923290344313,
-      "rmse_constrained": 0.0025848923290344313
+      "min_g": 0.022972360284254693,
+      "rmse_unconstrained": 0.00258489235054757,
+      "rmse_constrained": 0.00258489235054757
     },
     {
       "date": "2023-06-09",
@@ -70,9 +70,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.061192478395272476,
-      "rmse_unconstrained": 0.0027292495789231833,
-      "rmse_constrained": 0.0027292495789231833
+      "min_g": 0.061192477555232105,
+      "rmse_unconstrained": 0.002729249582526669,
+      "rmse_constrained": 0.002729249582526669
     },
     {
       "date": "2023-06-09",
@@ -80,9 +80,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.02544878534355307,
-      "rmse_unconstrained": 0.0032463390371209083,
-      "rmse_constrained": 0.0032463390371209083
+      "min_g": 0.025448779081007053,
+      "rmse_unconstrained": 0.0032463390474552762,
+      "rmse_constrained": 0.0032463390474552762
     },
     {
       "date": "2023-06-09",
@@ -90,9 +90,9 @@
       "pre_arb_free": false,
       "arb_free": true,
       "method": "slsqp",
-      "min_g": 0.9999951432033948,
-      "rmse_unconstrained": 0.009394143247768712,
-      "rmse_constrained": 0.024420834472395108
+      "min_g": 0.9999951434610077,
+      "rmse_unconstrained": 0.00939414312017659,
+      "rmse_constrained": 0.02442083447120051
     },
     {
       "date": "2023-06-12",
@@ -110,9 +110,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.055832623620752295,
-      "rmse_unconstrained": 0.005052962281969648,
-      "rmse_constrained": 0.005052962281969648
+      "min_g": 0.055832623373063286,
+      "rmse_unconstrained": 0.005052962272239247,
+      "rmse_constrained": 0.005052962272239247
     },
     {
       "date": "2023-06-12",
@@ -120,9 +120,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.06317469558033809,
-      "rmse_unconstrained": 0.0041690885428811685,
-      "rmse_constrained": 0.0041690885428811685
+      "min_g": 0.06317469917817373,
+      "rmse_unconstrained": 0.004169088537275638,
+      "rmse_constrained": 0.004169088537275638
     },
     {
       "date": "2023-06-14",
@@ -130,9 +130,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.06956006454847724,
-      "rmse_unconstrained": 0.003305931296046166,
-      "rmse_constrained": 0.003305931296046166
+      "min_g": 0.06956006626524001,
+      "rmse_unconstrained": 0.0033059312907856245,
+      "rmse_constrained": 0.0033059312907856245
     },
     {
       "date": "2023-06-14",
@@ -140,9 +140,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.033294418839776484,
-      "rmse_unconstrained": 0.002831451768256102,
-      "rmse_constrained": 0.002831451768256102
+      "min_g": 0.03329441904963625,
+      "rmse_unconstrained": 0.002831451772278855,
+      "rmse_constrained": 0.002831451772278855
     },
     {
       "date": "2023-06-14",
@@ -150,9 +150,9 @@
       "pre_arb_free": true,
       "arb_free": true,
       "method": "unconstrained",
-      "min_g": 0.033489184634066665,
-      "rmse_unconstrained": 0.003103792636913911,
-      "rmse_constrained": 0.003103792636913911
+      "min_g": 0.033489180261735946,
+      "rmse_unconstrained": 0.0031037925678875714,
+      "rmse_constrained": 0.0031037925678875714
     }
   ]
 }

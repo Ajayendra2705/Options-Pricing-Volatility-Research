@@ -2,7 +2,7 @@
   "n_slices_fitted": 15,
   "butterfly": {
     "n_violations": 0,
-    "min_g_across_slices": 0.00020001030204595815
+    "min_g_across_slices": 0.0002000273866266042
   },
   "calendar": {
     "n_pairs_checked": 10,
@@ -10,7 +10,7 @@
     "max_severity_w": 0.0,
     "n_floor_failures_in_fit": 0
   },
-  "rmse_iv_median": 0.003305931296046166,
+  "rmse_iv_median": 0.0033059312907856245,
   "pairs": [
     {
       "date": "2023-06-02",

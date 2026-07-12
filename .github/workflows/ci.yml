@@ -1,4 +1,4 @@
-name: Python tests
+name: CI
 
 on:
   push:
@@ -7,20 +7,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  reproduce:
+    # Raw data (60 KB) is tracked, so CI reproduces the whole project from it:
+    # manifest -> pipeline -> tests -> independent verification scripts.
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.11"
-    - name: Install dependencies
+        cache: pip
+
+    - name: Install pinned dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Test with pytest
-      run: |
-        pytest
+
+    - name: Verify raw-data immutability (SHA256 manifest)
+      run: python scripts/sha256_manifest.py --verify
+
+    - name: Reproduce every result from raw data
+      run: python main.py
+
+    - name: Tests
+      run: pytest -q
+
+    - name: Independent verification scripts
+      run: python scripts/verify/run_all.py

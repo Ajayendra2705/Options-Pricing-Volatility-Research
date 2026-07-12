@@ -13,15 +13,15 @@
 
 | | |
 |---|---|
-| Gross PnL (pre-cost) | **$3.87** |
+| Gross PnL (pre-cost) | **$3.75** |
 | Costs (half-spread + commission) | **-$419.00** |
-| **Net PnL** | **-$415.13** |
+| **Net PnL** | **-$415.25** |
 | Net return on capital | **-1.53%** (base $27,106 = peak Reg-T margin) |
 | Sharpe (daily, ann.) | -1.70, NW t = -0.86, bootstrap 95% CI [-7.43, +2.00] — **spans zero** |
 | Alpha vs delta-hedged VRP factor | -0.00019/day, NW t = -0.95 — **statistically zero** |
 | Per-trade skew / win rate | -0.83 / 60% (wins often, loses overall) |
 
-The variance risk premium is visible in the quotes, and it is *not* exploitable: the book is near-flat gross and **-$415.13 net** once costs are paid (5.3% of the premium traded, $406 of it entry half-spread). Strip the vol beta out and no alpha remains.
+The variance risk premium is visible in the quotes, and it is *not* exploitable: the book is near-flat gross and **-$415.25 net** once costs are paid (5.3% of the premium traded, $406 of it entry half-spread). Strip the vol beta out and no alpha remains.
 
 ### Validation gates (all passed)
 
@@ -107,14 +107,25 @@ tests/                  # pytest suite
 
 ## Reproducibility
 
-- `python main.py` regenerates every artifact from raw data; a full rerun reproduces
-  the processed parquets and results JSONs **bit-identically** (SHA256-verified — no
-  timestamps in tracked outputs).
-- Raw data is immutable and hashed (`data/raw/manifest.json`); fixed seed via
-  `src/utils/seed.py`; dependencies pinned in `requirements.txt`.
-- `scripts/verify/` holds independent implementations that re-derive the key results
-  from scratch (finite-difference Greeks, Breeden–Litzenberger densities, ledger
-  identities) — a second pair of eyes on the first.
+The raw data (60 KB — AAPL option chains + OHLC bars) is **committed**, so a clean
+clone reproduces the entire project with one command:
+
+```bash
+git clone <repo> && cd <repo>
+pip install -r requirements.txt
+python main.py            # ~90s: raw quotes -> surface -> backtest -> report.html
+```
+
+- Every tracked output (24 artifacts: processed parquets, results JSONs, `report.html`)
+  is **bit-identical across runs** — no timestamps anywhere, fixed seed
+  (`src/utils/seed.py`), dependencies pinned to exact versions.
+- Raw data immutability is enforced by a SHA256 manifest (`data/raw/manifest.json`),
+  verified in CI.
+- CI does not just run tests: it verifies the manifest, **reproduces every result from
+  the raw data**, runs the suite (660 tests), and then runs `scripts/verify/` — a set
+  of independent re-derivations of the key results (finite-difference Greeks,
+  Breeden–Litzenberger densities from Black prices, ledger identities), a second pair
+  of eyes on the first.
 
 ## Status
 

@@ -22,15 +22,17 @@ env/
 .DS_Store
 Thumbs.db
 
-# Data (tracked via SHA256 manifest, not git — too large)
-data/raw/*.parquet
+# Raw data IS tracked (60 KB total) so a clean clone reproduces end-to-end and
+# CI runs the real-data tests. Immutability is still enforced by the SHA256
+# manifest, which the pipeline and CI verify.
+!data/raw/*.parquet
+!data/raw/manifest.json
 data/raw/*.csv
 data/raw/*.gz
+
+# Processed data is generated — never tracked
 data/processed/*
 !data/processed/.gitkeep
-
-# Keep manifest and directory structure
-!data/raw/manifest.json
 
 # Results — ignore generated artifacts except explicit deliverables
 results/*

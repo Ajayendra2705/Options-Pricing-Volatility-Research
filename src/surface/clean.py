@@ -35,6 +35,13 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 MAX_SPREAD_PCT = 0.50
 DAYS_PER_YEAR = 365.0
 
+# data/raw/ holds two KINDS of file: option chains and the underlying's OHLC
+# bars (added Day 16 for realized vol, Day 22 for the hedge path).  Cleaning
+# consumes chains ONLY — a bare glob over data/raw/ swallows the OHLC bars and
+# dies on their schema.  Selection is therefore explicit, and empty matches
+# raise rather than silently cleaning nothing.
+CHAIN_GLOB = "*options*.parquet"
+
 # canonical column -> accepted source names (lowercased)
 COLUMN_ALIASES = {
     "date": ["date", "quote_date", "trade_date", "quotedate", "datadate"],
@@ -138,14 +145,25 @@ def run_cleaning(
     raw_dir: Path = RAW_DIR,
     out_path: Path | None = None,
     max_spread_pct: float = MAX_SPREAD_PCT,
+    chain_glob: str = CHAIN_GLOB,
+    results_dir: Path | None = None,
 ) -> Path:
-    """Load raw parquet/csv chain(s), clean, persist parquet + drop counts."""
+    """Load the raw option chain(s), clean, persist parquet + drop counts.
+
+    Only files matching `chain_glob` are read — the OHLC bars living in the same
+    directory are not option chains and must not be concatenated into one.
+
+    `results_dir` is overridable so an ad-hoc or test run cannot write its drop
+    counts into the tracked results/data_quality.json.
+    """
+    results_dir = RESULTS_DIR if results_dir is None else results_dir
     files = sorted(
-        f for f in raw_dir.rglob("*") if f.is_file() and f.suffix in (".parquet", ".csv")
-        and f.name != "manifest.json"
+        f for f in raw_dir.rglob(chain_glob)
+        if f.is_file() and f.suffix in (".parquet", ".csv")
     )
     if not files:
-        raise FileNotFoundError(f"No raw data files in {raw_dir}")
+        raise FileNotFoundError(
+            f"No option-chain files matching {chain_glob!r} in {raw_dir}")
     frames = [pd.read_csv(f) if f.suffix == ".csv" else pd.read_parquet(f) for f in files]
     raw = pd.concat(frames, ignore_index=True)
 
@@ -156,13 +174,17 @@ def run_cleaning(
     clean.to_parquet(out_path, index=False)
 
     # append real drop counts to results/data_quality.json
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    dq_path = RESULTS_DIR / "data_quality.json"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    dq_path = results_dir / "data_quality.json"
     dq = json.loads(dq_path.read_text()) if dq_path.exists() else {}
     # no timestamp: keeps the tracked json byte-stable across identical reruns
+    try:
+        out_str = str(out_path.relative_to(PROJECT_ROOT))
+    except ValueError:            # out_path outside the repo (tests, ad-hoc runs)
+        out_str = str(out_path)
     dq["cleaning"] = {
         "source_files": [f.name for f in files],
-        "output": str(out_path.relative_to(PROJECT_ROOT)),
+        "output": out_str,
         **report,
     }
     dq_path.write_text(json.dumps(dq, indent=2, default=str))

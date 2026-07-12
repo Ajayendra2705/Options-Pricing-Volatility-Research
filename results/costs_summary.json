@@ -10,78 +10,78 @@
       "expiry": "2023-06-16",
       "side": "short_vol",
       "K": 180.0,
-      "premium": 642.1717861214513,
-      "gross_pnl": 187.40784645728854,
+      "premium": 642.1717862411326,
+      "gross_pnl": 187.40784656584583,
       "half_spread_cost": 7.499999999999973,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 8.799999999999974,
-      "net_pnl": 178.60784645728856
+      "net_pnl": 178.60784656584585
     },
     {
       "date": "2023-06-02",
       "expiry": "2023-07-21",
       "side": "long_vol",
       "K": 180.0,
-      "premium": 1071.8237796627848,
-      "gross_pnl": -189.46449128779568,
+      "premium": 1071.823779637512,
+      "gross_pnl": -189.4644912692056,
       "half_spread_cost": 10.000000000000009,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 11.30000000000001,
-      "net_pnl": -200.7644912877957
+      "net_pnl": -200.76449126920562
     },
     {
       "date": "2023-06-07",
       "expiry": "2023-06-23",
       "side": "short_vol",
       "K": 177.5,
-      "premium": 596.05500768968,
-      "gross_pnl": 53.85808944508608,
+      "premium": 596.0550077088828,
+      "gross_pnl": 53.85808945777171,
       "half_spread_cost": 18.499999999999982,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 19.799999999999983,
-      "net_pnl": 34.0580894450861
+      "net_pnl": 34.05808945777173
     },
     {
       "date": "2023-06-07",
       "expiry": "2023-07-21",
       "side": "long_vol",
       "K": 180.0,
-      "premium": 931.3818869626218,
-      "gross_pnl": -101.76801042418447,
+      "premium": 931.3818869618226,
+      "gross_pnl": -101.76801042365696,
       "half_spread_cost": 12.5,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 13.8,
-      "net_pnl": -115.56801042418446
+      "net_pnl": -115.56801042365696
     },
     {
       "date": "2023-06-09",
       "expiry": "2023-06-23",
       "side": "short_vol",
       "K": 180.0,
-      "premium": 510.38428237833136,
-      "gross_pnl": 70.67700669568148,
+      "premium": 510.38428196363475,
+      "gross_pnl": 70.6770064127013,
       "half_spread_cost": 11.00000000000001,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 12.300000000000011,
-      "net_pnl": 58.37700669568147
+      "net_pnl": 58.37700641270129
     },
     {
       "date": "2023-06-09",
       "expiry": "2023-07-28",
       "side": "long_vol",
       "K": 180.0,
-      "premium": 1019.888647859329,
-      "gross_pnl": -108.3492365818056,
+      "premium": 1019.897081498373,
+      "gross_pnl": -108.35477991438165,
       "half_spread_cost": 102.50000000000001,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 103.80000000000001,
-      "net_pnl": -212.1492365818056
+      "net_pnl": -212.15477991438166
     },
     {
       "date": "2023-06-12",
@@ -101,46 +101,46 @@
       "expiry": "2023-07-28",
       "side": "long_vol",
       "K": 185.0,
-      "premium": 971.4193544816741,
-      "gross_pnl": -178.67275299454195,
+      "premium": 971.5464706253849,
+      "gross_pnl": -178.78907781708403,
       "half_spread_cost": 212.5,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 213.8,
-      "net_pnl": -392.47275299454196
+      "net_pnl": -392.58907781708405
     },
     {
       "date": "2023-06-14",
       "expiry": "2023-06-30",
       "side": "short_vol",
       "K": 185.0,
-      "premium": 527.7190358506377,
-      "gross_pnl": 68.62591540030553,
+      "premium": 527.719036223144,
+      "gross_pnl": 68.62591579369837,
       "half_spread_cost": 8.499999999999996,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 9.799999999999997,
-      "net_pnl": 58.82591540030553
+      "net_pnl": 58.82591579369837
     },
     {
       "date": "2023-06-14",
       "expiry": "2023-08-18",
       "side": "long_vol",
       "K": 185.0,
-      "premium": 1223.471589815822,
-      "gross_pnl": 76.3052231076399,
+      "premium": 1223.4715895718073,
+      "gross_pnl": 76.30522341371761,
       "half_spread_cost": 10.000000000000009,
       "commission_cost": 1.3,
       "hedge_slippage_cost": 0.0,
       "total_cost": 11.30000000000001,
-      "net_pnl": 65.00522310763989
+      "net_pnl": 65.0052234137176
     }
   ],
-  "gross_pnl": 3.8729871317118523,
+  "gross_pnl": 3.75111953344458,
   "total_cost": 419.0,
   "total_half_spread": 406.0,
   "total_commission": 13.000000000000002,
   "total_hedge_slippage": 0.0,
-  "net_pnl": -415.12701286828815,
-  "cost_as_pct_of_premium": 0.0526416996799892
+  "net_pnl": -415.2488804665554,
+  "cost_as_pct_of_premium": 0.05264080320813727
 }

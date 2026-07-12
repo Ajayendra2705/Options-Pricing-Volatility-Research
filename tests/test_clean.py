@@ -123,3 +123,47 @@ def test_real_raw_chain_end_to_end():
     assert (clean["T"] > 0).all()
     assert clean["mid"].between(clean["bid"], clean["ask"]).all()
     assert set(clean["option_type"].unique()) <= {"C", "P"}
+
+
+# ── source selection: chains only, never the OHLC bars ──────────────────────
+
+def test_run_cleaning_ignores_ohlc_bars_in_the_same_raw_dir(tmp_path):
+    """Regression: run_cleaning used to glob every parquet in data/raw/ and
+    concat them, so once the underlying's OHLC bars landed there (Day 16) the
+    whole `python main.py` pipeline died on their schema ('Unrecognized
+    option_type values: [N]').  Chains are now selected explicitly."""
+    from src.surface.clean import run_cleaning
+
+    raw, out = tmp_path / "raw", tmp_path / "chain_clean.parquet"
+    raw.mkdir()
+    pd.DataFrame({                                   # a real chain
+        "date": ["2023-06-02", "2023-06-02"],
+        "expiry": ["2023-06-16", "2023-06-16"],
+        "strike": [180.0, 185.0],
+        "option_type": ["C", "P"],
+        "bid": [2.0, 1.5],
+        "ask": [2.1, 1.6],
+    }).to_parquet(raw / "aapl_options.parquet", index=False)
+    pd.DataFrame({                                   # OHLC bars: must be ignored
+        "date": ["2023-06-01", "2023-06-02"],
+        "open": [180.0, 181.0], "high": [182.0, 183.0],
+        "low": [179.0, 180.5], "close": [181.0, 182.5],
+    }).to_parquet(raw / "aapl_ohlc.parquet", index=False)
+
+    run_cleaning(raw_dir=raw, out_path=out, results_dir=tmp_path / "results")
+    clean = pd.read_parquet(out)
+
+    assert len(clean) == 2                            # both quotes survive
+    assert set(clean["option_type"]) == {"C", "P"}    # OHLC rows never entered
+
+
+def test_run_cleaning_raises_when_no_chain_file_present(tmp_path):
+    from src.surface.clean import run_cleaning
+
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    pd.DataFrame({"date": ["2023-06-01"], "close": [181.0]}).to_parquet(
+        raw / "aapl_ohlc.parquet", index=False)
+    with pytest.raises(FileNotFoundError, match="option-chain"):
+        run_cleaning(raw_dir=raw, out_path=tmp_path / "out.parquet",
+                     results_dir=tmp_path / "results")
