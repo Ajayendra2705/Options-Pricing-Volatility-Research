@@ -9,7 +9,7 @@ on:
 jobs:
   reproduce:
     # Raw data (60 KB) is tracked, so CI reproduces the whole project from it:
-    # manifest -> pipeline -> tests -> independent verification scripts.
+    # manifest -> pipeline -> results match -> tests -> independent verification.
     runs-on: ubuntu-latest
 
     steps:
@@ -32,14 +32,32 @@ jobs:
     - name: Reproduce every result from raw data
       run: python main.py
 
-    - name: Reproduced artifacts must match the committed ones (bit-identical)
-      run: git diff --exit-code --stat
+    # Cross-platform: the numbers must match the committed ones. Bytes cannot —
+    # the artifacts are committed from Windows, and floats land a few ulps apart
+    # under a different BLAS while matplotlib rasterizes PNGs differently. So the
+    # gate is numeric equality to a stated tolerance, not byte equality (which is
+    # checked per-platform, below and locally).
+    - name: Reproduced numbers must match the committed results (rtol 1e-6)
+      run: python scripts/compare_results.py --rtol 1e-6
+
+    - name: Snapshot artifacts before tests
+      run: sha256sum results/*.json data/processed/*.parquet > /tmp/before.sha
 
     - name: Tests
       run: pytest -q
 
-    - name: Test run must not mutate tracked artifacts
-      run: git diff --exit-code --stat
+    # A test run must never write into a tracked artifact (this repo has had that
+    # bug twice: run_metrics overwriting metrics.json, run_cleaning writing
+    # data_quality.json). Same machine, same run -> bytes must be untouched.
+    - name: Tests must not mutate tracked artifacts
+      run: sha256sum -c /tmp/before.sha --status
+
+    # Determinism on a single platform: rerunning the pipeline must reproduce the
+    # exact bytes it just produced.
+    - name: Pipeline is byte-deterministic (rerun on same machine)
+      run: |
+        python main.py
+        sha256sum -c /tmp/before.sha --status
 
     - name: Independent verification scripts
       run: python scripts/verify/run_all.py

@@ -179,9 +179,11 @@ def run_cleaning(
     dq = json.loads(dq_path.read_text()) if dq_path.exists() else {}
     # no timestamp: keeps the tracked json byte-stable across identical reruns
     try:
-        out_str = str(out_path.relative_to(PROJECT_ROOT))
+        # as_posix(): a Windows-separator path baked into a tracked artifact makes
+        # the JSON platform-dependent (CI caught this on ubuntu)
+        out_str = out_path.relative_to(PROJECT_ROOT).as_posix()
     except ValueError:            # out_path outside the repo (tests, ad-hoc runs)
-        out_str = str(out_path)
+        out_str = out_path.as_posix()
     dq["cleaning"] = {
         "source_files": [f.name for f in files],
         "output": out_str,

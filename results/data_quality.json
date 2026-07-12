@@ -91,7 +91,7 @@
     "source_files": [
       "aapl_options.parquet"
     ],
-    "output": "data\\processed\\chain_clean.parquet",
+    "output": "data/processed/chain_clean.parquet",
     "total_rows": 714,
     "max_spread_pct": 0.5,
     "filters": {
