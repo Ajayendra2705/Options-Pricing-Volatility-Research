@@ -38,6 +38,7 @@ import numpy as np
 import pandas as pd
 
 from src.backtest.engine import Leg, run_hedged
+from src.backtest.metrics import merge_metrics
 from src.backtest.reconcile import build_positions, load_price_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -180,11 +181,12 @@ def run_alpha() -> dict:
 
     events = build_event_table(ret, path)
 
-    # merge into metrics.json
+    # merge into metrics.json (shared file; merge_metrics preserves the other
+    # days' blocks and enforces canonical key order -> byte-stable)
     mpath = RESULTS_DIR / "metrics.json"
-    metrics = json.loads(mpath.read_text()) if mpath.exists() else {}
-    metrics["alpha_regression"] = reg
-    metrics["event_table"] = {
+    block = {}
+    block["alpha_regression"] = reg
+    block["event_table"] = {
         "trade_window": [str(ret["date"].min().date()),
                          str(ret["date"].max().date())],
         "named_events_out_of_sample": NAMED_OOS_EVENTS,
@@ -199,8 +201,7 @@ def run_alpha() -> dict:
                 "short-vol-dominated days instead (e.g. 2023-06-22).",
         "days": events,
     }
-    with open(mpath, "w") as fh:
-        json.dump(metrics, fh, indent=2)
+    metrics = merge_metrics(block)
 
     print(f"alpha: beta {reg['beta']:+.3f} (t={reg['beta_t']:+.2f}), "
           f"alpha {reg['alpha']:+.5f}/day (t={reg['alpha_t']:+.2f}), "

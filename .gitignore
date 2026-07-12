@@ -35,6 +35,14 @@ data/processed/*
 # Results — ignore generated artifacts except explicit deliverables
 results/*
 !results/data_quality.json
+!results/report.html
+
+# Plots: regenerable, so ignored — except the three the README embeds
+!results/plots/
+results/plots/*
+!results/plots/gross_vs_net.png
+!results/plots/surface_3d_2023-06-14.png
+!results/plots/attribution_residuals.png
 
 # Jupyter
 .ipynb_checkpoints/

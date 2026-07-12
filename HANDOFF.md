@@ -355,9 +355,21 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 - Merged into `metrics.json` (byte-stable — verified). Wired into `main.py` after `run_alpha()`.
 - `tests/test_stats.py` (8): NW-SE lag-0 == √(γ₀/T), autocorrelation inflates HAC SE, Sharpe formula, HAC-t == mean/SE, bootstrap seeded+ordered+brackets-true-SR, IS/OOS split, real gate (Sharpe<0, finite CI, DSR deferred). Suite: **643 passed**.
 
-### Day 29 — report.html + README (Next)
+### Day 29 — report.html + README (Done)
 
-**Goal (PLAN):** single-page HTML report (surface + PnL attribution + return-distribution/event/stats) + README polish. Then Day 30 = final v1 ship.
+**Status:** Completed. `src/report.py` — single-page `results/report.html` + README headline block, **both generated entirely from `results/*.json`** (PLAN: "pull numbers from metrics.json, no hand-typing"). Wired as `main.py --stage report` (runs in `all`).
+- **Self-contained HTML** (462 KB): plots embedded as base64 data URIs, CSS inline, no `<script>`, no external `http(s)` refs — opens offline, tested (`test_html_is_self_contained`). Light/dark aware, responsive tables.
+- **9 sections:** headline cards → data/surface (arb + QC gates) → signal → attribution gate → cost table (all 10 positions) → capital/margin/returns → distribution at 3 horizons → alpha regression + event table → statistical honesty → limitations. Every number formatted from a JSON field; prose pulled from JSON is HTML-escaped (tested).
+- **README** rewritten on the disproof thesis; auto-block injected between `<!-- AUTO:METRICS -->` markers by `update_readme()` (idempotent, refuses to run without markers → cannot clobber hand-written prose). 3 plots un-gitignored so they render on GitHub (`gross_vs_net`, `surface_3d_2023-06-14`, `attribution_residuals`); `results/report.html` now tracked.
+
+**Bug found and fixed (pre-existing, Day 26–28):** `run_metrics()` **overwrote** `metrics.json` wholesale, silently dropping the Day-27 (`alpha_regression`, `event_table`) and Day-28 (`statistical_honesty`) blocks whenever it ran on its own. Pipeline order hid it; the test suite (which calls runners independently) exposed it — and the **committed metrics.json was already missing the Day-27 blocks**. Fixed at source: `merge_metrics()` in `metrics.py` (shared by all three runners) merges instead of overwriting **and** re-serializes in a canonical `METRICS_KEY_ORDER`, so bytes depend only on the numbers, not on which runner wrote first. Verified: deleting `metrics.json` and rebuilding from scratch reproduces both `metrics.json` and `report.html` **bit-identically** vs an in-place rerun.
+
+- Tests: `tests/test_report.py` (15) — formatters, base64 roundtrip, headline numbers trace to JSON, all sections + 10 cost rows present, self-contained, no timestamp + deterministic, JSON prose escaped, README block idempotent / marker-guarded / current, tracked `report.html` reproduces from current JSONs. Plus 2 regression tests in `test_metrics.py` (merge preserves other days' blocks; key order canonical regardless of call order).
+- Suite: **660 passed**. Verify suite: **10/10**.
+
+### Day 30 — Full reproduce + lock v1 (Next)
+
+**Goal (PLAN):** `python main.py` raw→results end-to-end on a clean clone, fixed seed, all tests green, CI passes → tag `v1`.
 
 See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/PLAN.md) for full Day 2–30 sequence.
 
@@ -387,5 +399,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-08 — Day 28 completed: Sharpe honesty → metrics.json (Sharpe −1.70, NW t=−0.86, bootstrap 95% CI [−7.43,+2.00] spans zero, IS/OOS haircut −6.35; Deflated Sharpe deferred to v2 per pre-registration). Suite: 643 passed.*
+*Last updated: 2026-07-12 — Day 29 completed: `results/report.html` + README auto-block, both generated from `results/*.json` (no hand-typed numbers); fixed a pre-existing metrics.json clobber bug (merge + canonical key order → byte-stable). Suite: 660 passed, verify 10/10.*
 

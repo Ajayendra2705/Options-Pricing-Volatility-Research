@@ -11,6 +11,7 @@ Day 26 — Return-distribution statistics tests.
    per_trade blocks, finite, net Sharpe negative (returns negative after costs).
 """
 
+import json
 import numpy as np
 import pytest
 from scipy import stats as sps
@@ -19,6 +20,8 @@ from src.backtest.metrics import (
     cvar,
     distribution_stats,
     max_drawdown,
+    merge_metrics,
+    METRICS_KEY_ORDER,
     sortino,
     TRADING_DAYS,
 )
@@ -130,3 +133,39 @@ def test_real_data_metrics():
     assert m["horizons"]["daily"]["sharpe"] < 0
     # denominator carried through from Day 25
     assert "Reg-T margin" in m["denominator"]
+
+
+# ── metrics.json is shared: merging must not drop the other days' blocks ─────
+
+def test_merge_metrics_preserves_other_days_blocks(tmp_path):
+    """Regression: run_metrics used to OVERWRITE metrics.json, silently dropping
+    the Day-27 (alpha_regression/event_table) and Day-28 (statistical_honesty)
+    blocks whenever it ran on its own."""
+    merge_metrics({"alpha_regression": {"beta": -1.59},
+                   "statistical_honesty": {"sharpe": {"nw_tstat": -0.86}}},
+                  results_dir=tmp_path)
+    merged = merge_metrics({"horizons": {"daily": {"sharpe": -1.7}}},
+                           results_dir=tmp_path)
+
+    assert merged["alpha_regression"]["beta"] == -1.59            # not dropped
+    assert merged["statistical_honesty"]["sharpe"]["nw_tstat"] == -0.86
+    assert merged["horizons"]["daily"]["sharpe"] == -1.7          # own key fresh
+    assert json.loads((tmp_path / "metrics.json").read_text()) == merged
+
+
+def test_merge_metrics_key_order_is_canonical_regardless_of_call_order(tmp_path):
+    """Byte-stability (Day-30 gate): the file's key order must depend only on
+    METRICS_KEY_ORDER, never on which runner wrote first."""
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(), b.mkdir()
+    blocks = {"statistical_honesty": {"x": 1}, "horizons": {"y": 2},
+              "alpha_regression": {"z": 3}}
+
+    for k, v in blocks.items():                      # stats -> horizons -> alpha
+        merge_metrics({k: v}, results_dir=a)
+    for k in reversed(list(blocks)):                 # reverse order
+        merge_metrics({k: blocks[k]}, results_dir=b)
+
+    assert (a / "metrics.json").read_bytes() == (b / "metrics.json").read_bytes()
+    keys = list(json.loads((a / "metrics.json").read_text()))
+    assert keys == [k for k in METRICS_KEY_ORDER if k in blocks]

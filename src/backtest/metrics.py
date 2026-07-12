@@ -41,6 +41,32 @@ TRADING_DAYS = 252
 WEEKS = 52
 CVAR_ALPHA = 0.05
 
+# metrics.json is written by three runners (Day 26 here, Day 27 alpha, Day 28
+# stats), each owning its own top-level keys.  They MERGE rather than overwrite —
+# a bare overwrite drops the other days' blocks whenever a runner is called on
+# its own — and the merged file is always re-serialized in this canonical key
+# order, so the bytes depend only on the numbers, never on the order the runners
+# happened to be called in.  (Byte-stability is a Day-30 gate.)
+METRICS_KEY_ORDER = [
+    "capital_base_usd", "denominator", "risk_free_rate", "return_convention",
+    "net_pnl_usd", "net_return_on_capital", "horizons", "notes",
+    "alpha_regression", "event_table", "statistical_honesty",
+]
+
+
+def merge_metrics(block: dict, results_dir: Path = None) -> dict:
+    """Merge `block` into results/metrics.json, canonically ordered. Returns it."""
+    rdir = RESULTS_DIR if results_dir is None else results_dir
+    rdir.mkdir(exist_ok=True)
+    mpath = rdir / "metrics.json"
+    merged = json.loads(mpath.read_text()) if mpath.exists() else {}
+    merged.update(block)
+    ordered = {k: merged[k] for k in METRICS_KEY_ORDER if k in merged}
+    ordered.update({k: v for k, v in sorted(merged.items()) if k not in ordered})
+    with open(mpath, "w") as fh:
+        json.dump(ordered, fh, indent=2)
+    return ordered
+
 
 # ── primitives ───────────────────────────────────────────────────────────────
 
@@ -165,9 +191,7 @@ def run_metrics() -> dict:
                     "(skew/kurtosis) still describe the payoff.",
         },
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "metrics.json", "w") as fh:
-        json.dump(metrics, fh, indent=2)
+    metrics = merge_metrics(metrics)
 
     d = metrics["horizons"]["daily"]
     print(f"metrics: daily Sharpe {d['sharpe']:.2f} (ann), "

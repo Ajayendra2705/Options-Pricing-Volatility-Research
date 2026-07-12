@@ -34,6 +34,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src.backtest.metrics import merge_metrics
 from src.backtest.reconcile import build_positions, load_price_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -177,10 +178,7 @@ def run_stats() -> dict:
     }
 
     mpath = RESULTS_DIR / "metrics.json"
-    metrics = json.loads(mpath.read_text()) if mpath.exists() else {}
-    metrics["statistical_honesty"] = stats
-    with open(mpath, "w") as fh:
-        json.dump(metrics, fh, indent=2)
+    metrics = merge_metrics({"statistical_honesty": stats})
 
     print(f"stats: Sharpe {sh['sharpe_annualized']:+.2f} "
           f"(NW SE {sh['nw_se']:.2f}, t {sh['nw_tstat']:+.2f}, lags {n_lags}); "

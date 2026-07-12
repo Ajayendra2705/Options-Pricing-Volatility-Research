@@ -67,9 +67,11 @@ def main():
         run_alpha()
         run_stats()
 
-    # TODO: Implement stages
-    # if args.stage in ("all", "report"):
-    #     generate_report()
+    if args.stage in ("all", "report"):
+        # Day 29: static single-page report + README headline block, both
+        # generated from results/*.json (no hand-typed numbers)
+        from src.report import run_report
+        run_report()
 
     print("Done.")
 
