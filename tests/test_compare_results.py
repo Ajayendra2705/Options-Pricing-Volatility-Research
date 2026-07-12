@@ -74,6 +74,47 @@ def test_nested_path_is_reported():
     assert out == [f"/horizons/daily/sharpe: -1.7 -> -2.5 (rel 3.20e-01)"]
 
 
+# ── the conclusions gate ────────────────────────────────────────────────────
+
+def test_conclusions_hold_on_the_real_results():
+    assert cr.check_conclusions() == []
+
+
+def test_conclusions_gate_catches_a_flipped_claim(tmp_path):
+    """A result can survive a tolerance check and still break a claim. The gate
+    exists for exactly that case, so prove it fails when a claim flips."""
+    import json
+    import shutil
+
+    for f in (PROJECT_ROOT / "results").glob("*.json"):
+        shutil.copy(f, tmp_path / f.name)
+
+    costs = json.loads((tmp_path / "costs_summary.json").read_text())
+    costs["net_pnl"] = +100.0                      # the disproof would be false
+    (tmp_path / "costs_summary.json").write_text(json.dumps(costs))
+    broken = cr.check_conclusions(tmp_path)
+    assert any("net PnL is negative" in b for b in broken)
+
+    arb = json.loads((tmp_path / "arb_violations.json").read_text())
+    arb["butterfly"]["n_violations"] = 1           # surface no longer arb-free
+    (tmp_path / "arb_violations.json").write_text(json.dumps(arb))
+    broken = cr.check_conclusions(tmp_path)
+    assert any("butterfly" in b for b in broken)
+
+
+def test_conclusions_gate_catches_an_alpha_that_became_significant(tmp_path):
+    import json
+    import shutil
+
+    for f in (PROJECT_ROOT / "results").glob("*.json"):
+        shutil.copy(f, tmp_path / f.name)
+    m = json.loads((tmp_path / "metrics.json").read_text())
+    m["alpha_regression"]["alpha_t"] = 3.1         # would be a real edge
+    (tmp_path / "metrics.json").write_text(json.dumps(m))
+
+    assert any("no edge" in b for b in cr.check_conclusions(tmp_path))
+
+
 # ── real artifacts ──────────────────────────────────────────────────────────
 
 def test_committed_results_match_the_working_tree():

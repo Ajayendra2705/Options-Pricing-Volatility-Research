@@ -116,29 +116,38 @@ pip install -r requirements.txt
 python main.py            # ~90s: raw quotes -> surface -> backtest -> report.html
 ```
 
-Two claims, and they are deliberately different because only one of them is true:
+Two claims, deliberately separated, because they are not the same claim:
 
 - **Within a platform, the pipeline is byte-deterministic.** Rerunning it reproduces
   all 24 tracked artifacts (processed parquets, results JSONs, `report.html`)
-  bit-identically — no timestamps anywhere, fixed seed (`src/utils/seed.py`),
-  dependencies pinned to exact versions.
-- **Across platforms, the numbers match; the bytes do not.** The committed artifacts
-  are produced on Windows; on Linux the constrained optimizers land a few ulps apart
-  under a different BLAS (~1e-9 relative, propagating through the surface into every
-  downstream figure) and matplotlib rasterizes PNGs differently. So the cross-platform
-  gate is *numeric* equality to a stated tolerance, checked by
-  `scripts/compare_results.py --rtol 1e-6`, not byte equality. Claiming otherwise
-  would be claiming something the project does not deliver.
+  bit-identically — no timestamps anywhere, fixed seed, dependencies pinned exactly.
+- **Across platforms, the conclusions reproduce; the bytes do not, and the low
+  decimals do not either.** The committed artifacts are built on Windows. On Linux
+  the constrained SVI optimizers minimize a flat objective and settle on a slightly
+  different point of it under a different BLAS — about **1e-5 relative on a fitted
+  mark (~0.001 vol pts)**. That is then *amplified* wherever a result is a small
+  difference of large numbers: `gross_pnl` nets +$505 of short-vol legs against
+  −$502 of long-vol legs, so a one-cent move in a leg is a ~2% move in the headline
+  (observed: $3.751 on Windows, $3.823 on Linux — 7 cents apart). Net PnL, which is
+  not a cancellation, agrees to 7 cents in $415.
+
+  So the cross-platform gate is not byte equality and not a bare relative tolerance —
+  it is `scripts/compare_results.py`, which requires every number to land within a
+  stated tolerance (relative **or** absolute — dollars, not decimals) **and** requires
+  every *claim* the project makes to still hold: surface arb-free, attribution gate
+  passed, net PnL negative, Sharpe insignificant, bootstrap CI spanning zero, alpha
+  statistically zero. A number whose 8th decimal moved has reproduced. A number that
+  flipped a conclusion has not, whatever its relative error says.
 
 Raw-data immutability is enforced by a SHA256 manifest (`data/raw/manifest.json`).
 
 CI (ubuntu) does not just run tests. It verifies the manifest, **reproduces every
-result from the raw data**, asserts the reproduced numbers match the committed ones
-within tolerance, asserts the **test suite does not mutate any tracked artifact**
-(this repo has had that bug twice), asserts the pipeline is byte-deterministic on a
-rerun, runs the suite (670 tests), and finally runs `scripts/verify/` — independent
-re-derivations of the key results (finite-difference Greeks, Breeden–Litzenberger
-densities from Black prices, ledger identities), a second pair of eyes on the first.
+result from the raw data**, runs the gate above (numbers + claims), asserts the
+**test suite does not mutate any tracked artifact** (this repo has had that bug
+twice), asserts the pipeline is byte-deterministic on a rerun, runs the suite
+(673 tests), and finally runs `scripts/verify/` — independent re-derivations of the
+key results (finite-difference Greeks, Breeden–Litzenberger densities from Black
+prices, ledger identities), a second pair of eyes on the first.
 
 ## Status
 

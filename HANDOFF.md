@@ -382,7 +382,7 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 
 **CI upgraded** from "run pytest" to the full chain: verify SHA256 manifest → `python main.py` (reproduce every result from raw data) → `pytest` → `scripts/verify/run_all.py`.
 
-**v1 is shipped:** arb-free SVI surface + reconciling Greeks attribution + pre-registered delta-hedged backtest + tail-honest statistics + self-generating report, all reproducible from a clean clone. Headline: gross **+$3.87** → net **−$415.13** (−1.53% on $27,106 peak margin); Sharpe −1.70 with NW t = −0.86 and bootstrap 95% CI [−7.43, +2.00] spanning zero; alpha vs a delta-hedged VRP factor **statistically zero** (t = −0.95). The VRP is visible and not exploitable — the disproof, delivered.
+**v1 is shipped:** arb-free SVI surface + reconciling Greeks attribution + pre-registered delta-hedged backtest + tail-honest statistics + self-generating report, all reproducible from a clean clone. Headline (post-rebuild — see the drift note below; earlier Day 22–28 entries quote pre-rebuild figures): gross **+$3.75** − costs **$419.00** → net **−$415.25** (**−1.53%** on $27,106 peak margin); Sharpe −1.70 with NW t = −0.86 and bootstrap 95% CI [−7.43, +2.00] spanning zero; alpha vs a delta-hedged VRP factor **statistically zero** (t = −0.95). The VRP is visible and not exploitable — the disproof, delivered.
 
 ### Post-v1 — CI on Linux (Done)
 
@@ -390,11 +390,19 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 
 1. **`scripts/verify/` was not portable** despite HANDOFF claiming "paths portable": all 24 path constructions were `root + r"\data\processed\x.parquet"`, which on Linux is one backslash-laden *filename* → 7/10 scripts died with FileNotFoundError. Fixed to forward slashes (valid on both).
 2. **A Windows path was baked into a tracked artifact:** `data_quality.json` recorded `cleaning.output = "data\processed\chain_clean.parquet"`. Now `as_posix()`.
-3. **"Bit-identical" was only ever true per-platform.** On Linux the same pipeline reproduces the same *numbers* but not the same *bytes*: constrained optimizers land a few ulps apart under a different BLAS (~1e-9 relative, propagating through the surface into every downstream figure) and matplotlib rasterizes PNGs differently. The claim is now split honestly: **byte-determinism within a platform** (still gated, locally and in CI), **numeric equality across platforms** (`scripts/compare_results.py --rtol 1e-6`).
+3. **"Bit-identical" was only ever true per-platform — and the drift is far bigger than I first claimed.** On Linux the constrained SVI optimizers minimize a flat objective and settle on a different point of it under a different BLAS: **~1e-5 relative on a fitted mark (~0.001 vol pts)**, not the "~1e-9" asserted in the Day-30 part-1 commit message. **That figure was wrong** — read off stable quantities (min_g, RMSE) without checking the cancellation-sensitive ones. `gross_pnl` nets +$505 of short-vol legs against −$502 of long-vol legs, so a one-cent move in a leg is a **~2% move in the headline**: $3.751 (Windows) vs $3.823 (Linux). Net PnL, not a cancellation, agrees to 7 cents in $415.
 
-`scripts/compare_results.py`: recursive JSON compare — numbers within rtol pass, strings/structure/bools must match exactly (bool checked before the numeric branch, else `True == 1.0` would let a flipped arb-free flag through). `tests/test_compare_results.py` (8): float noise tolerated, real moves caught, Windows path caught, flipped bool caught, structure changes caught, and the tracked results are current.
+   Same mechanism explains why **the numbers moved at the Day-30 commit itself**: fixing the broken cleaning stage rebuilt the surface from raw data for the first time since Day 15, so gross went **+$3.873 → +$3.751** and net **−$415.13 → −$415.25**. The *stale* artifacts were the wrong ones; these are the pipeline's actual output. (v1 tag message and older HANDOFF entries quote the pre-rebuild figures — superseded by these.)
 
-**CI now gates:** manifest → `python main.py` → reproduced numbers match committed (rtol 1e-6) → **pytest does not mutate tracked artifacts** (sha256 snapshot before/after; this repo has had that bug twice) → pipeline byte-deterministic on rerun → 670 tests → verify suite 10/10.
+**Gate redesigned around what is actually invariant** (`scripts/compare_results.py`):
+- numbers must match within relative **OR** absolute tolerance (1e-3 / **$0.10** — dollars, not decimals, because relative error is meaningless on a cancellation);
+- **and every CLAIM must still hold**: surface arb-free (butterfly + calendar + interpolation + >95% within 1 volpt), attribution residual gates (<20% / <10%), net PnL negative, costs > gross, Sharpe insignificant (|t|<2), bootstrap CI spanning zero, alpha statistically zero, beta<0 (net long vol). A number whose 8th decimal moved has reproduced; a number that flipped a conclusion has not, whatever its relative error says.
+- Calibrated against the real observed Windows→Linux pairs: all pass; a 1% move in net PnL or a 0.15 move in Sharpe is caught.
+- Bools compared exactly, *before* the numeric branch — `True == 1.0`, so a flipped arb-free flag would otherwise slip through as float noise.
+
+`tests/test_compare_results.py` (11): BLAS noise tolerated, real moves caught, Windows path caught, flipped bool caught, structure changes caught, conclusions gate catches a positive net PnL / a butterfly violation / a significant alpha, tracked results current.
+
+**CI now gates:** manifest → `python main.py` → numbers within tolerance **+ claims hold** → **pytest does not mutate tracked artifacts** (sha256 snapshot before/after; this repo has had that bug twice) → pipeline byte-deterministic on rerun → 673 tests → verify suite 10/10.
 
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 

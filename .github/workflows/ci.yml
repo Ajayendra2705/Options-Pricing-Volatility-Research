@@ -32,13 +32,15 @@ jobs:
     - name: Reproduce every result from raw data
       run: python main.py
 
-    # Cross-platform: the numbers must match the committed ones. Bytes cannot —
-    # the artifacts are committed from Windows, and floats land a few ulps apart
-    # under a different BLAS while matplotlib rasterizes PNGs differently. So the
-    # gate is numeric equality to a stated tolerance, not byte equality (which is
-    # checked per-platform, below and locally).
-    - name: Reproduced numbers must match the committed results (rtol 1e-6)
-      run: python scripts/compare_results.py --rtol 1e-6
+    # Cross-platform, bytes cannot match: the artifacts are committed from Windows,
+    # the constrained optimizers settle a different point of a flat optimum under a
+    # different BLAS (~1e-5 on a fitted mark), and matplotlib rasterizes PNGs
+    # differently. Downstream, that is amplified wherever a result is a small
+    # difference of large numbers (gross_pnl ~ $3.8 nets +$505 against -$502, so a
+    # cent moves it 2%). Hence: numbers within tolerance (relative OR absolute), and
+    # — the check that actually matters — every CLAIM the project makes still holds.
+    - name: Reproduced numbers match the committed results (rtol 1e-3 / atol $0.10)
+      run: python scripts/compare_results.py --rtol 1e-3 --atol 0.10 --conclusions
 
     - name: Snapshot artifacts before tests
       run: sha256sum results/*.json data/processed/*.parquet > /tmp/before.sha
