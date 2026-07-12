@@ -462,7 +462,7 @@ def main():
     }
 
     out_path = RESULTS_DIR / "data_quality.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", newline="\n") as f:
         json.dump(output, f, indent=2, default=str)
 
     print(f"\n-> Wrote {out_path}")

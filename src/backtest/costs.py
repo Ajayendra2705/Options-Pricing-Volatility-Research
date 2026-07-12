@@ -196,7 +196,7 @@ def run_costs(params: dict | None = None) -> dict:
             cost_total / sum(r["premium"] for r in reports)),
     }
     RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "costs_summary.json", "w") as fh:
+    with open(RESULTS_DIR / "costs_summary.json", "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
     _plot_gross_vs_net(reports, summary)

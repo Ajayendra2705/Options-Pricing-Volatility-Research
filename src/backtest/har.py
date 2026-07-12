@@ -186,7 +186,7 @@ def run_har(ohlc_path: Path | None = None) -> pd.DataFrame:
         "oos_expanding": oos,
     }
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(RESULTS_DIR / "har_stats.json", "w") as f:
+    with open(RESULTS_DIR / "har_stats.json", "w", newline="\n") as f:
         json.dump(stats, f, indent=2)
 
     print(f"HAR: n={fit['n']} in-sample R2={fit['r2']:.3f} "

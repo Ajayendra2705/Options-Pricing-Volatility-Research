@@ -187,7 +187,7 @@ def run_cleaning(
         "output": out_str,
         **report,
     }
-    dq_path.write_text(json.dumps(dq, indent=2, default=str))
+    dq_path.write_text(json.dumps(dq, indent=2, default=str), newline="\n")
 
     print(
         f"clean_chain: {report['total_rows']} raw -> {report['total_clean']} clean "

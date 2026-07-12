@@ -155,7 +155,7 @@ def run_reconcile() -> dict:
         "total_residual": float(sum(r["residual_sum"] for r in reports)),
     }
     RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "attribution_reconcile.json", "w") as fh:
+    with open(RESULTS_DIR / "attribution_reconcile.json", "w", newline="\n") as fh:
         json.dump(report, fh, indent=2)
 
     import matplotlib

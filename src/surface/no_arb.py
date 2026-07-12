@@ -258,7 +258,7 @@ def run_constrained_refit(surface_path: Path | None = None) -> pd.DataFrame:
         ],
     }
     log_path = PROJECT_ROOT / "results" / "svi_butterfly_log.json"
-    log_path.write_text(json.dumps(log, indent=2))
+    log_path.write_text(json.dumps(log, indent=2), newline="\n")
 
     print(f"constrained refit: {len(ok)}/{len(fits)} fitted | "
           f"pre-violations {log['n_pre_violations']} | post-violations {log['n_post_violations']}")
@@ -381,7 +381,7 @@ def run_arb_check(surface_path: Path | None = None) -> dict:
         ],
     }
     path = PROJECT_ROOT / "results" / "arb_violations.json"
-    path.write_text(json.dumps(report, indent=2))
+    path.write_text(json.dumps(report, indent=2), newline="\n")
 
     print(f"joint fit: {len(ok)} slices | butterfly violations {bfly_bad} | "
           f"calendar pairs violated {report['calendar']['n_pairs_violated']}"

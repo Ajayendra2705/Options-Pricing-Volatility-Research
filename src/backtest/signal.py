@@ -144,7 +144,7 @@ def run_signal(ohlc_path: Path | None = None) -> pd.DataFrame:
             for k, v in ok.groupby("bucket")["signal_raw"].mean().items()},
     }
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(RESULTS_DIR / "signal_summary.json", "w") as f:
+    with open(RESULTS_DIR / "signal_summary.json", "w", newline="\n") as f:
         json.dump(summary, f, indent=2)
 
     print(f"signal: {len(ok)}/{len(tab)} slices, "

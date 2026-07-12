@@ -300,7 +300,7 @@ def run_assembly(fits_path: Path | None = None) -> dict:
         "dates": per_date,
     }
     qc_path = PROJECT_ROOT / "results" / "surface_qc.json"
-    qc_path.write_text(json.dumps(report, indent=2))
+    qc_path.write_text(json.dumps(report, indent=2), newline="\n")
 
     n_plots = 0
     for vs in surfaces.values():

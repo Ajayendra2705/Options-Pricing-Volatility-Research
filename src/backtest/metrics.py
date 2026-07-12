@@ -63,7 +63,7 @@ def merge_metrics(block: dict, results_dir: Path = None) -> dict:
     merged.update(block)
     ordered = {k: merged[k] for k in METRICS_KEY_ORDER if k in merged}
     ordered.update({k: v for k, v in sorted(merged.items()) if k not in ordered})
-    with open(mpath, "w") as fh:
+    with open(mpath, "w", newline="\n") as fh:
         json.dump(ordered, fh, indent=2)
     return ordered
 

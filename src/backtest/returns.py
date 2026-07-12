@@ -231,7 +231,7 @@ def run_returns(params: dict | None = None) -> dict:
         "n_bars": len(out),
     }
     RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "returns_summary.json", "w") as fh:
+    with open(RESULTS_DIR / "returns_summary.json", "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
     _plot(out, summary)

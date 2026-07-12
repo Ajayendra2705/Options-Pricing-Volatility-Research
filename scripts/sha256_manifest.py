@@ -108,7 +108,7 @@ def main():
     else:
         print(f"Generating manifest for: {data_dir}")
         manifest = generate_manifest(data_dir)
-        with open(manifest_path, "w") as f:
+        with open(manifest_path, "w", newline="\n") as f:
             json.dump(manifest, f, indent=2)
         print(f"\n-> Wrote {manifest_path}")
         print(f"  {len(manifest['files'])} file(s) hashed.")

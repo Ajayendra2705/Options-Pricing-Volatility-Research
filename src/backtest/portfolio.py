@@ -296,7 +296,7 @@ def run_portfolio(params: dict | None = None) -> dict:
         "n_bars": len(portfolio_df),
     }
     RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "portfolio_summary.json", "w") as fh:
+    with open(RESULTS_DIR / "portfolio_summary.json", "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
     # ── 7. plot ──────────────────────────────────────────────────────────
