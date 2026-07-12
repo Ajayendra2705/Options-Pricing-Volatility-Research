@@ -1,0 +1,8 @@
+# The pipeline writes LF (report.html, README's auto-block, JSONs). Without this,
+# git checks out CRLF on Windows and a reproduce run shows the tree as dirty even
+# though the bytes it produced are correct — pin text to LF so "clean clone ->
+# python main.py -> no diff" is a real check, not a line-ending artifact.
+* text=auto eol=lf
+
+*.png binary
+*.parquet binary
