@@ -116,16 +116,29 @@ pip install -r requirements.txt
 python main.py            # ~90s: raw quotes -> surface -> backtest -> report.html
 ```
 
-- Every tracked output (24 artifacts: processed parquets, results JSONs, `report.html`)
-  is **bit-identical across runs** — no timestamps anywhere, fixed seed
-  (`src/utils/seed.py`), dependencies pinned to exact versions.
-- Raw data immutability is enforced by a SHA256 manifest (`data/raw/manifest.json`),
-  verified in CI.
-- CI does not just run tests: it verifies the manifest, **reproduces every result from
-  the raw data**, runs the suite (660 tests), and then runs `scripts/verify/` — a set
-  of independent re-derivations of the key results (finite-difference Greeks,
-  Breeden–Litzenberger densities from Black prices, ledger identities), a second pair
-  of eyes on the first.
+Two claims, and they are deliberately different because only one of them is true:
+
+- **Within a platform, the pipeline is byte-deterministic.** Rerunning it reproduces
+  all 24 tracked artifacts (processed parquets, results JSONs, `report.html`)
+  bit-identically — no timestamps anywhere, fixed seed (`src/utils/seed.py`),
+  dependencies pinned to exact versions.
+- **Across platforms, the numbers match; the bytes do not.** The committed artifacts
+  are produced on Windows; on Linux the constrained optimizers land a few ulps apart
+  under a different BLAS (~1e-9 relative, propagating through the surface into every
+  downstream figure) and matplotlib rasterizes PNGs differently. So the cross-platform
+  gate is *numeric* equality to a stated tolerance, checked by
+  `scripts/compare_results.py --rtol 1e-6`, not byte equality. Claiming otherwise
+  would be claiming something the project does not deliver.
+
+Raw-data immutability is enforced by a SHA256 manifest (`data/raw/manifest.json`).
+
+CI (ubuntu) does not just run tests. It verifies the manifest, **reproduces every
+result from the raw data**, asserts the reproduced numbers match the committed ones
+within tolerance, asserts the **test suite does not mutate any tracked artifact**
+(this repo has had that bug twice), asserts the pipeline is byte-deterministic on a
+rerun, runs the suite (670 tests), and finally runs `scripts/verify/` — independent
+re-derivations of the key results (finite-difference Greeks, Breeden–Litzenberger
+densities from Black prices, ledger identities), a second pair of eyes on the first.
 
 ## Status
 

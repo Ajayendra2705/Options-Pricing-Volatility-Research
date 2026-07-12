@@ -384,6 +384,18 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 
 **v1 is shipped:** arb-free SVI surface + reconciling Greeks attribution + pre-registered delta-hedged backtest + tail-honest statistics + self-generating report, all reproducible from a clean clone. Headline: gross **+$3.87** → net **−$415.13** (−1.53% on $27,106 peak margin); Sharpe −1.70 with NW t = −0.86 and bootstrap 95% CI [−7.43, +2.00] spanning zero; alpha vs a delta-hedged VRP factor **statistically zero** (t = −0.95). The VRP is visible and not exploitable — the disproof, delivered.
 
+### Post-v1 — CI on Linux (Done)
+
+**Status:** Completed. The first real CI run (ubuntu) failed, and it was right to. Windows-only development had hidden three things:
+
+1. **`scripts/verify/` was not portable** despite HANDOFF claiming "paths portable": all 24 path constructions were `root + r"\data\processed\x.parquet"`, which on Linux is one backslash-laden *filename* → 7/10 scripts died with FileNotFoundError. Fixed to forward slashes (valid on both).
+2. **A Windows path was baked into a tracked artifact:** `data_quality.json` recorded `cleaning.output = "data\processed\chain_clean.parquet"`. Now `as_posix()`.
+3. **"Bit-identical" was only ever true per-platform.** On Linux the same pipeline reproduces the same *numbers* but not the same *bytes*: constrained optimizers land a few ulps apart under a different BLAS (~1e-9 relative, propagating through the surface into every downstream figure) and matplotlib rasterizes PNGs differently. The claim is now split honestly: **byte-determinism within a platform** (still gated, locally and in CI), **numeric equality across platforms** (`scripts/compare_results.py --rtol 1e-6`).
+
+`scripts/compare_results.py`: recursive JSON compare — numbers within rtol pass, strings/structure/bools must match exactly (bool checked before the numeric branch, else `True == 1.0` would let a flipped arb-free flag through). `tests/test_compare_results.py` (8): float noise tolerated, real moves caught, Windows path caught, flipped bool caught, structure changes caught, and the tracked results are current.
+
+**CI now gates:** manifest → `python main.py` → reproduced numbers match committed (rtol 1e-6) → **pytest does not mutate tracked artifacts** (sha256 snapshot before/after; this repo has had that bug twice) → pipeline byte-deterministic on rerun → 670 tests → verify suite 10/10.
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

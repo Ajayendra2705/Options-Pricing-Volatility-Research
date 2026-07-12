@@ -66,9 +66,11 @@ def compare(old, new, rtol: float, atol: float, path: str = "") -> list[str]:
             diffs += compare(o, n, rtol, atol, f"{path}[{i}]")
         return diffs
 
-    # bool is an int subclass — check it first, and never tolerance-compare it
+    # bool is an int subclass, so `True == 1.0` — check it first and compare
+    # exactly, or a flipped arb-free flag could slip through as float noise
     if isinstance(old, bool) or isinstance(new, bool):
-        return [] if old == new else [f"{path}: {old} -> {new}"]
+        same = isinstance(old, bool) and isinstance(new, bool) and old == new
+        return [] if same else [f"{path}: {old!r} -> {new!r}"]
 
     if isinstance(old, (int, float)) and isinstance(new, (int, float)):
         if math.isnan(old) and math.isnan(new):
