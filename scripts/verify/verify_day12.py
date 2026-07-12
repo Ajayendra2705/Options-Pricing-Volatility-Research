@@ -22,8 +22,8 @@ def g_fd(k, p, h=1e-5):
     return (1 - k * wp / (2 * w)) ** 2 - (wp**2 / 4) * (1 / w + 0.25) + wpp / 2
 
 # 1. parquet + log consistency
-fits = pd.read_parquet(root + r"\data\processed\svi_params_constrained.parquet")
-log = json.load(open(root + r"\results\svi_butterfly_log.json"))
+fits = pd.read_parquet(root + "/data/processed/svi_params_constrained.parquet")
+log = json.load(open(root + "/results/svi_butterfly_log.json"))
 ok = fits[fits["fit_ok"] == True]
 k = np.linspace(-1.5, 1.5, 2001)
 gmins = [g_fd(k, (f.a, f.b, f.rho, f.m, f.sigma)).min() for f in ok.itertuples()]

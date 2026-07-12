@@ -19,16 +19,16 @@ from scipy.special import erf
 root = ROOT
 rng = np.random.default_rng(3)
 
-raw = pd.read_parquet(root + r"\data\raw\aapl_options.parquet")
-chain = pd.read_parquet(root + r"\data\processed\chain_clean.parquet")
-fwd = pd.read_parquet(root + r"\data\processed\forwards.parquet")
-surf = pd.read_parquet(root + r"\data\processed\iv_surface.parquet")
-svi = pd.read_parquet(root + r"\data\processed\svi_params.parquet")
-joint = pd.read_parquet(root + r"\data\processed\svi_params_joint.parquet")
-dq = json.load(open(root + r"\results\data_quality.json"))
-arb = json.load(open(root + r"\results\arb_violations.json"))
-qc = json.load(open(root + r"\results\surface_qc.json"))
-bfly = json.load(open(root + r"\results\svi_butterfly_log.json"))
+raw = pd.read_parquet(root + "/data/raw/aapl_options.parquet")
+chain = pd.read_parquet(root + "/data/processed/chain_clean.parquet")
+fwd = pd.read_parquet(root + "/data/processed/forwards.parquet")
+surf = pd.read_parquet(root + "/data/processed/iv_surface.parquet")
+svi = pd.read_parquet(root + "/data/processed/svi_params.parquet")
+joint = pd.read_parquet(root + "/data/processed/svi_params_joint.parquet")
+dq = json.load(open(root + "/results/data_quality.json"))
+arb = json.load(open(root + "/results/arb_violations.json"))
+qc = json.load(open(root + "/results/surface_qc.json"))
+bfly = json.load(open(root + "/results/svi_butterfly_log.json"))
 
 # --- A. cleaning invariants ---------------------------------------------------
 assert (chain["bid"] > 0).all(), "zero/neg bid survived"

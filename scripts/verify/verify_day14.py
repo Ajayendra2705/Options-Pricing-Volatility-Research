@@ -33,9 +33,9 @@ def norm_cdf(x):
     return 0.5 * (1.0 + np.vectorize(erf)(np.asarray(x) / np.sqrt(2.0)))
 
 
-fits = pd.read_parquet(root + r"\data\processed\svi_params_joint.parquet")
-fwd = pd.read_parquet(root + r"\data\processed\forwards.parquet")
-market = pd.read_parquet(root + r"\data\processed\iv_surface.parquet")
+fits = pd.read_parquet(root + "/data/processed/svi_params_joint.parquet")
+fwd = pd.read_parquet(root + "/data/processed/forwards.parquet")
+market = pd.read_parquet(root + "/data/processed/iv_surface.parquet")
 surfaces = build_surfaces(fits, fwd)
 ok = fits[fits["fit_ok"] == True]
 
@@ -120,7 +120,7 @@ print(f"3. BL density, 15 interpolated slices: min {worst_dmin:+.2e}, "
 assert worst_dmin > -1e-8 and worst_mass < 5e-3 and worst_mean < 5e-3
 
 # 4. qc json vs fresh residual recompute
-qc = json.load(open(root + r"\results\surface_qc.json"))
+qc = json.load(open(root + "/results/surface_qc.json"))
 assert qc["n_dates"] == len(surfaces) == 5
 for d in qc["dates"]:
     date = pd.Timestamp(d["date"])

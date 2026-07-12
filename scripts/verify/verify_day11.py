@@ -23,7 +23,7 @@ def g_fd(k, p, h=1e-5):
 k = np.linspace(-1.4, 1.4, 1401)
 cases = {"vogt": (-0.0410, 0.1331, 0.3060, 0.3586, 0.4153),
          "benign": (0.015, 0.35, -0.65, 0.05, 0.25)}
-fits = pd.read_parquet(ROOT + r"\data\processed\svi_params.parquet")
+fits = pd.read_parquet(ROOT + "/data/processed/svi_params.parquet")
 for i, f in fits[fits["fit_ok"]].iterrows():
     cases[f"real{i}"] = (f["a"], f["b"], f["rho"], f["m"], f["sigma"])
 
@@ -57,7 +57,7 @@ for i, f in fits[fits["fit_ok"]].iterrows():
               f"(min_dens={dens.min():+.1e}) and correctly FLAGGED by detection")
 
 # BL density checks on the AUTHORITATIVE joint fits (T from table, F=1)
-fits = pd.read_parquet(ROOT + r"\data\processed\svi_params_joint.parquet")
+fits = pd.read_parquet(ROOT + "/data/processed/svi_params_joint.parquet")
 print("\njoint-fit densities (BL from Black calls):")
 bad = 0
 for i, f in fits[fits["fit_ok"]].iterrows():

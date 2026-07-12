@@ -6,8 +6,8 @@ formulas, no src.surface.svi import."""
 import numpy as np, pandas as pd
 
 root = ROOT
-fits = pd.read_parquet(root + r"\data\processed\svi_params.parquet")
-surf = pd.read_parquet(root + r"\data\processed\iv_surface.parquet")
+fits = pd.read_parquet(root + "/data/processed/svi_params.parquet")
+surf = pd.read_parquet(root + "/data/processed/iv_surface.parquet")
 ok_s = surf[surf["status"] == "ok"]
 
 def w_svi(k, a, b, rho, m, s):          # inline raw SVI

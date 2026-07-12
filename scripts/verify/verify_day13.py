@@ -42,7 +42,7 @@ def call_norm(k, w):
     return norm_cdf(d1) - np.exp(k) * norm_cdf(d1 - s)
 
 
-fits = pd.read_parquet(root + r"\data\processed\svi_params_joint.parquet")
+fits = pd.read_parquet(root + "/data/processed/svi_params_joint.parquet")
 ok = fits[fits["fit_ok"] == True].copy()
 print(f"fitted slices: {len(ok)}")
 
@@ -74,7 +74,7 @@ print(f"3. call-price monotonicity: max C(T_short)-C(T_long) = {worst_c:+.2e} "
 assert worst_w <= 0 and worst_c <= 1e-12
 
 # 4. json consistency
-rep = json.load(open(root + r"\results\arb_violations.json"))
+rep = json.load(open(root + "/results/arb_violations.json"))
 assert rep["n_slices_fitted"] == len(ok)
 assert rep["butterfly"]["n_violations"] == int((~ok["arb_free"].astype(bool)).sum()) == 0
 assert rep["calendar"]["n_pairs_checked"] == n_pairs

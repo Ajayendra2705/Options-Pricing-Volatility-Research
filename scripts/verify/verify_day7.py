@@ -2,8 +2,8 @@ from pathlib import Path as _P
 ROOT = str(_P(__file__).resolve().parents[2])
 import pandas as pd, numpy as np
 root = ROOT
-fwd = pd.read_parquet(root + r"\data\processed\forwards.parquet")
-ch = pd.read_parquet(root + r"\data\processed\chain_clean.parquet")
+fwd = pd.read_parquet(root + "/data/processed/forwards.parquet")
+ch = pd.read_parquet(root + "/data/processed/chain_clean.parquet")
 
 # 1. independent recompute: single most-ATM strike parity, no module code
 errs = []
