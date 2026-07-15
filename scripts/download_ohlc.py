@@ -42,29 +42,48 @@ def query(sql: str, retries: int = 8) -> list[dict]:
     raise RuntimeError(last)
 
 
-def download(ticker: str, start: str, end: str) -> pd.DataFrame:
-    # Month-sized BETWEEN windows: wide ranges hit the API's server-side
-    # query deadline ("context deadline exceeded"). Each month is cached to
-    # disk immediately so an interrupted run resumes instead of restarting
-    # (the API throttles hard; full pulls take tens of minutes).
+def _windows(start: str, end: str, chunk_days: int):
+    """Yield (win_start, win_end, cache_key) BETWEEN windows.
+
+    chunk_days == 0 → calendar-month windows (original behaviour; fine for AAPL).
+    chunk_days  > 0 → fixed N-day windows. SPY's ohlcv rows are far denser to
+    scan, so a month-sized BETWEEN blows the API's server-side deadline
+    ("context deadline exceeded" → status Error, partial rows); ~7-day windows
+    complete in ~1.5s with status Success. Verified 2026-07-15.
+    """
+    if chunk_days <= 0:
+        for m in pd.date_range(pd.Timestamp(start).replace(day=1), end, freq="MS"):
+            m_end = min(m + pd.offsets.MonthEnd(0), pd.Timestamp(end))
+            yield m, m_end, f"{m:%Y-%m}"
+    else:
+        s, e = pd.Timestamp(start), pd.Timestamp(end)
+        w = s
+        while w <= e:
+            w_end = min(w + pd.Timedelta(days=chunk_days - 1), e)
+            yield w, w_end, f"{w:%Y-%m-%d}"
+            w = w_end + pd.Timedelta(days=1)
+
+
+def download(ticker: str, start: str, end: str, chunk_days: int = 0) -> pd.DataFrame:
+    # Windowed BETWEEN queries: wide ranges hit the API's server-side query
+    # deadline. Each window is cached to disk immediately so an interrupted run
+    # resumes instead of restarting (the API throttles hard).
     cache_dir = PROJECT_ROOT / "data" / "processed" / "ohlc_cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     rows = []
-    months = pd.date_range(pd.Timestamp(start).replace(day=1), end, freq="MS")
-    for m in months:
-        m_end = min(m + pd.offsets.MonthEnd(0), pd.Timestamp(end))
-        cache = cache_dir / f"{ticker.lower()}_{m:%Y-%m}.json"
+    for w, w_end, key in _windows(start, end, chunk_days):
+        cache = cache_dir / f"{ticker.lower()}_{key}.json"
         if cache.exists():
             batch = pd.read_json(cache, convert_dates=False, dtype=False).to_dict("records")
-            print(f"  {m.date()} .. {m_end.date()}  (cached, {len(batch)})")
+            print(f"  {w.date()} .. {w_end.date()}  (cached, {len(batch)})")
         else:
             sql = (f"SELECT date, open, high, low, close, volume FROM ohlcv "
                    f"WHERE act_symbol='{ticker}' "
-                   f"AND date BETWEEN '{m.date()}' AND '{m_end.date()}'")
+                   f"AND date BETWEEN '{w.date()}' AND '{w_end.date()}'")
             batch = query(sql)
             pd.DataFrame(batch).to_json(cache, orient="records")
-            print(f"  {m.date()} .. {m_end.date()}  (+{len(batch)})")
+            print(f"  {w.date()} .. {w_end.date()}  (+{len(batch)})")
             time.sleep(1.5)                          # stay under the rate limit
         rows.extend(batch)
 
@@ -86,10 +105,16 @@ def main():
     ap.add_argument("--ticker", default="AAPL")
     ap.add_argument("--start", default="2022-01-01")
     ap.add_argument("--end", default="2023-06-30")
+    ap.add_argument("--chunk-days", type=int, default=0,
+                    help="Fixed N-day query windows (0=monthly). Use 7 for SPY: "
+                         "month windows hit the API deadline on the dense ohlcv scan.")
+    ap.add_argument("--out-dir", default=str(DATA_RAW),
+                    help="Output dir for <ticker>_ohlc.parquet (default data/raw).")
     args = ap.parse_args()
 
-    df = download(args.ticker, args.start, args.end)
-    out = DATA_RAW / f"{args.ticker.lower()}_ohlc.parquet"
+    df = download(args.ticker, args.start, args.end, args.chunk_days)
+    out = Path(args.out_dir) / f"{args.ticker.lower()}_ohlc.parquet"
+    Path(args.out_dir).mkdir(parents=True, exist_ok=True)
     df.to_parquet(out, index=False)
     print(f"{len(df)} rows {df['date'].min().date()} .. {df['date'].max().date()} -> {out}")
     print("Now run: python scripts/sha256_manifest.py   (update the manifest)")

@@ -35,11 +35,19 @@ MIN_BID = 0.0          # drop zero-bid
 GATE_DROP_THRESHOLD = 0.40  # proceed if total drop rate < 40%
 
 
-def find_data_files(data_dir: Path) -> list[Path]:
-    """Find parquet/csv files in data dir."""
+def find_data_files(data_dir: Path, pattern: str = "*") -> list[Path]:
+    """Find parquet/csv files in data dir matching `pattern`.
+
+    `pattern` restricts which files are loaded — e.g. "*options*" so that OHLC
+    bars sharing the directory are not concatenated into the option chain (the
+    same footgun Day 30 fixed in clean.py's CHAIN_GLOB). Default "*" preserves
+    the original all-files behaviour.
+    """
     exts = {".parquet", ".csv", ".parquet.gz"}
     files = []
-    for f in sorted(data_dir.rglob("*")):
+    for f in sorted(data_dir.rglob(pattern)):
+        if f.name == "manifest.json":
+            continue
         if f.is_file() and f.suffix in exts:
             files.append(f)
         elif f.is_file() and ".parquet" in f.name:
@@ -47,9 +55,9 @@ def find_data_files(data_dir: Path) -> list[Path]:
     return files
 
 
-def load_data(data_dir: Path) -> pd.DataFrame:
+def load_data(data_dir: Path, pattern: str = "*") -> pd.DataFrame:
     """Load all data files from data dir into single DataFrame."""
-    files = find_data_files(data_dir)
+    files = find_data_files(data_dir, pattern)
     if not files:
         print(f"ERROR: No data files found in {data_dir}")
         print("Download options dataset -> data/raw/")
@@ -399,6 +407,12 @@ def main():
                         help="Path to raw data directory")
     parser.add_argument("--spread-pct", type=float, default=MAX_SPREAD_PCT,
                         help=f"Max spread as fraction of mid (default {MAX_SPREAD_PCT})")
+    parser.add_argument("--pattern", type=str, default="*",
+                        help='Glob to select chain files (e.g. "*options*" to '
+                             'skip OHLC bars in the same dir). Default "*".')
+    parser.add_argument("--out", type=str, default=None,
+                        help="Output JSON path (default results/data_quality.json). "
+                             "Set for Phase-2 so v1's tracked artifact is not overwritten.")
     args = parser.parse_args()
 
     spread_pct = args.spread_pct
@@ -409,7 +423,7 @@ def main():
     print()
 
     # Load
-    df_raw = load_data(data_dir)
+    df_raw = load_data(data_dir, args.pattern)
 
     # Schema inspect
     print(f"\nColumns ({len(df_raw.columns)}): {list(df_raw.columns)}")
@@ -443,11 +457,13 @@ def main():
     # Gate decision
     print_gate_decision(quality, coverage)
 
-    # Write results/data_quality.json
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    # Write results/data_quality.json (or --out for Phase-2)
+    out_path = Path(args.out) if args.out else RESULTS_DIR / "data_quality.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     output = {
         "audit_timestamp": datetime.now().isoformat(),
         "data_dir": str(data_dir),
+        "file_pattern": args.pattern,
         "spread_threshold": MAX_SPREAD_PCT,
         "raw_schema": list(df_raw.columns),
         "column_mapping": mapping,
@@ -461,7 +477,6 @@ def main():
         ),
     }
 
-    out_path = RESULTS_DIR / "data_quality.json"
     with open(out_path, "w", newline="\n") as f:
         json.dump(output, f, indent=2, default=str)
 

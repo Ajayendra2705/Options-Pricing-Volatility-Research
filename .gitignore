@@ -39,6 +39,11 @@ results/*
 !results/data_quality.json
 !results/report.html
 
+# Phase-2 (SPY) gate deliverables — tracked like the v1 data_quality.json
+!results/phase2/
+results/phase2/*
+!results/phase2/data_quality_spy.json
+
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/
 results/plots/*

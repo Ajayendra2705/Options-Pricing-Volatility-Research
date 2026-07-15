@@ -1,0 +1,79 @@
+{
+  "audit_timestamp": "2026-07-15T23:13:18.547093",
+  "data_dir": "data\\phase2\\raw",
+  "file_pattern": "*options*",
+  "spread_threshold": 0.5,
+  "raw_schema": [
+    "date",
+    "act_symbol",
+    "expiration",
+    "strike",
+    "call_put",
+    "bid",
+    "ask",
+    "vol",
+    "delta",
+    "gamma",
+    "theta",
+    "vega",
+    "rho"
+  ],
+  "column_mapping": {
+    "date": "date",
+    "expiry": "expiration",
+    "strike": "strike",
+    "option_type": "call_put",
+    "bid": "bid",
+    "ask": "ask",
+    "volume": "vol"
+  },
+  "quality": {
+    "total_rows": 19604,
+    "filters": {
+      "missing_bid_ask": 0,
+      "zero_bid": 593,
+      "crossed_quotes": 316,
+      "wide_spread": 1452
+    },
+    "total_dropped": 1768,
+    "total_clean": 17836,
+    "drop_rate": 0.0902
+  },
+  "coverage_raw": {
+    "date_range": [
+      "2023-07-05",
+      "2024-06-28"
+    ],
+    "unique_dates_count": 155,
+    "date_gaps_gt_4d": [],
+    "unique_expiries_count": 146,
+    "strike_range": [
+      285.0,
+      680.0
+    ],
+    "unique_strikes_count": 292,
+    "option_type_counts": {
+      "Call": 9802,
+      "Put": 9802
+    }
+  },
+  "coverage_clean": {
+    "date_range": [
+      "2023-07-05",
+      "2024-06-28"
+    ],
+    "unique_dates_count": 155,
+    "date_gaps_gt_4d": [],
+    "unique_expiries_count": 146,
+    "strike_range": [
+      285.0,
+      680.0
+    ],
+    "unique_strikes_count": 292,
+    "option_type_counts": {
+      "Put": 9692,
+      "Call": 8144
+    }
+  },
+  "gate_decision": "PROCEED"
+}

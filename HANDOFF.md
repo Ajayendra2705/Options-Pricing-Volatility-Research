@@ -404,6 +404,28 @@ Tests (5, skip wholesale if real files missing): book matches pre-registration (
 
 **CI now gates:** manifest → `python main.py` → numbers within tolerance **+ claims hold** → **pytest does not mutate tracked artifacts** (sha256 snapshot before/after; this repo has had that bug twice) → pipeline byte-deterministic on rerun → 673 tests → verify suite 10/10.
 
+## Phase 2 — Pre-registered SPY expansion
+
+### Day 31 — SPY DATA GATE (Done)
+
+**Status:** Completed. Mirrors v1 Day 1 (gate only — surface/backtest fitting is Day 32+). Pre-registration in PLAN.md "Phase 2" section + commits 236ed1f / 862b923.
+
+**Feasibility resolved — GO (corrected twice, grounded on v1's own QC files):**
+- SPY *is* in DoltHub `post-no-preference/options` (coverage 2019-02-09 → 2026-07-14). The old `download_dolthub.py:28` comment "SPY/SPX not present" was **false** — that stale assumption is what pushed v1 to AAPL. Fixed.
+- The whole DB stores only **~3 near-term expiries (DTE 11–65) on a Mon/Wed/Fri cadence**, for every symbol — verified against v1's own `aapl_options.parquet` (5 dates × 3 expiries) and `surface_qc.json` ("n_slices_total:15" = 5 dates × 3, **not** 15 maturities). So M/W/F + 3-expiry are **v1's inherited constraints, not SPY regressions**. First "GO" (presence + 1-day count) and a panic "NO-GO" (measuring SPY vs the pre-reg's aspirational "daily/15-slice" wording) were both wrong; pre-reg wording corrected to match the DB.
+
+**Data pulled + isolated (v1 untouched):**
+- **Options:** `data/phase2/raw/spy_options.parquet` — 19,604 rows, **155 dates 2023-07-05 → 2024-06-28** (30× v1's 5 dates), via `scripts/download_options.py --ticker SPY` (date-by-date; aggregate queries time out on this API).
+- **OHLC:** `data/phase2/raw/spy_ohlc.parquet` — 623 daily bars **2022-01-03 → 2024-06-28** (~18 mo pre-history before the options window, for HAR/RV trailing). `download_ohlc.py` gained `--chunk-days` (**7 for SPY**: month-sized `BETWEEN` blows the ohlcv scan's server-side deadline → status Error/partial; 7-day windows return Success in ~1.5s) + `--out-dir`. Both additive; AAPL/v1 path (monthly, `data/raw`) unchanged.
+- **Isolation:** Phase-2 lives under `data/phase2/**` + `results/phase2/`, so v1's `data/raw/*options*` clean-glob and tracked artifacts are untouched. (Caught early: dropping `spy_options.parquet` into `data/raw` would have made `run_cleaning` concat AAPL+SPY — the same glob footgun Day 30 fixed.)
+
+**Gate: PROCEED.** `notebooks/00_data_audit.py` (gained additive `--pattern` + `--out` so it targets the options file and writes `results/phase2/data_quality_spy.json` **without** clobbering v1's `data_quality.json`): **9.0% drop rate** (< 40% gate; better than v1's 15%), **17,836 clean two-sided quotes** (29× v1's 607), 146 distinct expiries, 292 strikes. SHA256 manifest at `data/phase2/raw/manifest.json`.
+
+- Note: `forwards.py:41` hardcoded rate 5.25% **happens to fit** the SPY window (Fed held 5.25–5.50% across 2023-07→2024-06), so no rate change needed for Day 32.
+- `tests/test_phase2_data.py` (7): gate PROCEED + clean-count, options-only pattern, window bounds, two-sided-quote fraction, **M/W/F cadence**, **3 expiries/date**, OHLC covers window + pre-history + price-envelope sanity. Suite: **679 passed, 1 skipped** pre-OHLC → **all green with OHLC present.**
+
+**Next — Day 32:** run the surface stage on SPY into `data/phase2/processed` + `results/phase2` (the `run_*` writers hardcode `PROCESSED_DIR`/`RESULTS_DIR`, so this needs an output-dir seam or a phase2 driver — design it so v1's default paths never move), producing a SPY `surface_qc_spy.json`. Then Day 33+: RV/HAR/signal + **walk-forward folds across the 155 dates** (new vs v1).
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).
@@ -436,5 +458,5 @@ See [PLAN.md](file:///c:/Users/ajiit/Desktop/Future/Projects/Options%20Trading/P
 
 ---
 
-*Last updated: 2026-07-12 — **Days 29–30 completed, v1 tagged.** Day 29: `report.html` + README auto-block generated from `results/*.json`. Day 30: clean-clone reproduce gate GREEN (fresh clone → `python main.py` → zero diff), after it caught a broken `--stage clean` (dead since Day 16), tests writing into tracked artifacts, and CRLF/LF platform-dependent bytes. Raw data tracked; CI now reproduces the pipeline. Suite: 662 passed, verify 10/10.*
+*Last updated: 2026-07-16 — **Phase-2 Day 31 (SPY data gate) completed** on branch `phase2-spy`. SPY options (155 dates, 2023-07→2024-06) + OHLC (623 bars, pre-history for HAR) pulled into isolated `data/phase2/**` + `results/phase2/`, v1 untouched; gate PROCEED (9.0% drop); downloader/audit generalized additively; `tests/test_phase2_data.py` +7. Suite: 679 passed. Feasibility resolved GO — the DB's M/W/F/3-expiry shape is v1's own inherited shape, not a SPY regression. Next: Day 32 surface stage on SPY. Prior: 2026-07-12 — Days 29–30, v1 tagged (clean-clone reproduce gate GREEN).*
 
