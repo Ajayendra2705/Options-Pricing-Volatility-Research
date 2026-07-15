@@ -188,21 +188,35 @@ separate confirmatory study, NOT a re-run or cherry-pick over the v1 June-2023
 AAPL result. DSR trial count carries over from v1/v2 (all prior trials count).
 
 **Feasibility (RESOLVED GO):** DoltHub `post-no-preference/options` carries SPY —
-verified live: coverage 2019-02-09 → 2026-07-14, ~120 contracts/day with
-bid/ask/vol(IV). The old `download_dolthub.py` comment "SPY/SPX not present" was
-false and is fixed. API aggregates time out → pull date-by-date via
-`scripts/download_options.py`.
+verified live: coverage 2019-02-09 → 2026-07-14. The old `download_dolthub.py`
+comment "SPY/SPX not present" was false and is fixed. API aggregates time out →
+pull date-by-date via `scripts/download_options.py`.
 
-**Pre-registered spec (locked before pull):**
+**Known DB shape (applies to every symbol, incl. v1's AAPL):** this free DB stores
+only ~3 near-term expiries (DTE ~11–65) on a **Mon/Wed/Fri** cadence — NOT full
+daily chains. v1 itself shipped on exactly this shape (5 dates × 3 expiries;
+`surface_qc.json` "n_slices_total:15" = 5 dates × 3 expiries, not 15 maturities).
+So M/W/F + 3 expiries are inherited v1 constraints, not new limitations. The 12mo
+SPY pull realises this shape at scale: 155 dates × 3 expiries (30× v1's dates),
+95.4% valid two-sided quotes — which is what makes a real walk-forward possible.
+
+**Pre-registered spec (design locked; only data STRUCTURE inspected — cadence /
+expiry counts — before locking, no signal/PnL seen):**
 - Underlying: **SPY**
-- Window: **2023-07-01 → 2024-06-30** (12 months)
-- Design: **walk-forward, out-of-sample** — rolling train→test folds; params fit
-  in-sample only, evaluated on the held-out next fold. No refitting on test.
+- Window: **2023-07-01 → 2024-06-30** (12 months, 155 observation dates)
+- Cadence: hedge/rebalance on **each available observation date (~3×/week)** — the
+  same "hedge every data date" convention v1 used, not literal calendar-daily.
+- Surface: **3-slice** per date (the DB's 3 expiries) with the same butterfly +
+  calendar no-arb machinery as v1 — identical to v1's per-date slice count.
+- Design: **walk-forward, out-of-sample** across the 155 dates — rolling
+  train→test folds; params fit in-sample only, evaluated on the held-out next
+  fold. No refitting on test.
 - Config: new `config/spy_phase2.yaml`, derived from `config/primary.yaml`; only
-  the underlying + window change. Signal/cost/hedge rules unchanged from v1.
+  underlying + window + fold schedule change. Signal/cost rules unchanged from v1.
 - Primary metric + gates: same as v1 (attribution reconciliation must pass on SPY
-  data before any PnL claim). Report IS-vs-OOS haircut honestly.
-- Pull command:
+  before any PnL claim). Report IS-vs-OOS haircut + Deflated Sharpe with honest N
+  (v1/v2 trials carry over).
+- Pull command (done):
   `python scripts/download_options.py --ticker SPY --start 2023-07-01 --end 2024-06-30`
 
 ---
