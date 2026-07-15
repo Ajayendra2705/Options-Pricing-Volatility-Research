@@ -181,6 +181,32 @@ the point.
 
 ---
 
+## Phase 2 — Pre-registered SPY expansion (post-v1, own study)
+
+**Status:** pre-registered 2026-07-15, before any Phase-2 data seen. This is a
+separate confirmatory study, NOT a re-run or cherry-pick over the v1 June-2023
+AAPL result. DSR trial count carries over from v1/v2 (all prior trials count).
+
+**Feasibility (RESOLVED GO):** DoltHub `post-no-preference/options` carries SPY —
+verified live: coverage 2019-02-09 → 2026-07-14, ~120 contracts/day with
+bid/ask/vol(IV). The old `download_dolthub.py` comment "SPY/SPX not present" was
+false and is fixed. API aggregates time out → pull date-by-date via
+`scripts/download_options.py`.
+
+**Pre-registered spec (locked before pull):**
+- Underlying: **SPY**
+- Window: **2023-07-01 → 2024-06-30** (12 months)
+- Design: **walk-forward, out-of-sample** — rolling train→test folds; params fit
+  in-sample only, evaluated on the held-out next fold. No refitting on test.
+- Config: new `config/spy_phase2.yaml`, derived from `config/primary.yaml`; only
+  the underlying + window change. Signal/cost/hedge rules unchanged from v1.
+- Primary metric + gates: same as v1 (attribution reconciliation must pass on SPY
+  data before any PnL claim). Report IS-vs-OOS haircut honestly.
+- Pull command:
+  `python scripts/download_options.py --ticker SPY --start 2023-07-01 --end 2024-06-30`
+
+---
+
 ## Critical path & risk
 
 - **Day 1 data gate** — if it fails, everything downstream shifts. Resolve before Day 2.

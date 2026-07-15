@@ -25,8 +25,11 @@ DATA_RAW = PROJECT_ROOT / "data" / "raw"
 
 DOLTHUB_API = "https://www.dolthub.com/api/v1alpha1/post-no-preference/options/master"
 
-# DoltHub has S&P 500 individual stocks. SPY/SPX not present.
-# AAPL is deeply liquid — same pipeline validation.
+# DoltHub post-no-preference/options DOES carry SPY (verified live 2026-07-15:
+# act_symbol='SPY' present, coverage 2019-02-09 -> 2026-07-14, ~120 contracts/day
+# with bid/ask/vol). SPX/QQQ/IWM not confirmed (aggregate probes time out).
+# v1 used AAPL; Phase-2 uses SPY. Note: aggregate queries (COUNT/DISTINCT) time
+# out on this API — use scripts/download_options.py (date-by-date, no aggregates).
 DEFAULT_TICKER = "AAPL"
 DEFAULT_START = "2019-01-02"
 DEFAULT_END = "2024-06-30"
