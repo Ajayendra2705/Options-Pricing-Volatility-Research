@@ -75,5 +75,28 @@
       "Call": 8144
     }
   },
-  "gate_decision": "PROCEED"
+  "gate_decision": "PROCEED",
+  "cleaning": {
+    "source_files": [
+      "spy_options.parquet"
+    ],
+    "output": "data/phase2/processed/chain_clean.parquet",
+    "sessions_file": "spy_ohlc.parquet",
+    "total_rows": 19604,
+    "max_spread_pct": 0.5,
+    "non_session_rows": 1066,
+    "filters": {
+      "missing": 0,
+      "zero_bid": 547,
+      "crossed": 308,
+      "wide": 1353,
+      "stale": 678
+    },
+    "expired_nonpos_T": 0,
+    "total_dropped": 2941,
+    "total_clean": 16663,
+    "drop_rate": 0.15,
+    "dates_raw": 155,
+    "dates_clean": 147
+  }
 }

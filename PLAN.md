@@ -197,13 +197,21 @@ only ~3 near-term expiries (DTE ~11–65) on a **Mon/Wed/Fri** cadence — NOT f
 daily chains. v1 itself shipped on exactly this shape (5 dates × 3 expiries;
 `surface_qc.json` "n_slices_total:15" = 5 dates × 3 expiries, not 15 maturities).
 So M/W/F + 3 expiries are inherited v1 constraints, not new limitations. The 12mo
-SPY pull realises this shape at scale: 155 dates × 3 expiries (30× v1's dates),
-95.4% valid two-sided quotes — which is what makes a real walk-forward possible.
+SPY pull realises this shape at scale: 155 raw dates × 3 expiries (30× v1's
+dates), 95.4% valid two-sided quotes — which is what makes a real walk-forward
+possible. 147 of the 155 are trading sessions (see the window note below).
 
 **Pre-registered spec (design locked; only data STRUCTURE inspected — cadence /
 expiry counts — before locking, no signal/PnL seen):**
 - Underlying: **SPY**
-- Window: **2023-07-01 → 2024-06-30** (12 months, 155 observation dates)
+- Window: **2023-07-01 → 2024-06-30** (12 months, **147 observation dates** —
+  corrected from 155 on Day 32, before any SPY signal or PnL was computed: the
+  DB also quotes options on the window's 8 US market holidays, carrying the
+  prior session's chain forward under the holiday's date. There is no bar for
+  the underlying on those days, so there is no hedge and no observation. The
+  correction is a data-correctness fix, not a result-dependent choice; the
+  session filter is `run_cleaning(sessions_path=...)`, counted in
+  `results/phase2/data_quality_spy.json`.)
 - Cadence: hedge/rebalance on **each available observation date (~3×/week)** — the
   same "hedge every data date" convention v1 used, not literal calendar-daily.
 - Surface: **3-slice** per date (the DB's 3 expiries) with the same butterfly +

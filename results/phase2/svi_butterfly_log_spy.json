@@ -1,0 +1,4418 @@
+{
+  "n_slices": 441,
+  "n_fitted": 441,
+  "n_pre_violations": 87,
+  "n_post_violations": 0,
+  "slices": [
+    {
+      "date": "2023-07-05",
+      "expiry": "2023-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03441799329556478,
+      "rmse_unconstrained": 0.0016761705484301724,
+      "rmse_constrained": 0.0016761705484301724
+    },
+    {
+      "date": "2023-07-05",
+      "expiry": "2023-08-04",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03589616779463036,
+      "rmse_unconstrained": 0.0019162387060317856,
+      "rmse_constrained": 0.0019162387060317856
+    },
+    {
+      "date": "2023-07-05",
+      "expiry": "2023-08-18",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019636542885925756,
+      "rmse_unconstrained": 0.0014137431914759604,
+      "rmse_constrained": 0.001740867608658107
+    },
+    {
+      "date": "2023-07-07",
+      "expiry": "2023-07-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03350397398193159,
+      "rmse_unconstrained": 0.0017154290318989723,
+      "rmse_constrained": 0.0017154290318989723
+    },
+    {
+      "date": "2023-07-07",
+      "expiry": "2023-08-04",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017145524720464655,
+      "rmse_unconstrained": 0.0014288999813203607,
+      "rmse_constrained": 0.0016472265119199915
+    },
+    {
+      "date": "2023-07-07",
+      "expiry": "2023-08-25",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0002000000484058892,
+      "rmse_unconstrained": 0.0023399390841091767,
+      "rmse_constrained": 0.0027229513484874064
+    },
+    {
+      "date": "2023-07-10",
+      "expiry": "2023-07-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.10675776710438903,
+      "rmse_unconstrained": 0.010206306067414973,
+      "rmse_constrained": 0.010206306067414973
+    },
+    {
+      "date": "2023-07-10",
+      "expiry": "2023-08-04",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 6.430750959898063e-05,
+      "rmse_unconstrained": 0.001715404866596049,
+      "rmse_constrained": 0.001715404866596049
+    },
+    {
+      "date": "2023-07-10",
+      "expiry": "2023-08-25",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015156821917997748,
+      "rmse_unconstrained": 0.002440534483344845,
+      "rmse_constrained": 0.0024548077842275816
+    },
+    {
+      "date": "2023-07-12",
+      "expiry": "2023-07-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02860412898870636,
+      "rmse_unconstrained": 0.0006104134024790529,
+      "rmse_constrained": 0.0006104134024790529
+    },
+    {
+      "date": "2023-07-12",
+      "expiry": "2023-08-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.041727561897768245,
+      "rmse_unconstrained": 0.0014936153742799157,
+      "rmse_constrained": 0.0014936153742799157
+    },
+    {
+      "date": "2023-07-12",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018296035921538945,
+      "rmse_unconstrained": 0.0023602962241352143,
+      "rmse_constrained": 0.0028190246737451953
+    },
+    {
+      "date": "2023-07-14",
+      "expiry": "2023-07-28",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 7.070884275443834e-05,
+      "rmse_unconstrained": 0.0035891327750974303,
+      "rmse_constrained": 0.004257751147760305
+    },
+    {
+      "date": "2023-07-14",
+      "expiry": "2023-08-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0019777856605571464,
+      "rmse_unconstrained": 0.0011491282253057386,
+      "rmse_constrained": 0.0011491282253057386
+    },
+    {
+      "date": "2023-07-14",
+      "expiry": "2023-09-01",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020061569860089362,
+      "rmse_unconstrained": 0.0011009307381421563,
+      "rmse_constrained": 0.001469657252012029
+    },
+    {
+      "date": "2023-07-17",
+      "expiry": "2023-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.09817555632333735,
+      "rmse_unconstrained": 0.00812738133644317,
+      "rmse_constrained": 0.00812738133644317
+    },
+    {
+      "date": "2023-07-17",
+      "expiry": "2023-08-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.020119180568349528,
+      "rmse_unconstrained": 0.001422420648911907,
+      "rmse_constrained": 0.001422420648911907
+    },
+    {
+      "date": "2023-07-17",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00014865502331880276,
+      "rmse_unconstrained": 0.0015157131536848833,
+      "rmse_constrained": 0.0017878176067528408
+    },
+    {
+      "date": "2023-07-19",
+      "expiry": "2023-08-02",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.042245547656893596,
+      "rmse_unconstrained": 0.0006586512253250125,
+      "rmse_constrained": 0.0006586512253250125
+    },
+    {
+      "date": "2023-07-19",
+      "expiry": "2023-08-18",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.051683531855314734,
+      "rmse_unconstrained": 0.001014683516795965,
+      "rmse_constrained": 0.001014683516795965
+    },
+    {
+      "date": "2023-07-19",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018730848711596276,
+      "rmse_unconstrained": 0.0007723094446159018,
+      "rmse_constrained": 0.0010291154581816189
+    },
+    {
+      "date": "2023-07-21",
+      "expiry": "2023-08-04",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0075245537231204696,
+      "rmse_unconstrained": 0.0031317995192750745,
+      "rmse_constrained": 0.0031317995192750745
+    },
+    {
+      "date": "2023-07-21",
+      "expiry": "2023-08-18",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 8.130670461410638e-05,
+      "rmse_unconstrained": 0.001705207652498051,
+      "rmse_constrained": 0.0020218167685303063
+    },
+    {
+      "date": "2023-07-21",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001643549691494675,
+      "rmse_unconstrained": 0.0006454130433834694,
+      "rmse_constrained": 0.0010153820133921281
+    },
+    {
+      "date": "2023-07-24",
+      "expiry": "2023-08-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06337843835176787,
+      "rmse_unconstrained": 7.817253755820153e-05,
+      "rmse_constrained": 7.817253755820153e-05
+    },
+    {
+      "date": "2023-07-24",
+      "expiry": "2023-08-18",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03415879501799917,
+      "rmse_unconstrained": 0.0008581093481817518,
+      "rmse_constrained": 0.0008581093481817518
+    },
+    {
+      "date": "2023-07-24",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016195986253145916,
+      "rmse_unconstrained": 0.0008682300242039106,
+      "rmse_constrained": 0.0011600601330906757
+    },
+    {
+      "date": "2023-07-26",
+      "expiry": "2023-08-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03089455333108833,
+      "rmse_unconstrained": 0.0016169943556203323,
+      "rmse_constrained": 0.0016169943556203323
+    },
+    {
+      "date": "2023-07-26",
+      "expiry": "2023-08-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01755862660654875,
+      "rmse_unconstrained": 0.0015159123174589104,
+      "rmse_constrained": 0.0015159123174589104
+    },
+    {
+      "date": "2023-07-26",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015292923980979312,
+      "rmse_unconstrained": 0.0013959238136316706,
+      "rmse_constrained": 0.0016938681481965207
+    },
+    {
+      "date": "2023-07-28",
+      "expiry": "2023-08-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0300962411056261,
+      "rmse_unconstrained": 0.00210344325747981,
+      "rmse_constrained": 0.00210344325747981
+    },
+    {
+      "date": "2023-07-28",
+      "expiry": "2023-08-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05977120335839541,
+      "rmse_unconstrained": 0.0010900330505491276,
+      "rmse_constrained": 0.0010900330505491276
+    },
+    {
+      "date": "2023-07-28",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018301382866764415,
+      "rmse_unconstrained": 0.0014581609878285035,
+      "rmse_constrained": 0.0017524292354677495
+    },
+    {
+      "date": "2023-07-31",
+      "expiry": "2023-08-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05699885843720623,
+      "rmse_unconstrained": 0.000840136390317497,
+      "rmse_constrained": 0.000840136390317497
+    },
+    {
+      "date": "2023-07-31",
+      "expiry": "2023-08-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01334081952398445,
+      "rmse_unconstrained": 0.0012321443325487627,
+      "rmse_constrained": 0.0012321443325487627
+    },
+    {
+      "date": "2023-07-31",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001707845311284123,
+      "rmse_unconstrained": 0.001121084681009009,
+      "rmse_constrained": 0.0014384580505948164
+    },
+    {
+      "date": "2023-08-02",
+      "expiry": "2023-08-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.10679065907390944,
+      "rmse_unconstrained": 0.003122504934144847,
+      "rmse_constrained": 0.003122504934144847
+    },
+    {
+      "date": "2023-08-02",
+      "expiry": "2023-09-01",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019854420679699808,
+      "rmse_unconstrained": 0.001773209917374587,
+      "rmse_constrained": 0.0019127918499595778
+    },
+    {
+      "date": "2023-08-02",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020000747332513114,
+      "rmse_unconstrained": 0.002506991457748496,
+      "rmse_constrained": 0.0031986391837980745
+    },
+    {
+      "date": "2023-08-04",
+      "expiry": "2023-08-18",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.039729457927210186,
+      "rmse_unconstrained": 0.0024539239630266144,
+      "rmse_constrained": 0.0024539239630266144
+    },
+    {
+      "date": "2023-08-04",
+      "expiry": "2023-09-01",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015621817052347692,
+      "rmse_unconstrained": 0.0027185664586617006,
+      "rmse_constrained": 0.0030376756940280855
+    },
+    {
+      "date": "2023-08-04",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020000674866948315,
+      "rmse_unconstrained": 0.0026000019884391567,
+      "rmse_constrained": 0.00332063280503511
+    },
+    {
+      "date": "2023-08-07",
+      "expiry": "2023-08-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03353055116880547,
+      "rmse_unconstrained": 0.001358832260961098,
+      "rmse_constrained": 0.001358832260961098
+    },
+    {
+      "date": "2023-08-07",
+      "expiry": "2023-09-01",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018835181703803772,
+      "rmse_unconstrained": 0.0022683691862301117,
+      "rmse_constrained": 0.002829061763358456
+    },
+    {
+      "date": "2023-08-07",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020001033953641334,
+      "rmse_unconstrained": 0.0024486309252757287,
+      "rmse_constrained": 0.0034069165757295216
+    },
+    {
+      "date": "2023-08-09",
+      "expiry": "2023-08-23",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014886732602028947,
+      "rmse_unconstrained": 0.002292166062306726,
+      "rmse_constrained": 0.002292166062306726
+    },
+    {
+      "date": "2023-08-09",
+      "expiry": "2023-09-08",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0002000092819179483,
+      "rmse_unconstrained": 0.0024228187487877265,
+      "rmse_constrained": 0.002571245643994165
+    },
+    {
+      "date": "2023-08-09",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00013845773351203738,
+      "rmse_unconstrained": 0.003066025800488354,
+      "rmse_constrained": 0.003627644584121134
+    },
+    {
+      "date": "2023-08-11",
+      "expiry": "2023-08-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0073756616949380155,
+      "rmse_unconstrained": 0.003081548225810785,
+      "rmse_constrained": 0.003081548225810785
+    },
+    {
+      "date": "2023-08-11",
+      "expiry": "2023-09-08",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001881834313923192,
+      "rmse_unconstrained": 0.002155933829007234,
+      "rmse_constrained": 0.002533799527410604
+    },
+    {
+      "date": "2023-08-11",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015503301486909093,
+      "rmse_unconstrained": 0.003192560766619122,
+      "rmse_constrained": 0.004058818343359326
+    },
+    {
+      "date": "2023-08-14",
+      "expiry": "2023-08-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.052591228835344415,
+      "rmse_unconstrained": 0.0016002724457067096,
+      "rmse_constrained": 0.0016002724457067096
+    },
+    {
+      "date": "2023-08-14",
+      "expiry": "2023-09-08",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019020466357785176,
+      "rmse_unconstrained": 0.00242878574512391,
+      "rmse_constrained": 0.0025859899230432615
+    },
+    {
+      "date": "2023-08-14",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00012988230291419156,
+      "rmse_unconstrained": 0.002851668399065663,
+      "rmse_constrained": 0.003409869079424076
+    },
+    {
+      "date": "2023-08-16",
+      "expiry": "2023-08-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.1531567495051868,
+      "rmse_unconstrained": 0.0034968420391236423,
+      "rmse_constrained": 0.0034968420391236423
+    },
+    {
+      "date": "2023-08-16",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017726701058957614,
+      "rmse_unconstrained": 0.0028686121387609537,
+      "rmse_constrained": 0.0029877586198967477
+    },
+    {
+      "date": "2023-08-16",
+      "expiry": "2023-10-20",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001896369261931083,
+      "rmse_unconstrained": 0.0023462444785798506,
+      "rmse_constrained": 0.002870824143701179
+    },
+    {
+      "date": "2023-08-18",
+      "expiry": "2023-09-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0018078319840700366,
+      "rmse_unconstrained": 0.003911776010946485,
+      "rmse_constrained": 0.003911776010946485
+    },
+    {
+      "date": "2023-08-18",
+      "expiry": "2023-09-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001851910828275377,
+      "rmse_unconstrained": 0.0033724609467134146,
+      "rmse_constrained": 0.0035034358195368143
+    },
+    {
+      "date": "2023-08-18",
+      "expiry": "2023-10-20",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016513826581787336,
+      "rmse_unconstrained": 0.003006966841739742,
+      "rmse_constrained": 0.0031598629402479488
+    },
+    {
+      "date": "2023-08-21",
+      "expiry": "2023-09-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017927232461128442,
+      "rmse_unconstrained": 0.0037321852791001513,
+      "rmse_constrained": 0.0037321852791001513
+    },
+    {
+      "date": "2023-08-21",
+      "expiry": "2023-09-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.10931245071836813,
+      "rmse_unconstrained": 0.0032467329793745103,
+      "rmse_constrained": 0.0032467329793745103
+    },
+    {
+      "date": "2023-08-21",
+      "expiry": "2023-10-20",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019140761066439166,
+      "rmse_unconstrained": 0.002899037724253495,
+      "rmse_constrained": 0.003070798012667038
+    },
+    {
+      "date": "2023-08-23",
+      "expiry": "2023-09-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08274890646348265,
+      "rmse_unconstrained": 0.003631487147597866,
+      "rmse_constrained": 0.003631487147597866
+    },
+    {
+      "date": "2023-08-23",
+      "expiry": "2023-09-22",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017332335370863483,
+      "rmse_unconstrained": 0.004065542766274905,
+      "rmse_constrained": 0.0041468026246238065
+    },
+    {
+      "date": "2023-08-23",
+      "expiry": "2023-10-20",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019220568611779537,
+      "rmse_unconstrained": 0.0032923068394893605,
+      "rmse_constrained": 0.0034071082121314394
+    },
+    {
+      "date": "2023-08-25",
+      "expiry": "2023-09-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00728048274746047,
+      "rmse_unconstrained": 0.005232283374288516,
+      "rmse_constrained": 0.005232283374288516
+    },
+    {
+      "date": "2023-08-25",
+      "expiry": "2023-09-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.022959198723238095,
+      "rmse_unconstrained": 0.0031984230383063374,
+      "rmse_constrained": 0.0031984230383063374
+    },
+    {
+      "date": "2023-08-25",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.008725278888726443,
+      "rmse_unconstrained": 0.0037029052472666102,
+      "rmse_constrained": 0.0037029052472666102
+    },
+    {
+      "date": "2023-08-28",
+      "expiry": "2023-09-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06586963161446327,
+      "rmse_unconstrained": 0.0031686387365971766,
+      "rmse_constrained": 0.0031686387365971766
+    },
+    {
+      "date": "2023-08-28",
+      "expiry": "2023-09-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.007068608723122288,
+      "rmse_unconstrained": 0.002861401837662529,
+      "rmse_constrained": 0.002861401837662529
+    },
+    {
+      "date": "2023-08-28",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0042729634857428325,
+      "rmse_unconstrained": 0.003342604861872593,
+      "rmse_constrained": 0.003342604861872593
+    },
+    {
+      "date": "2023-08-30",
+      "expiry": "2023-09-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03222765378731794,
+      "rmse_unconstrained": 0.0020494262301249556,
+      "rmse_constrained": 0.0020494262301249556
+    },
+    {
+      "date": "2023-08-30",
+      "expiry": "2023-09-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.001712736041362524,
+      "rmse_unconstrained": 0.0023901207710747227,
+      "rmse_constrained": 0.0023901207710747227
+    },
+    {
+      "date": "2023-08-30",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.003334207073370135,
+      "rmse_unconstrained": 0.0020347281867513904,
+      "rmse_constrained": 0.0020347281867513904
+    },
+    {
+      "date": "2023-09-01",
+      "expiry": "2023-09-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02815140626145897,
+      "rmse_unconstrained": 0.00296326102656967,
+      "rmse_constrained": 0.00296326102656967
+    },
+    {
+      "date": "2023-09-01",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019901217238101065,
+      "rmse_unconstrained": 0.002145644588133056,
+      "rmse_constrained": 0.0023806626870278434
+    },
+    {
+      "date": "2023-09-01",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0009138028033955567,
+      "rmse_unconstrained": 0.0018375672657494706,
+      "rmse_constrained": 0.0018375672657494706
+    },
+    {
+      "date": "2023-09-06",
+      "expiry": "2023-09-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.1310383009946075,
+      "rmse_unconstrained": 0.003172190455447643,
+      "rmse_constrained": 0.003172190455447643
+    },
+    {
+      "date": "2023-09-06",
+      "expiry": "2023-10-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0008660959289252257,
+      "rmse_unconstrained": 0.00251023717814607,
+      "rmse_constrained": 0.00251023717814607
+    },
+    {
+      "date": "2023-09-06",
+      "expiry": "2023-10-20",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00013433532949910787,
+      "rmse_unconstrained": 0.0028434200727315666,
+      "rmse_constrained": 0.0031658757005816967
+    },
+    {
+      "date": "2023-09-08",
+      "expiry": "2023-09-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019392316529859097,
+      "rmse_unconstrained": 0.0022557894536222155,
+      "rmse_constrained": 0.0022557894536222155
+    },
+    {
+      "date": "2023-09-08",
+      "expiry": "2023-10-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.012349793528093879,
+      "rmse_unconstrained": 0.0025432395220522518,
+      "rmse_constrained": 0.0025432395220522518
+    },
+    {
+      "date": "2023-09-08",
+      "expiry": "2023-10-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.011483451291216976,
+      "rmse_unconstrained": 0.0024360234919210974,
+      "rmse_constrained": 0.0024360234919210974
+    },
+    {
+      "date": "2023-09-11",
+      "expiry": "2023-09-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.14259333747265404,
+      "rmse_unconstrained": 0.011296539054994392,
+      "rmse_constrained": 0.011296539054994392
+    },
+    {
+      "date": "2023-09-11",
+      "expiry": "2023-10-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06549709831203632,
+      "rmse_unconstrained": 0.0024937842601238254,
+      "rmse_constrained": 0.0024937842601238254
+    },
+    {
+      "date": "2023-09-11",
+      "expiry": "2023-10-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.006942758257975294,
+      "rmse_unconstrained": 0.0018258062045092825,
+      "rmse_constrained": 0.0018258062045092825
+    },
+    {
+      "date": "2023-09-13",
+      "expiry": "2023-09-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.050902302605248896,
+      "rmse_unconstrained": 0.000576458725713613,
+      "rmse_constrained": 0.000576458725713613
+    },
+    {
+      "date": "2023-09-13",
+      "expiry": "2023-10-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08390423304879391,
+      "rmse_unconstrained": 0.0018609620146627956,
+      "rmse_constrained": 0.0018609620146627956
+    },
+    {
+      "date": "2023-09-13",
+      "expiry": "2023-11-17",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0002009522951766443,
+      "rmse_unconstrained": 0.0014392065722372287,
+      "rmse_constrained": 0.0015401664317902615
+    },
+    {
+      "date": "2023-09-15",
+      "expiry": "2023-09-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001190217854485573,
+      "rmse_unconstrained": 0.004706934741023325,
+      "rmse_constrained": 0.004542377320643085
+    },
+    {
+      "date": "2023-09-15",
+      "expiry": "2023-10-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0035993657678598835,
+      "rmse_unconstrained": 0.001442718431309663,
+      "rmse_constrained": 0.001442718431309663
+    },
+    {
+      "date": "2023-09-15",
+      "expiry": "2023-11-17",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001379268011165169,
+      "rmse_unconstrained": 0.001586823118457298,
+      "rmse_constrained": 0.0018494568509412812
+    },
+    {
+      "date": "2023-09-18",
+      "expiry": "2023-10-02",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.021130125354478113,
+      "rmse_unconstrained": 0.000779883243754017,
+      "rmse_constrained": 0.000779883243754017
+    },
+    {
+      "date": "2023-09-18",
+      "expiry": "2023-10-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03969121933933629,
+      "rmse_unconstrained": 0.002266267842964134,
+      "rmse_constrained": 0.002266267842964134
+    },
+    {
+      "date": "2023-09-18",
+      "expiry": "2023-11-17",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019085536446507984,
+      "rmse_unconstrained": 0.0014923420381127927,
+      "rmse_constrained": 0.0016204739901999011
+    },
+    {
+      "date": "2023-09-20",
+      "expiry": "2023-10-04",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0346605084771779,
+      "rmse_unconstrained": 0.0011767729915233937,
+      "rmse_constrained": 0.0011767729915233937
+    },
+    {
+      "date": "2023-09-20",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07157426418393521,
+      "rmse_unconstrained": 0.0029330412042930035,
+      "rmse_constrained": 0.0029330412042930035
+    },
+    {
+      "date": "2023-09-20",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00986995010269794,
+      "rmse_unconstrained": 0.0026691143749899824,
+      "rmse_constrained": 0.0026691143749899824
+    },
+    {
+      "date": "2023-09-22",
+      "expiry": "2023-10-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07199486407589875,
+      "rmse_unconstrained": 0.002439756518944527,
+      "rmse_constrained": 0.002439756518944527
+    },
+    {
+      "date": "2023-09-22",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08363552544494274,
+      "rmse_unconstrained": 0.0023093071409821453,
+      "rmse_constrained": 0.0023093071409821453
+    },
+    {
+      "date": "2023-09-22",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014200143260695755,
+      "rmse_unconstrained": 0.0033540916658351704,
+      "rmse_constrained": 0.0033540916658351704
+    },
+    {
+      "date": "2023-09-25",
+      "expiry": "2023-10-09",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 1.5681699384546832e-05,
+      "rmse_unconstrained": 0.000863889663661728,
+      "rmse_constrained": 0.0009515407051836841
+    },
+    {
+      "date": "2023-09-25",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07257686788098139,
+      "rmse_unconstrained": 0.0023232375247990347,
+      "rmse_constrained": 0.0023232375247990347
+    },
+    {
+      "date": "2023-09-25",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017081987283399075,
+      "rmse_unconstrained": 0.0037890627766559246,
+      "rmse_constrained": 0.0037890627766559246
+    },
+    {
+      "date": "2023-09-27",
+      "expiry": "2023-10-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05768000621018042,
+      "rmse_unconstrained": 0.005565722874889382,
+      "rmse_constrained": 0.005565722874889382
+    },
+    {
+      "date": "2023-09-27",
+      "expiry": "2023-10-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04562728710622406,
+      "rmse_unconstrained": 0.003575477626415719,
+      "rmse_constrained": 0.003575477626415719
+    },
+    {
+      "date": "2023-09-27",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03163452905881982,
+      "rmse_unconstrained": 0.004622123135057977,
+      "rmse_constrained": 0.004622123135057977
+    },
+    {
+      "date": "2023-09-29",
+      "expiry": "2023-10-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0431498913436597,
+      "rmse_unconstrained": 0.0024820988899658413,
+      "rmse_constrained": 0.0024820988899658413
+    },
+    {
+      "date": "2023-09-29",
+      "expiry": "2023-10-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05368625250373982,
+      "rmse_unconstrained": 0.003788404227040528,
+      "rmse_constrained": 0.003788404227040528
+    },
+    {
+      "date": "2023-09-29",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.030413586536991638,
+      "rmse_unconstrained": 0.0038206473661447264,
+      "rmse_constrained": 0.0038206473661447264
+    },
+    {
+      "date": "2023-10-02",
+      "expiry": "2023-10-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.036654672812373834,
+      "rmse_unconstrained": 0.002758635521503969,
+      "rmse_constrained": 0.002758635521503969
+    },
+    {
+      "date": "2023-10-02",
+      "expiry": "2023-10-27",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.04163562966818312,
+      "rmse_unconstrained": 0.0026606666922086818,
+      "rmse_constrained": 0.0032290236636380275
+    },
+    {
+      "date": "2023-10-02",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03401306122714104,
+      "rmse_unconstrained": 0.0029674123321753727,
+      "rmse_constrained": 0.0029674123321753727
+    },
+    {
+      "date": "2023-10-04",
+      "expiry": "2023-10-18",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.034115001504981306,
+      "rmse_unconstrained": 0.0018662982545300936,
+      "rmse_constrained": 0.0021713375481708453
+    },
+    {
+      "date": "2023-10-04",
+      "expiry": "2023-11-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08402738792139425,
+      "rmse_unconstrained": 0.004594702185208027,
+      "rmse_constrained": 0.004594702185208027
+    },
+    {
+      "date": "2023-10-04",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03449988313436243,
+      "rmse_unconstrained": 0.003306844815124961,
+      "rmse_constrained": 0.003306844815124961
+    },
+    {
+      "date": "2023-10-06",
+      "expiry": "2023-10-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02507957233615664,
+      "rmse_unconstrained": 0.0026001246712818115,
+      "rmse_constrained": 0.0026001246712818115
+    },
+    {
+      "date": "2023-10-06",
+      "expiry": "2023-11-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08882740134515674,
+      "rmse_unconstrained": 0.003158456459327238,
+      "rmse_constrained": 0.003158456459327238
+    },
+    {
+      "date": "2023-10-06",
+      "expiry": "2023-11-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03396017423533799,
+      "rmse_unconstrained": 0.002844716121568077,
+      "rmse_constrained": 0.002844716121568077
+    },
+    {
+      "date": "2023-10-09",
+      "expiry": "2023-10-23",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "penalty_100",
+      "min_g": 0.999984644096037,
+      "rmse_unconstrained": 0.0019279010716642434,
+      "rmse_constrained": 0.06224088945431878
+    },
+    {
+      "date": "2023-10-09",
+      "expiry": "2023-11-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07861958645515021,
+      "rmse_unconstrained": 0.001834560275893725,
+      "rmse_constrained": 0.001834560275893725
+    },
+    {
+      "date": "2023-10-09",
+      "expiry": "2023-11-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.09475647035414297,
+      "rmse_unconstrained": 0.0018186541044061086,
+      "rmse_constrained": 0.0018186541044061086
+    },
+    {
+      "date": "2023-10-11",
+      "expiry": "2023-10-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.016470991078521208,
+      "rmse_unconstrained": 0.0021260321539236355,
+      "rmse_constrained": 0.0021260321539236355
+    },
+    {
+      "date": "2023-10-11",
+      "expiry": "2023-11-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.032957703373653245,
+      "rmse_unconstrained": 0.002075533198176714,
+      "rmse_constrained": 0.002075533198176714
+    },
+    {
+      "date": "2023-10-11",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0006333122093653554,
+      "rmse_unconstrained": 0.0026070080736144007,
+      "rmse_constrained": 0.0026070080736144007
+    },
+    {
+      "date": "2023-10-13",
+      "expiry": "2023-10-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03403069551982352,
+      "rmse_unconstrained": 0.0034785320989469716,
+      "rmse_constrained": 0.0034785320989469716
+    },
+    {
+      "date": "2023-10-13",
+      "expiry": "2023-11-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.003609743082405196,
+      "rmse_unconstrained": 0.003487295793806532,
+      "rmse_constrained": 0.003487295793806532
+    },
+    {
+      "date": "2023-10-13",
+      "expiry": "2023-12-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0084830642059978,
+      "rmse_unconstrained": 0.004112566876496263,
+      "rmse_constrained": 0.004112566876496263
+    },
+    {
+      "date": "2023-10-16",
+      "expiry": "2023-10-30",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 4.0394599065837755e-05,
+      "rmse_unconstrained": 0.0029739031396145152,
+      "rmse_constrained": 0.003000772882069996
+    },
+    {
+      "date": "2023-10-16",
+      "expiry": "2023-11-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.009931436708421188,
+      "rmse_unconstrained": 0.003804274392192017,
+      "rmse_constrained": 0.003804274392192017
+    },
+    {
+      "date": "2023-10-16",
+      "expiry": "2023-12-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017820394670119838,
+      "rmse_unconstrained": 0.0037909374787666234,
+      "rmse_constrained": 0.003958737969396961
+    },
+    {
+      "date": "2023-10-18",
+      "expiry": "2023-11-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04567349719844913,
+      "rmse_unconstrained": 0.0035643037230730238,
+      "rmse_constrained": 0.0035643037230730238
+    },
+    {
+      "date": "2023-10-18",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0019397753337460494,
+      "rmse_unconstrained": 0.0041015754037358075,
+      "rmse_constrained": 0.0041015754037358075
+    },
+    {
+      "date": "2023-10-18",
+      "expiry": "2023-12-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017291674501548893,
+      "rmse_unconstrained": 0.0040742308542043824,
+      "rmse_constrained": 0.004496524524378787
+    },
+    {
+      "date": "2023-10-20",
+      "expiry": "2023-11-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06995490632607382,
+      "rmse_unconstrained": 0.004116960044961048,
+      "rmse_constrained": 0.004116960044961048
+    },
+    {
+      "date": "2023-10-20",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013857072388447616,
+      "rmse_unconstrained": 0.0041539459809132135,
+      "rmse_constrained": 0.0041539459809132135
+    },
+    {
+      "date": "2023-10-20",
+      "expiry": "2023-12-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015774334782584637,
+      "rmse_unconstrained": 0.004818081902327789,
+      "rmse_constrained": 0.005418083388438116
+    },
+    {
+      "date": "2023-10-23",
+      "expiry": "2023-11-06",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018248228264999833,
+      "rmse_unconstrained": 0.0029746094648759225,
+      "rmse_constrained": 0.0036094341566724948
+    },
+    {
+      "date": "2023-10-23",
+      "expiry": "2023-11-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.042952910931154685,
+      "rmse_unconstrained": 0.003261369482613736,
+      "rmse_constrained": 0.003261369482613736
+    },
+    {
+      "date": "2023-10-23",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013975317880847597,
+      "rmse_unconstrained": 0.00530274671718417,
+      "rmse_constrained": 0.00530274671718417
+    },
+    {
+      "date": "2023-10-25",
+      "expiry": "2023-11-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04386506882091209,
+      "rmse_unconstrained": 0.004874885777186634,
+      "rmse_constrained": 0.004874885777186634
+    },
+    {
+      "date": "2023-10-25",
+      "expiry": "2023-11-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.023236391202852022,
+      "rmse_unconstrained": 0.004429931509791492,
+      "rmse_constrained": 0.004429931509791492
+    },
+    {
+      "date": "2023-10-25",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00041174058366225813,
+      "rmse_unconstrained": 0.0057372735482632544,
+      "rmse_constrained": 0.0057372735482632544
+    },
+    {
+      "date": "2023-10-27",
+      "expiry": "2023-11-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05646717086011687,
+      "rmse_unconstrained": 0.004214711056443496,
+      "rmse_constrained": 0.004214711056443496
+    },
+    {
+      "date": "2023-10-27",
+      "expiry": "2023-11-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.042661821799862124,
+      "rmse_unconstrained": 0.003935852151640293,
+      "rmse_constrained": 0.003935852151640293
+    },
+    {
+      "date": "2023-10-27",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04987882522354535,
+      "rmse_unconstrained": 0.006539917726767999,
+      "rmse_constrained": 0.006539917726767999
+    },
+    {
+      "date": "2023-10-30",
+      "expiry": "2023-11-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04967627877524305,
+      "rmse_unconstrained": 0.00453970572229562,
+      "rmse_constrained": 0.00453970572229562
+    },
+    {
+      "date": "2023-10-30",
+      "expiry": "2023-11-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.041795278317846116,
+      "rmse_unconstrained": 0.004873844664827814,
+      "rmse_constrained": 0.004873844664827814
+    },
+    {
+      "date": "2023-10-30",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.043419312768898495,
+      "rmse_unconstrained": 0.005958415283839094,
+      "rmse_constrained": 0.005958415283839094
+    },
+    {
+      "date": "2023-11-03",
+      "expiry": "2023-11-17",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00012612473203622854,
+      "rmse_unconstrained": 0.0034104909173780814,
+      "rmse_constrained": 0.0031566004501123734
+    },
+    {
+      "date": "2023-11-03",
+      "expiry": "2023-12-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07038244393617277,
+      "rmse_unconstrained": 0.002998609659299135,
+      "rmse_constrained": 0.002998609659299135
+    },
+    {
+      "date": "2023-11-03",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01791906354626519,
+      "rmse_unconstrained": 0.003822489388929147,
+      "rmse_constrained": 0.003822489388929147
+    },
+    {
+      "date": "2023-11-06",
+      "expiry": "2023-11-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.2467615648185835,
+      "rmse_unconstrained": 0.0012123419723709045,
+      "rmse_constrained": 0.0012123419723709045
+    },
+    {
+      "date": "2023-11-06",
+      "expiry": "2023-12-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05939497707249617,
+      "rmse_unconstrained": 0.0029790201387299518,
+      "rmse_constrained": 0.0029790201387299518
+    },
+    {
+      "date": "2023-11-06",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017696678229297488,
+      "rmse_unconstrained": 0.003502990172535079,
+      "rmse_constrained": 0.003502990172535079
+    },
+    {
+      "date": "2023-11-09",
+      "expiry": "2023-11-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0309936981222034,
+      "rmse_unconstrained": 0.0026193723310478645,
+      "rmse_constrained": 0.0026193723310478645
+    },
+    {
+      "date": "2023-11-09",
+      "expiry": "2023-12-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06409784054407829,
+      "rmse_unconstrained": 0.0019439733202215215,
+      "rmse_constrained": 0.0019439733202215215
+    },
+    {
+      "date": "2023-11-09",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.030074582567263794,
+      "rmse_unconstrained": 0.002935132666087683,
+      "rmse_constrained": 0.002935132666087683
+    },
+    {
+      "date": "2023-11-10",
+      "expiry": "2023-11-24",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0002000778130275896,
+      "rmse_unconstrained": 0.0033110085702481077,
+      "rmse_constrained": 0.0045179556525639306
+    },
+    {
+      "date": "2023-11-10",
+      "expiry": "2023-12-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06071683766797328,
+      "rmse_unconstrained": 0.0018465316073413983,
+      "rmse_constrained": 0.0018465316073413983
+    },
+    {
+      "date": "2023-11-10",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.006883291204554089,
+      "rmse_unconstrained": 0.002536618997386293,
+      "rmse_constrained": 0.002536618997386293
+    },
+    {
+      "date": "2023-11-13",
+      "expiry": "2023-11-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.021158288795371988,
+      "rmse_unconstrained": 0.0008661252106468757,
+      "rmse_constrained": 0.0008661252106468757
+    },
+    {
+      "date": "2023-11-13",
+      "expiry": "2023-12-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05952332999539825,
+      "rmse_unconstrained": 0.0022621097316215125,
+      "rmse_constrained": 0.0022621097316215125
+    },
+    {
+      "date": "2023-11-13",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.018036116197061504,
+      "rmse_unconstrained": 0.0024911075730155866,
+      "rmse_constrained": 0.0024911075730155866
+    },
+    {
+      "date": "2023-11-16",
+      "expiry": "2023-11-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014785041884094907,
+      "rmse_unconstrained": 0.00017526746875095488,
+      "rmse_constrained": 0.00017526746875095488
+    },
+    {
+      "date": "2023-11-16",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005324361351979161,
+      "rmse_unconstrained": 0.0010987621414737356,
+      "rmse_constrained": 0.0010987621414737356
+    },
+    {
+      "date": "2023-11-16",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0038593033486147357,
+      "rmse_unconstrained": 0.0006435220295698282,
+      "rmse_constrained": 0.0006435220295698282
+    },
+    {
+      "date": "2023-11-17",
+      "expiry": "2023-12-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01574187407757207,
+      "rmse_unconstrained": 0.002719073599945007,
+      "rmse_constrained": 0.002719073599945007
+    },
+    {
+      "date": "2023-11-17",
+      "expiry": "2023-12-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001960136147713537,
+      "rmse_unconstrained": 0.0014391923558300633,
+      "rmse_constrained": 0.0015384950485611733
+    },
+    {
+      "date": "2023-11-17",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0023609946999773937,
+      "rmse_unconstrained": 0.000963963252794001,
+      "rmse_constrained": 0.000963963252794001
+    },
+    {
+      "date": "2023-11-20",
+      "expiry": "2023-12-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01541355269384053,
+      "rmse_unconstrained": 0.0011203467525531818,
+      "rmse_constrained": 0.0011203467525531818
+    },
+    {
+      "date": "2023-11-20",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05930180715314084,
+      "rmse_unconstrained": 0.0029173612345753846,
+      "rmse_constrained": 0.0029173612345753846
+    },
+    {
+      "date": "2023-11-20",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0029226863228265024,
+      "rmse_unconstrained": 0.0010261746125655297,
+      "rmse_constrained": 0.0010261746125655297
+    },
+    {
+      "date": "2023-11-21",
+      "expiry": "2023-12-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04051494148698146,
+      "rmse_unconstrained": 0.001766350757546203,
+      "rmse_constrained": 0.001766350757546203
+    },
+    {
+      "date": "2023-11-21",
+      "expiry": "2023-12-22",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00012646297431544856,
+      "rmse_unconstrained": 0.0014136021584064955,
+      "rmse_constrained": 0.0015878639599929906
+    },
+    {
+      "date": "2023-11-21",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0004563058750325297,
+      "rmse_unconstrained": 0.0008680779719975606,
+      "rmse_constrained": 0.0008680779719975606
+    },
+    {
+      "date": "2023-11-22",
+      "expiry": "2023-12-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.022588033128693633,
+      "rmse_unconstrained": 0.0009766382905002067,
+      "rmse_constrained": 0.0009766382905002067
+    },
+    {
+      "date": "2023-11-22",
+      "expiry": "2023-12-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.022639366856010396,
+      "rmse_unconstrained": 0.001618124620252429,
+      "rmse_constrained": 0.001618124620252429
+    },
+    {
+      "date": "2023-11-22",
+      "expiry": "2024-01-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019547379474662424,
+      "rmse_unconstrained": 0.0010225788072930802,
+      "rmse_constrained": 0.0011433025026993
+    },
+    {
+      "date": "2023-11-24",
+      "expiry": "2023-12-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005072006607697896,
+      "rmse_unconstrained": 0.0026677840085662183,
+      "rmse_constrained": 0.0026677840085662183
+    },
+    {
+      "date": "2023-11-24",
+      "expiry": "2023-12-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0022952167416724276,
+      "rmse_unconstrained": 0.0009021963135349577,
+      "rmse_constrained": 0.0009021963135349577
+    },
+    {
+      "date": "2023-11-24",
+      "expiry": "2024-01-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00013291714254946158,
+      "rmse_unconstrained": 0.0007519869563215756,
+      "rmse_constrained": 0.000850180383574374
+    },
+    {
+      "date": "2023-11-27",
+      "expiry": "2023-12-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04954110232822951,
+      "rmse_unconstrained": 0.001383847798179087,
+      "rmse_constrained": 0.001383847798179087
+    },
+    {
+      "date": "2023-11-27",
+      "expiry": "2023-12-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013318844741887888,
+      "rmse_unconstrained": 0.0014314289693251267,
+      "rmse_constrained": 0.0014314289693251267
+    },
+    {
+      "date": "2023-11-27",
+      "expiry": "2024-01-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020000449655811076,
+      "rmse_unconstrained": 0.00047666960416666547,
+      "rmse_constrained": 0.0005419655982381326
+    },
+    {
+      "date": "2023-11-29",
+      "expiry": "2023-12-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06660092338414714,
+      "rmse_unconstrained": 0.001365053283310893,
+      "rmse_constrained": 0.001365053283310893
+    },
+    {
+      "date": "2023-11-29",
+      "expiry": "2023-12-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016702968339713659,
+      "rmse_unconstrained": 0.0014550208568553575,
+      "rmse_constrained": 0.001457538132588429
+    },
+    {
+      "date": "2023-11-29",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.050290441670777265,
+      "rmse_unconstrained": 0.00045337954231199106,
+      "rmse_constrained": 0.00045337954231199106
+    },
+    {
+      "date": "2023-12-01",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.033995173947984555,
+      "rmse_unconstrained": 0.0024638305004221687,
+      "rmse_constrained": 0.0024638305004221687
+    },
+    {
+      "date": "2023-12-01",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07664331841056189,
+      "rmse_unconstrained": 0.0009846942525381902,
+      "rmse_constrained": 0.0009846942525381902
+    },
+    {
+      "date": "2023-12-01",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.007605925719346856,
+      "rmse_unconstrained": 0.0007287637260954378,
+      "rmse_constrained": 0.0007287637260954378
+    },
+    {
+      "date": "2023-12-04",
+      "expiry": "2023-12-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.026751183116948966,
+      "rmse_unconstrained": 0.004478730441275419,
+      "rmse_constrained": 0.004478730441275419
+    },
+    {
+      "date": "2023-12-04",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0896803311684278,
+      "rmse_unconstrained": 0.0012804178895927825,
+      "rmse_constrained": 0.0012804178895927825
+    },
+    {
+      "date": "2023-12-04",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0050601520686110735,
+      "rmse_unconstrained": 0.0007902153405709021,
+      "rmse_constrained": 0.0007902153405709021
+    },
+    {
+      "date": "2023-12-06",
+      "expiry": "2023-12-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04118180895417078,
+      "rmse_unconstrained": 0.0024212897982763375,
+      "rmse_constrained": 0.0024212897982763375
+    },
+    {
+      "date": "2023-12-06",
+      "expiry": "2024-01-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08077201721489363,
+      "rmse_unconstrained": 0.001233558969376825,
+      "rmse_constrained": 0.001233558969376825
+    },
+    {
+      "date": "2023-12-06",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00724962425416437,
+      "rmse_unconstrained": 0.00093162006321311,
+      "rmse_constrained": 0.00093162006321311
+    },
+    {
+      "date": "2023-12-08",
+      "expiry": "2023-12-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.020023787638489887,
+      "rmse_unconstrained": 0.003295307871413278,
+      "rmse_constrained": 0.003295307871413278
+    },
+    {
+      "date": "2023-12-08",
+      "expiry": "2024-01-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05434151013240651,
+      "rmse_unconstrained": 0.0011037788787858207,
+      "rmse_constrained": 0.0011037788787858207
+    },
+    {
+      "date": "2023-12-08",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014712066326684155,
+      "rmse_unconstrained": 0.000938954373588412,
+      "rmse_constrained": 0.000938954373588412
+    },
+    {
+      "date": "2023-12-11",
+      "expiry": "2023-12-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.035063930253546975,
+      "rmse_unconstrained": 0.0021415478598453322,
+      "rmse_constrained": 0.0021415478598453322
+    },
+    {
+      "date": "2023-12-11",
+      "expiry": "2024-01-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.007145812855771101,
+      "rmse_unconstrained": 0.002355101585833326,
+      "rmse_constrained": 0.002355101585833326
+    },
+    {
+      "date": "2023-12-11",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0003923013921754426,
+      "rmse_unconstrained": 0.0011432233315948016,
+      "rmse_constrained": 0.0011432233315948016
+    },
+    {
+      "date": "2023-12-13",
+      "expiry": "2023-12-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.004879815022268079,
+      "rmse_unconstrained": 0.002108521687485338,
+      "rmse_constrained": 0.002108521687485338
+    },
+    {
+      "date": "2023-12-13",
+      "expiry": "2024-01-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03297874252249953,
+      "rmse_unconstrained": 0.0013650176570841452,
+      "rmse_constrained": 0.0013650176570841452
+    },
+    {
+      "date": "2023-12-13",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01566685756774229,
+      "rmse_unconstrained": 0.0005519190335803704,
+      "rmse_constrained": 0.0005519190335803704
+    },
+    {
+      "date": "2023-12-15",
+      "expiry": "2023-12-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.010100169026385164,
+      "rmse_unconstrained": 0.002730889410205466,
+      "rmse_constrained": 0.002730889410205466
+    },
+    {
+      "date": "2023-12-15",
+      "expiry": "2024-01-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03369226340568753,
+      "rmse_unconstrained": 0.0010901802672299839,
+      "rmse_constrained": 0.0010901802672299839
+    },
+    {
+      "date": "2023-12-15",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0035713182118274067,
+      "rmse_unconstrained": 0.0010412139735896289,
+      "rmse_constrained": 0.0010412139735896289
+    },
+    {
+      "date": "2023-12-18",
+      "expiry": "2023-12-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019456772037779874,
+      "rmse_unconstrained": 0.004725233370966056,
+      "rmse_constrained": 0.0044675523362026435
+    },
+    {
+      "date": "2023-12-18",
+      "expiry": "2024-01-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.028084554372810884,
+      "rmse_unconstrained": 0.0018748672416785367,
+      "rmse_constrained": 0.0018748672416785367
+    },
+    {
+      "date": "2023-12-18",
+      "expiry": "2024-02-16",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001321527770445849,
+      "rmse_unconstrained": 0.0005262901962021664,
+      "rmse_constrained": 0.0005435325169691943
+    },
+    {
+      "date": "2023-12-20",
+      "expiry": "2024-01-02",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03859785534054039,
+      "rmse_unconstrained": 0.0020785889289988498,
+      "rmse_constrained": 0.0020785889289988498
+    },
+    {
+      "date": "2023-12-20",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.030232303827971152,
+      "rmse_unconstrained": 0.0014135371119069636,
+      "rmse_constrained": 0.0014135371119069636
+    },
+    {
+      "date": "2023-12-20",
+      "expiry": "2024-02-16",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016847560397928452,
+      "rmse_unconstrained": 0.0009591808228282937,
+      "rmse_constrained": 0.0009917103917164933
+    },
+    {
+      "date": "2023-12-22",
+      "expiry": "2024-01-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03060878070165715,
+      "rmse_unconstrained": 0.0028531505009605613,
+      "rmse_constrained": 0.0028531505009605613
+    },
+    {
+      "date": "2023-12-22",
+      "expiry": "2024-01-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00011482575660431982,
+      "rmse_unconstrained": 0.00182562927849578,
+      "rmse_constrained": 0.0018483241949594363
+    },
+    {
+      "date": "2023-12-22",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.010463698091935269,
+      "rmse_unconstrained": 0.001006091694770354,
+      "rmse_constrained": 0.001006091694770354
+    },
+    {
+      "date": "2023-12-27",
+      "expiry": "2024-01-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.016644218159629985,
+      "rmse_unconstrained": 0.0004590375519937334,
+      "rmse_constrained": 0.0004590375519937334
+    },
+    {
+      "date": "2023-12-27",
+      "expiry": "2024-01-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.028271604651950444,
+      "rmse_unconstrained": 0.002057172316225164,
+      "rmse_constrained": 0.002057172316225164
+    },
+    {
+      "date": "2023-12-27",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00929713571189806,
+      "rmse_unconstrained": 0.0011912245241584422,
+      "rmse_constrained": 0.0011912245241584422
+    },
+    {
+      "date": "2023-12-29",
+      "expiry": "2024-01-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.011373622054431785,
+      "rmse_unconstrained": 0.0007800810946862767,
+      "rmse_constrained": 0.0007800810946862767
+    },
+    {
+      "date": "2023-12-29",
+      "expiry": "2024-01-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04804559285183678,
+      "rmse_unconstrained": 0.0019039830109061954,
+      "rmse_constrained": 0.0019039830109061954
+    },
+    {
+      "date": "2023-12-29",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017499995124619812,
+      "rmse_unconstrained": 0.0021059483534204447,
+      "rmse_constrained": 0.0021059483534204447
+    },
+    {
+      "date": "2024-01-03",
+      "expiry": "2024-01-17",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "penalty_100",
+      "min_g": 0.9999749166185241,
+      "rmse_unconstrained": 0.01780041568916902,
+      "rmse_constrained": 0.06485663214805222
+    },
+    {
+      "date": "2024-01-03",
+      "expiry": "2024-01-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019894856045839335,
+      "rmse_unconstrained": 0.0020800875051846033,
+      "rmse_constrained": 0.0020800875051846033
+    },
+    {
+      "date": "2024-01-03",
+      "expiry": "2024-02-29",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001681192435124268,
+      "rmse_unconstrained": 0.0026617928712159298,
+      "rmse_constrained": 0.002791575408605646
+    },
+    {
+      "date": "2024-01-05",
+      "expiry": "2024-01-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.026940137692923166,
+      "rmse_unconstrained": 0.0025495967227978163,
+      "rmse_constrained": 0.0025495967227978163
+    },
+    {
+      "date": "2024-01-05",
+      "expiry": "2024-02-02",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.049128501827834674,
+      "rmse_unconstrained": 0.0020439991820956254,
+      "rmse_constrained": 0.0020439991820956254
+    },
+    {
+      "date": "2024-01-05",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017620211768732675,
+      "rmse_unconstrained": 0.0020066674500202383,
+      "rmse_constrained": 0.0020066674500202383
+    },
+    {
+      "date": "2024-01-08",
+      "expiry": "2024-01-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03625863347269524,
+      "rmse_unconstrained": 0.0017826637527543416,
+      "rmse_constrained": 0.0017826637527543416
+    },
+    {
+      "date": "2024-01-08",
+      "expiry": "2024-02-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06401110773761981,
+      "rmse_unconstrained": 0.0018259359348604337,
+      "rmse_constrained": 0.0018259359348604337
+    },
+    {
+      "date": "2024-01-08",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01691940017602006,
+      "rmse_unconstrained": 0.0024274768144254113,
+      "rmse_constrained": 0.0024274768144254113
+    },
+    {
+      "date": "2024-01-10",
+      "expiry": "2024-01-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04796598556567206,
+      "rmse_unconstrained": 0.0008328158991259195,
+      "rmse_constrained": 0.0008328158991259195
+    },
+    {
+      "date": "2024-01-10",
+      "expiry": "2024-02-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01938793864952803,
+      "rmse_unconstrained": 0.002047277335824529,
+      "rmse_constrained": 0.002047277335824529
+    },
+    {
+      "date": "2024-01-10",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013067426752167995,
+      "rmse_unconstrained": 0.0019437694245553565,
+      "rmse_constrained": 0.0019437694245553565
+    },
+    {
+      "date": "2024-01-12",
+      "expiry": "2024-01-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.034274979453507826,
+      "rmse_unconstrained": 0.0025414969041966757,
+      "rmse_constrained": 0.0025414969041966757
+    },
+    {
+      "date": "2024-01-12",
+      "expiry": "2024-02-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019252678262432744,
+      "rmse_unconstrained": 0.0014321378351559602,
+      "rmse_constrained": 0.0014321378351559602
+    },
+    {
+      "date": "2024-01-12",
+      "expiry": "2024-03-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015314036415546572,
+      "rmse_unconstrained": 0.0011118030599698602,
+      "rmse_constrained": 0.0012757367485035018
+    },
+    {
+      "date": "2024-01-17",
+      "expiry": "2024-01-31",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018097160460374406,
+      "rmse_unconstrained": 0.003725369573963189,
+      "rmse_constrained": 0.003725256285507057
+    },
+    {
+      "date": "2024-01-17",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005707213083319618,
+      "rmse_unconstrained": 0.0030382843690230366,
+      "rmse_constrained": 0.0030382843690230366
+    },
+    {
+      "date": "2024-01-17",
+      "expiry": "2024-03-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001875183872478356,
+      "rmse_unconstrained": 0.002373177926184731,
+      "rmse_constrained": 0.0027043232676906377
+    },
+    {
+      "date": "2024-01-19",
+      "expiry": "2024-02-02",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.023896499061691064,
+      "rmse_unconstrained": 0.0014800083929224334,
+      "rmse_constrained": 0.0014800083929224334
+    },
+    {
+      "date": "2024-01-19",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.007110363424965745,
+      "rmse_unconstrained": 0.0016714832005610691,
+      "rmse_constrained": 0.0016714832005610691
+    },
+    {
+      "date": "2024-01-19",
+      "expiry": "2024-03-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 3.9212387175135976e-05,
+      "rmse_unconstrained": 0.001269954531768355,
+      "rmse_constrained": 0.001269954531768355
+    },
+    {
+      "date": "2024-01-22",
+      "expiry": "2024-02-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06515900908884178,
+      "rmse_unconstrained": 0.0020544670692401274,
+      "rmse_constrained": 0.0020544670692401274
+    },
+    {
+      "date": "2024-01-22",
+      "expiry": "2024-02-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.010968498715603407,
+      "rmse_unconstrained": 0.001867807813130183,
+      "rmse_constrained": 0.001867807813130183
+    },
+    {
+      "date": "2024-01-22",
+      "expiry": "2024-03-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019257624920018118,
+      "rmse_unconstrained": 0.0010030650183738916,
+      "rmse_constrained": 0.0011639189129235108
+    },
+    {
+      "date": "2024-01-24",
+      "expiry": "2024-02-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07046436791159698,
+      "rmse_unconstrained": 0.00361271291661667,
+      "rmse_constrained": 0.00361271291661667
+    },
+    {
+      "date": "2024-01-24",
+      "expiry": "2024-02-23",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.018267270018174776,
+      "rmse_unconstrained": 0.0014255709100614415,
+      "rmse_constrained": 0.0014255709100614415
+    },
+    {
+      "date": "2024-01-24",
+      "expiry": "2024-03-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005587322863194147,
+      "rmse_unconstrained": 0.0007363944127228624,
+      "rmse_constrained": 0.0007363944127228624
+    },
+    {
+      "date": "2024-01-26",
+      "expiry": "2024-02-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.023406902803427533,
+      "rmse_unconstrained": 0.0029116564017702008,
+      "rmse_constrained": 0.0029116564017702008
+    },
+    {
+      "date": "2024-01-26",
+      "expiry": "2024-02-23",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04603232264693777,
+      "rmse_unconstrained": 0.0010686442630861868,
+      "rmse_constrained": 0.0010686442630861868
+    },
+    {
+      "date": "2024-01-26",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0012516552684021243,
+      "rmse_unconstrained": 0.0007539447081853819,
+      "rmse_constrained": 0.0007539447081853819
+    },
+    {
+      "date": "2024-01-29",
+      "expiry": "2024-02-09",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.002641340567237256,
+      "rmse_unconstrained": 0.0019989196707184973,
+      "rmse_constrained": 0.0019989196707184973
+    },
+    {
+      "date": "2024-01-29",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.030388839024554005,
+      "rmse_unconstrained": 0.0016043206958998863,
+      "rmse_constrained": 0.0016043206958998863
+    },
+    {
+      "date": "2024-01-29",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.010757733106391804,
+      "rmse_unconstrained": 0.000655464202660334,
+      "rmse_constrained": 0.000655464202660334
+    },
+    {
+      "date": "2024-01-31",
+      "expiry": "2024-02-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.011277616688054687,
+      "rmse_unconstrained": 0.0006843914371414862,
+      "rmse_constrained": 0.0006843914371414862
+    },
+    {
+      "date": "2024-01-31",
+      "expiry": "2024-02-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05365348540157504,
+      "rmse_unconstrained": 0.0012260554463186203,
+      "rmse_constrained": 0.0012260554463186203
+    },
+    {
+      "date": "2024-01-31",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00824656386832304,
+      "rmse_unconstrained": 0.0009672629504046801,
+      "rmse_constrained": 0.0009672629504046801
+    },
+    {
+      "date": "2024-02-02",
+      "expiry": "2024-02-16",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016670074308140076,
+      "rmse_unconstrained": 0.0028235433650435266,
+      "rmse_constrained": 0.0027940617979404065
+    },
+    {
+      "date": "2024-02-02",
+      "expiry": "2024-03-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03599525878675107,
+      "rmse_unconstrained": 0.0008682840901081284,
+      "rmse_constrained": 0.0008682840901081284
+    },
+    {
+      "date": "2024-02-02",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.009845108804249963,
+      "rmse_unconstrained": 0.0007751679228180083,
+      "rmse_constrained": 0.0007751679228180083
+    },
+    {
+      "date": "2024-02-05",
+      "expiry": "2024-02-16",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020012793603341184,
+      "rmse_unconstrained": 0.004026243185712698,
+      "rmse_constrained": 0.0036713512242078665
+    },
+    {
+      "date": "2024-02-05",
+      "expiry": "2024-03-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013809842373022935,
+      "rmse_unconstrained": 0.001591135888491743,
+      "rmse_constrained": 0.001591135888491743
+    },
+    {
+      "date": "2024-02-05",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.004856274133052008,
+      "rmse_unconstrained": 0.0006079654963576101,
+      "rmse_constrained": 0.0006079654963576101
+    },
+    {
+      "date": "2024-02-07",
+      "expiry": "2024-02-21",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "penalty_100",
+      "min_g": 0.0009882257376769565,
+      "rmse_unconstrained": 0.007932756355786646,
+      "rmse_constrained": 0.017129059756687902
+    },
+    {
+      "date": "2024-02-07",
+      "expiry": "2024-03-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0435069546340645,
+      "rmse_unconstrained": 0.0010866369129718153,
+      "rmse_constrained": 0.0010866369129718153
+    },
+    {
+      "date": "2024-02-07",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.012486568369130792,
+      "rmse_unconstrained": 0.0010034001800822135,
+      "rmse_constrained": 0.0010034001800822135
+    },
+    {
+      "date": "2024-02-09",
+      "expiry": "2024-02-23",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 5.042775251683229e-05,
+      "rmse_unconstrained": 0.004439796956768925,
+      "rmse_constrained": 0.00397078786846046
+    },
+    {
+      "date": "2024-02-09",
+      "expiry": "2024-03-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03273333894596397,
+      "rmse_unconstrained": 0.001111084415953027,
+      "rmse_constrained": 0.001111084415953027
+    },
+    {
+      "date": "2024-02-09",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019554867967241103,
+      "rmse_unconstrained": 0.0008711921505274193,
+      "rmse_constrained": 0.0008711921505274193
+    },
+    {
+      "date": "2024-02-12",
+      "expiry": "2024-02-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03705854468284113,
+      "rmse_unconstrained": 0.0035664978455619933,
+      "rmse_constrained": 0.0035664978455619933
+    },
+    {
+      "date": "2024-02-12",
+      "expiry": "2024-03-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.052456092844222764,
+      "rmse_unconstrained": 0.0018418193066794795,
+      "rmse_constrained": 0.0018418193066794795
+    },
+    {
+      "date": "2024-02-12",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00560436867069844,
+      "rmse_unconstrained": 0.0009817680595325857,
+      "rmse_constrained": 0.0009817680595325857
+    },
+    {
+      "date": "2024-02-14",
+      "expiry": "2024-02-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05746313551920006,
+      "rmse_unconstrained": 0.0019518485999594445,
+      "rmse_constrained": 0.0019518485999594445
+    },
+    {
+      "date": "2024-02-14",
+      "expiry": "2024-03-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00011251437089267874,
+      "rmse_unconstrained": 0.0014924119830646055,
+      "rmse_constrained": 0.001624015612239705
+    },
+    {
+      "date": "2024-02-14",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.004786479508017499,
+      "rmse_unconstrained": 0.0005827634541796513,
+      "rmse_constrained": 0.0005827634541796513
+    },
+    {
+      "date": "2024-02-16",
+      "expiry": "2024-03-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03384978698751499,
+      "rmse_unconstrained": 0.003061241324659104,
+      "rmse_constrained": 0.003061241324659104
+    },
+    {
+      "date": "2024-02-16",
+      "expiry": "2024-03-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.027898467511969918,
+      "rmse_unconstrained": 0.001318863453918537,
+      "rmse_constrained": 0.001318863453918537
+    },
+    {
+      "date": "2024-02-16",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.020440232467588755,
+      "rmse_unconstrained": 0.0005865425658774958,
+      "rmse_constrained": 0.0005865425658774958
+    },
+    {
+      "date": "2024-02-21",
+      "expiry": "2024-03-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.13933454280200266,
+      "rmse_unconstrained": 0.002076010098989914,
+      "rmse_constrained": 0.002076010098989914
+    },
+    {
+      "date": "2024-02-21",
+      "expiry": "2024-03-22",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018604851397297645,
+      "rmse_unconstrained": 0.0014766630719634587,
+      "rmse_constrained": 0.001771425399260354
+    },
+    {
+      "date": "2024-02-21",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03591368923632351,
+      "rmse_unconstrained": 0.0006475924420177008,
+      "rmse_constrained": 0.0006475924420177008
+    },
+    {
+      "date": "2024-02-23",
+      "expiry": "2024-03-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.033864890315928924,
+      "rmse_unconstrained": 0.0026211883547182942,
+      "rmse_constrained": 0.0026211883547182942
+    },
+    {
+      "date": "2024-02-23",
+      "expiry": "2024-03-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.016695424266422468,
+      "rmse_unconstrained": 0.0014057007364869296,
+      "rmse_constrained": 0.0014057007364869296
+    },
+    {
+      "date": "2024-02-23",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.020027101262253842,
+      "rmse_unconstrained": 0.0012544954626001036,
+      "rmse_constrained": 0.0012544954626001036
+    },
+    {
+      "date": "2024-02-26",
+      "expiry": "2024-03-11",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05718691431341666,
+      "rmse_unconstrained": 0.002621487986344237,
+      "rmse_constrained": 0.002621487986344237
+    },
+    {
+      "date": "2024-02-26",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017429678060204,
+      "rmse_unconstrained": 0.001293176220845197,
+      "rmse_constrained": 0.001293176220845197
+    },
+    {
+      "date": "2024-02-26",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.027365579286836063,
+      "rmse_unconstrained": 0.001366562960108119,
+      "rmse_constrained": 0.001366562960108119
+    },
+    {
+      "date": "2024-02-28",
+      "expiry": "2024-03-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.13469992816932422,
+      "rmse_unconstrained": 0.002622397427517699,
+      "rmse_constrained": 0.002622397427517699
+    },
+    {
+      "date": "2024-02-28",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.056165268031264794,
+      "rmse_unconstrained": 0.0011048595283810931,
+      "rmse_constrained": 0.0011048595283810931
+    },
+    {
+      "date": "2024-02-28",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.033445931396374806,
+      "rmse_unconstrained": 0.0009732258222643074,
+      "rmse_constrained": 0.0009732258222643074
+    },
+    {
+      "date": "2024-03-01",
+      "expiry": "2024-03-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001168281797811685,
+      "rmse_unconstrained": 0.004862121327436255,
+      "rmse_constrained": 0.004460752591869122
+    },
+    {
+      "date": "2024-03-01",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.034744372166585685,
+      "rmse_unconstrained": 0.001969943996798703,
+      "rmse_constrained": 0.001969943996798703
+    },
+    {
+      "date": "2024-03-01",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05605352695940337,
+      "rmse_unconstrained": 0.0009197847473472635,
+      "rmse_constrained": 0.0009197847473472635
+    },
+    {
+      "date": "2024-03-04",
+      "expiry": "2024-03-18",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05996382951864277,
+      "rmse_unconstrained": 0.004653653995890884,
+      "rmse_constrained": 0.004653653995890884
+    },
+    {
+      "date": "2024-03-04",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05530862794778415,
+      "rmse_unconstrained": 0.0008985530066772968,
+      "rmse_constrained": 0.0008985530066772968
+    },
+    {
+      "date": "2024-03-04",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.040840887102267985,
+      "rmse_unconstrained": 0.0009467084878814116,
+      "rmse_constrained": 0.0009467084878814116
+    },
+    {
+      "date": "2024-03-06",
+      "expiry": "2024-03-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07718928016790441,
+      "rmse_unconstrained": 0.0022729809285830754,
+      "rmse_constrained": 0.0022729809285830754
+    },
+    {
+      "date": "2024-03-06",
+      "expiry": "2024-04-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05711200626586204,
+      "rmse_unconstrained": 0.0008204276118850632,
+      "rmse_constrained": 0.0008204276118850632
+    },
+    {
+      "date": "2024-03-06",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04933838030215398,
+      "rmse_unconstrained": 0.0008403905097561435,
+      "rmse_constrained": 0.0008403905097561435
+    },
+    {
+      "date": "2024-03-08",
+      "expiry": "2024-03-22",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.0001860812178450591,
+      "rmse_unconstrained": 0.0036203711812468117,
+      "rmse_constrained": 0.0034548073555880922
+    },
+    {
+      "date": "2024-03-08",
+      "expiry": "2024-04-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.052537636652653485,
+      "rmse_unconstrained": 0.0008269458231788593,
+      "rmse_constrained": 0.0008269458231788593
+    },
+    {
+      "date": "2024-03-08",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03828305240870175,
+      "rmse_unconstrained": 0.0006519230733424469,
+      "rmse_constrained": 0.0006519230733424469
+    },
+    {
+      "date": "2024-03-11",
+      "expiry": "2024-03-25",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.1172738662743636,
+      "rmse_unconstrained": 0.002986310600075008,
+      "rmse_constrained": 0.002986310600075008
+    },
+    {
+      "date": "2024-03-11",
+      "expiry": "2024-04-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.058140636672123644,
+      "rmse_unconstrained": 0.0008106008137704069,
+      "rmse_constrained": 0.0008106008137704069
+    },
+    {
+      "date": "2024-03-11",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.055214545786126834,
+      "rmse_unconstrained": 0.0006329155701496993,
+      "rmse_constrained": 0.0006329155701496993
+    },
+    {
+      "date": "2024-03-13",
+      "expiry": "2024-03-27",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.062110649100231376,
+      "rmse_unconstrained": 0.0006279250398210359,
+      "rmse_constrained": 0.0006279250398210359
+    },
+    {
+      "date": "2024-03-13",
+      "expiry": "2024-04-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.054105366669250164,
+      "rmse_unconstrained": 0.0015462077581512733,
+      "rmse_constrained": 0.0015462077581512733
+    },
+    {
+      "date": "2024-03-13",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05105746218124276,
+      "rmse_unconstrained": 0.0008515964363339964,
+      "rmse_constrained": 0.0008515964363339964
+    },
+    {
+      "date": "2024-03-15",
+      "expiry": "2024-03-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04722097669619034,
+      "rmse_unconstrained": 0.0018057617061202362,
+      "rmse_constrained": 0.0018057617061202362
+    },
+    {
+      "date": "2024-03-15",
+      "expiry": "2024-04-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.060687345359860714,
+      "rmse_unconstrained": 0.001653619403613239,
+      "rmse_constrained": 0.001653619403613239
+    },
+    {
+      "date": "2024-03-15",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.020833309955896082,
+      "rmse_unconstrained": 0.0010958014634252704,
+      "rmse_constrained": 0.0010958014634252704
+    },
+    {
+      "date": "2024-03-18",
+      "expiry": "2024-04-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08075412340134018,
+      "rmse_unconstrained": 0.0010626379905416343,
+      "rmse_constrained": 0.0010626379905416343
+    },
+    {
+      "date": "2024-03-18",
+      "expiry": "2024-04-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06428350033423237,
+      "rmse_unconstrained": 0.0009735934304045957,
+      "rmse_constrained": 0.0009735934304045957
+    },
+    {
+      "date": "2024-03-18",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.027670268231869674,
+      "rmse_unconstrained": 0.0014003888952975217,
+      "rmse_constrained": 0.0014003888952975217
+    },
+    {
+      "date": "2024-03-20",
+      "expiry": "2024-04-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03918127661460468,
+      "rmse_unconstrained": 0.0014418004284422325,
+      "rmse_constrained": 0.0014418004284422325
+    },
+    {
+      "date": "2024-03-20",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.046878348660557526,
+      "rmse_unconstrained": 0.0010985247853841523,
+      "rmse_constrained": 0.0010985247853841523
+    },
+    {
+      "date": "2024-03-20",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03264698980878372,
+      "rmse_unconstrained": 0.0012195453799214782,
+      "rmse_constrained": 0.0012195453799214782
+    },
+    {
+      "date": "2024-03-22",
+      "expiry": "2024-04-05",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00019558290623865326,
+      "rmse_unconstrained": 0.0025044587237644557,
+      "rmse_constrained": 0.0029336871294596105
+    },
+    {
+      "date": "2024-03-22",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.035368440274238445,
+      "rmse_unconstrained": 0.0013379158702269366,
+      "rmse_constrained": 0.0013379158702269366
+    },
+    {
+      "date": "2024-03-22",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06104355063899165,
+      "rmse_unconstrained": 0.000524516950724844,
+      "rmse_constrained": 0.000524516950724844
+    },
+    {
+      "date": "2024-03-25",
+      "expiry": "2024-04-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05847767419855057,
+      "rmse_unconstrained": 0.002324080967109219,
+      "rmse_constrained": 0.002324080967109219
+    },
+    {
+      "date": "2024-03-25",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03917758998087111,
+      "rmse_unconstrained": 0.001571087382793691,
+      "rmse_constrained": 0.001571087382793691
+    },
+    {
+      "date": "2024-03-25",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05848677948143907,
+      "rmse_unconstrained": 0.0008949823664528624,
+      "rmse_constrained": 0.0008949823664528624
+    },
+    {
+      "date": "2024-03-27",
+      "expiry": "2024-04-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04092109799551451,
+      "rmse_unconstrained": 0.0015777892439030267,
+      "rmse_constrained": 0.0015777892439030267
+    },
+    {
+      "date": "2024-03-27",
+      "expiry": "2024-04-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03212741121450914,
+      "rmse_unconstrained": 0.001245386547080957,
+      "rmse_constrained": 0.001245386547080957
+    },
+    {
+      "date": "2024-03-27",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05401285041483849,
+      "rmse_unconstrained": 0.0005703183031059059,
+      "rmse_constrained": 0.0005703183031059059
+    },
+    {
+      "date": "2024-04-01",
+      "expiry": "2024-04-15",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0633176911218983,
+      "rmse_unconstrained": 0.0015957941936318276,
+      "rmse_constrained": 0.0015957941936318276
+    },
+    {
+      "date": "2024-04-01",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.032790698031379004,
+      "rmse_unconstrained": 0.0019103374760140947,
+      "rmse_constrained": 0.0019103374760140947
+    },
+    {
+      "date": "2024-04-01",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0224341157077577,
+      "rmse_unconstrained": 0.0005619309330738197,
+      "rmse_constrained": 0.0005619309330738197
+    },
+    {
+      "date": "2024-04-03",
+      "expiry": "2024-04-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07723269013825348,
+      "rmse_unconstrained": 0.0026146532092339663,
+      "rmse_constrained": 0.0026146532092339663
+    },
+    {
+      "date": "2024-04-03",
+      "expiry": "2024-04-30",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.056592066476213204,
+      "rmse_unconstrained": 0.0016893543693583984,
+      "rmse_constrained": 0.0016893543693583984
+    },
+    {
+      "date": "2024-04-03",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02181776903661146,
+      "rmse_unconstrained": 0.0007449742650636411,
+      "rmse_constrained": 0.0007449742650636411
+    },
+    {
+      "date": "2024-04-05",
+      "expiry": "2024-04-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.022322395590784864,
+      "rmse_unconstrained": 0.0028527741257356157,
+      "rmse_constrained": 0.0028527741257356157
+    },
+    {
+      "date": "2024-04-05",
+      "expiry": "2024-05-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03619413284962483,
+      "rmse_unconstrained": 0.0021070084979562306,
+      "rmse_constrained": 0.0021070084979562306
+    },
+    {
+      "date": "2024-04-05",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017138418816178846,
+      "rmse_unconstrained": 0.001086903758834162,
+      "rmse_constrained": 0.001086903758834162
+    },
+    {
+      "date": "2024-04-08",
+      "expiry": "2024-04-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0781083634383063,
+      "rmse_unconstrained": 0.0028019725115851777,
+      "rmse_constrained": 0.0028019725115851777
+    },
+    {
+      "date": "2024-04-08",
+      "expiry": "2024-05-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.031219053180988034,
+      "rmse_unconstrained": 0.0018878738243225278,
+      "rmse_constrained": 0.0018878738243225278
+    },
+    {
+      "date": "2024-04-08",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017406773487214186,
+      "rmse_unconstrained": 0.0019691217014270426,
+      "rmse_constrained": 0.0019691217014270426
+    },
+    {
+      "date": "2024-04-10",
+      "expiry": "2024-04-24",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 3.993725313224811e-05,
+      "rmse_unconstrained": 0.002013834689205714,
+      "rmse_constrained": 0.002112194013916582
+    },
+    {
+      "date": "2024-04-10",
+      "expiry": "2024-05-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.023310980106943432,
+      "rmse_unconstrained": 0.001920137667617549,
+      "rmse_constrained": 0.001920137667617549
+    },
+    {
+      "date": "2024-04-10",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01760076232134256,
+      "rmse_unconstrained": 0.002391096817443753,
+      "rmse_constrained": 0.002391096817443753
+    },
+    {
+      "date": "2024-04-12",
+      "expiry": "2024-04-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04276579328221435,
+      "rmse_unconstrained": 0.0038536728087343562,
+      "rmse_constrained": 0.0038536728087343562
+    },
+    {
+      "date": "2024-04-12",
+      "expiry": "2024-05-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01807388467588046,
+      "rmse_unconstrained": 0.00367659485282788,
+      "rmse_constrained": 0.00367659485282788
+    },
+    {
+      "date": "2024-04-12",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019188135727272328,
+      "rmse_unconstrained": 0.0033701447691832733,
+      "rmse_constrained": 0.0033701447691832733
+    },
+    {
+      "date": "2024-04-15",
+      "expiry": "2024-04-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.15311368443097575,
+      "rmse_unconstrained": 0.003949013025593836,
+      "rmse_constrained": 0.003949013025593836
+    },
+    {
+      "date": "2024-04-15",
+      "expiry": "2024-05-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.012038786741917079,
+      "rmse_unconstrained": 0.004061927283083383,
+      "rmse_constrained": 0.004061927283083383
+    },
+    {
+      "date": "2024-04-15",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.017734382897879687,
+      "rmse_unconstrained": 0.002407336773299295,
+      "rmse_constrained": 0.002407336773299295
+    },
+    {
+      "date": "2024-04-17",
+      "expiry": "2024-05-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.037968541017914546,
+      "rmse_unconstrained": 0.004609533979626072,
+      "rmse_constrained": 0.004609533979626072
+    },
+    {
+      "date": "2024-04-17",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.019205663818499426,
+      "rmse_unconstrained": 0.0036199993888654325,
+      "rmse_constrained": 0.0036199993888654325
+    },
+    {
+      "date": "2024-04-17",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.012136523715039083,
+      "rmse_unconstrained": 0.003207695285499075,
+      "rmse_constrained": 0.003207695285499075
+    },
+    {
+      "date": "2024-04-19",
+      "expiry": "2024-05-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03659609376426932,
+      "rmse_unconstrained": 0.00513056753204018,
+      "rmse_constrained": 0.00513056753204018
+    },
+    {
+      "date": "2024-04-19",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06568345002311027,
+      "rmse_unconstrained": 0.0019385964447820507,
+      "rmse_constrained": 0.0019385964447820507
+    },
+    {
+      "date": "2024-04-19",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03200795940293975,
+      "rmse_unconstrained": 0.002079077404994518,
+      "rmse_constrained": 0.002079077404994518
+    },
+    {
+      "date": "2024-04-22",
+      "expiry": "2024-05-06",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.11091595780032532,
+      "rmse_unconstrained": 0.004620740303371831,
+      "rmse_constrained": 0.004620740303371831
+    },
+    {
+      "date": "2024-04-22",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.030319491569800672,
+      "rmse_unconstrained": 0.002687926729351892,
+      "rmse_constrained": 0.002687926729351892
+    },
+    {
+      "date": "2024-04-22",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03867847209464016,
+      "rmse_unconstrained": 0.0029878692328087694,
+      "rmse_constrained": 0.0029878692328087694
+    },
+    {
+      "date": "2024-04-24",
+      "expiry": "2024-05-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08755893366761808,
+      "rmse_unconstrained": 0.0037113376562084312,
+      "rmse_constrained": 0.0037113376562084312
+    },
+    {
+      "date": "2024-04-24",
+      "expiry": "2024-05-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05934969788880314,
+      "rmse_unconstrained": 0.0043572516182169094,
+      "rmse_constrained": 0.0043572516182169094
+    },
+    {
+      "date": "2024-04-24",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03375780001604952,
+      "rmse_unconstrained": 0.003238665868013549,
+      "rmse_constrained": 0.003238665868013549
+    },
+    {
+      "date": "2024-04-26",
+      "expiry": "2024-05-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03511225963611716,
+      "rmse_unconstrained": 0.004805887642600147,
+      "rmse_constrained": 0.004805887642600147
+    },
+    {
+      "date": "2024-04-26",
+      "expiry": "2024-05-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.040314021268613186,
+      "rmse_unconstrained": 0.0031531527817902603,
+      "rmse_constrained": 0.0031531527817902603
+    },
+    {
+      "date": "2024-04-26",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.044476896966347705,
+      "rmse_unconstrained": 0.0016085419844500265,
+      "rmse_constrained": 0.0016085419844500265
+    },
+    {
+      "date": "2024-04-29",
+      "expiry": "2024-05-13",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005938990657820491,
+      "rmse_unconstrained": 0.0027441756765717975,
+      "rmse_constrained": 0.0027441756765717975
+    },
+    {
+      "date": "2024-04-29",
+      "expiry": "2024-05-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.032548860185234375,
+      "rmse_unconstrained": 0.0019395959287297757,
+      "rmse_constrained": 0.0019395959287297757
+    },
+    {
+      "date": "2024-04-29",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.06409141666142255,
+      "rmse_unconstrained": 0.0009252033921571516,
+      "rmse_constrained": 0.0009252033921571516
+    },
+    {
+      "date": "2024-05-01",
+      "expiry": "2024-05-15",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 2.8782693445458807e-05,
+      "rmse_unconstrained": 0.0009332781014870714,
+      "rmse_constrained": 0.0016009500630971393
+    },
+    {
+      "date": "2024-05-01",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.051246549799757735,
+      "rmse_unconstrained": 0.0019762782330840977,
+      "rmse_constrained": 0.0019762782330840977
+    },
+    {
+      "date": "2024-05-01",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.044527720909196176,
+      "rmse_unconstrained": 0.002054613017887473,
+      "rmse_constrained": 0.002054613017887473
+    },
+    {
+      "date": "2024-05-03",
+      "expiry": "2024-05-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0038141828014897003,
+      "rmse_unconstrained": 0.002096307858101545,
+      "rmse_constrained": 0.002096307858101545
+    },
+    {
+      "date": "2024-05-03",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04315147411970594,
+      "rmse_unconstrained": 0.0024345166336163316,
+      "rmse_constrained": 0.0024345166336163316
+    },
+    {
+      "date": "2024-05-03",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.044999235174860236,
+      "rmse_unconstrained": 0.0021352505340000005,
+      "rmse_constrained": 0.0021352505340000005
+    },
+    {
+      "date": "2024-05-06",
+      "expiry": "2024-05-20",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08464943878791098,
+      "rmse_unconstrained": 0.004836643114439241,
+      "rmse_constrained": 0.004836643114439241
+    },
+    {
+      "date": "2024-05-06",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04540200832464536,
+      "rmse_unconstrained": 0.004104740585467718,
+      "rmse_constrained": 0.004104740585467718
+    },
+    {
+      "date": "2024-05-06",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.038493369111416834,
+      "rmse_unconstrained": 0.002795396753325735,
+      "rmse_constrained": 0.002795396753325735
+    },
+    {
+      "date": "2024-05-08",
+      "expiry": "2024-05-22",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.09252182216524948,
+      "rmse_unconstrained": 0.005042262577039861,
+      "rmse_constrained": 0.005042262577039861
+    },
+    {
+      "date": "2024-05-08",
+      "expiry": "2024-06-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0263594604971122,
+      "rmse_unconstrained": 0.0029260164043750938,
+      "rmse_constrained": 0.0029260164043750938
+    },
+    {
+      "date": "2024-05-08",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03921624977111466,
+      "rmse_unconstrained": 0.002704413832373246,
+      "rmse_constrained": 0.002704413832373246
+    },
+    {
+      "date": "2024-05-10",
+      "expiry": "2024-05-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0034606895037098753,
+      "rmse_unconstrained": 0.002909393652726333,
+      "rmse_constrained": 0.002909393652726333
+    },
+    {
+      "date": "2024-05-10",
+      "expiry": "2024-06-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.026187336011342432,
+      "rmse_unconstrained": 0.003523356382126684,
+      "rmse_constrained": 0.003523356382126684
+    },
+    {
+      "date": "2024-05-10",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02952654798062217,
+      "rmse_unconstrained": 0.0022354919900762354,
+      "rmse_constrained": 0.0022354919900762354
+    },
+    {
+      "date": "2024-05-13",
+      "expiry": "2024-05-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.002137283977691168,
+      "rmse_unconstrained": 0.0020831576878355402,
+      "rmse_constrained": 0.0020831576878355402
+    },
+    {
+      "date": "2024-05-13",
+      "expiry": "2024-06-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.021395095916643313,
+      "rmse_unconstrained": 0.0003763014077193232,
+      "rmse_constrained": 0.0003763014077193232
+    },
+    {
+      "date": "2024-05-13",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.045752325472511485,
+      "rmse_unconstrained": 0.0022916337459010024,
+      "rmse_constrained": 0.0022916337459010024
+    },
+    {
+      "date": "2024-05-15",
+      "expiry": "2024-05-29",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.040509121736600956,
+      "rmse_unconstrained": 0.003638955646484599,
+      "rmse_constrained": 0.003638955646484599
+    },
+    {
+      "date": "2024-05-15",
+      "expiry": "2024-06-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.012808989567821102,
+      "rmse_unconstrained": 0.0018229246147759037,
+      "rmse_constrained": 0.0018229246147759037
+    },
+    {
+      "date": "2024-05-15",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.024791748563411202,
+      "rmse_unconstrained": 0.000972001554477393,
+      "rmse_constrained": 0.000972001554477393
+    },
+    {
+      "date": "2024-05-17",
+      "expiry": "2024-05-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014154957473010488,
+      "rmse_unconstrained": 0.0031749531148394846,
+      "rmse_constrained": 0.0031749531148394846
+    },
+    {
+      "date": "2024-05-17",
+      "expiry": "2024-06-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.007257629189624755,
+      "rmse_unconstrained": 0.0013832943923684066,
+      "rmse_constrained": 0.0013832943923684066
+    },
+    {
+      "date": "2024-05-17",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.013098866561925694,
+      "rmse_unconstrained": 0.0010284806506912871,
+      "rmse_constrained": 0.0010284806506912871
+    },
+    {
+      "date": "2024-05-20",
+      "expiry": "2024-06-03",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.036842664452342654,
+      "rmse_unconstrained": 0.0007418763216330129,
+      "rmse_constrained": 0.0007418763216330129
+    },
+    {
+      "date": "2024-05-20",
+      "expiry": "2024-06-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02997062170650542,
+      "rmse_unconstrained": 0.0033440184361493586,
+      "rmse_constrained": 0.0033440184361493586
+    },
+    {
+      "date": "2024-05-20",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.032470159898475584,
+      "rmse_unconstrained": 0.0008839880391348963,
+      "rmse_constrained": 0.0008839880391348963
+    },
+    {
+      "date": "2024-05-22",
+      "expiry": "2024-06-05",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "penalty_100",
+      "min_g": 0.013328202779928272,
+      "rmse_unconstrained": 0.011103874104607588,
+      "rmse_constrained": 0.011079188230688812
+    },
+    {
+      "date": "2024-05-22",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.016009788687671424,
+      "rmse_unconstrained": 0.0015692521792654433,
+      "rmse_constrained": 0.0015692521792654433
+    },
+    {
+      "date": "2024-05-22",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.002368569529888148,
+      "rmse_unconstrained": 0.0011263191413725083,
+      "rmse_constrained": 0.0011263191413725083
+    },
+    {
+      "date": "2024-05-24",
+      "expiry": "2024-06-07",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.029159353000916897,
+      "rmse_unconstrained": 0.0016303018851733446,
+      "rmse_constrained": 0.0016303018851733446
+    },
+    {
+      "date": "2024-05-24",
+      "expiry": "2024-06-21",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016316943919096605,
+      "rmse_unconstrained": 0.0010612037755659194,
+      "rmse_constrained": 0.0015423237270737497
+    },
+    {
+      "date": "2024-05-24",
+      "expiry": "2024-07-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00017267827508765654,
+      "rmse_unconstrained": 0.0006730126135561933,
+      "rmse_constrained": 0.0008400864278051957
+    },
+    {
+      "date": "2024-05-29",
+      "expiry": "2024-06-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08214359143578934,
+      "rmse_unconstrained": 0.003555838339092529,
+      "rmse_constrained": 0.003555838339092529
+    },
+    {
+      "date": "2024-05-29",
+      "expiry": "2024-06-28",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00016200433869240083,
+      "rmse_unconstrained": 0.0036225515585872,
+      "rmse_constrained": 0.00390980414747482
+    },
+    {
+      "date": "2024-05-29",
+      "expiry": "2024-07-19",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020000145816317927,
+      "rmse_unconstrained": 0.002440350191159737,
+      "rmse_constrained": 0.002945097227138769
+    },
+    {
+      "date": "2024-05-31",
+      "expiry": "2024-06-14",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03433751252084815,
+      "rmse_unconstrained": 0.003609628216032447,
+      "rmse_constrained": 0.003609628216032447
+    },
+    {
+      "date": "2024-05-31",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03135950410298437,
+      "rmse_unconstrained": 0.003095626565568731,
+      "rmse_constrained": 0.003095626565568731
+    },
+    {
+      "date": "2024-05-31",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0018986692947525127,
+      "rmse_unconstrained": 0.001985287194615532,
+      "rmse_constrained": 0.001985287194615532
+    },
+    {
+      "date": "2024-06-03",
+      "expiry": "2024-06-17",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.08579715043977508,
+      "rmse_unconstrained": 0.005865157235606526,
+      "rmse_constrained": 0.005865157235606526
+    },
+    {
+      "date": "2024-06-03",
+      "expiry": "2024-06-28",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00018700981610801637,
+      "rmse_unconstrained": 0.003564331517722973,
+      "rmse_constrained": 0.003668585753718764
+    },
+    {
+      "date": "2024-06-03",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005430044134010825,
+      "rmse_unconstrained": 0.0020996151958844666,
+      "rmse_constrained": 0.0020996151958844666
+    },
+    {
+      "date": "2024-06-05",
+      "expiry": "2024-06-18",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.07898395391365119,
+      "rmse_unconstrained": 0.0052573636212850765,
+      "rmse_constrained": 0.0052573636212850765
+    },
+    {
+      "date": "2024-06-05",
+      "expiry": "2024-07-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.034898157064985245,
+      "rmse_unconstrained": 0.004046082985210773,
+      "rmse_constrained": 0.004046082985210773
+    },
+    {
+      "date": "2024-06-05",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.004414603020960084,
+      "rmse_unconstrained": 0.00206368441688917,
+      "rmse_constrained": 0.00206368441688917
+    },
+    {
+      "date": "2024-06-07",
+      "expiry": "2024-06-21",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.014482584111782007,
+      "rmse_unconstrained": 0.004968276233136131,
+      "rmse_constrained": 0.004968276233136131
+    },
+    {
+      "date": "2024-06-07",
+      "expiry": "2024-07-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04280081145785416,
+      "rmse_unconstrained": 0.003742751972025159,
+      "rmse_constrained": 0.003742751972025159
+    },
+    {
+      "date": "2024-06-07",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005928398411095645,
+      "rmse_unconstrained": 0.0019759795514949032,
+      "rmse_constrained": 0.0019759795514949032
+    },
+    {
+      "date": "2024-06-10",
+      "expiry": "2024-06-24",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03514710739757327,
+      "rmse_unconstrained": 0.0021341659871941436,
+      "rmse_constrained": 0.0021341659871941436
+    },
+    {
+      "date": "2024-06-10",
+      "expiry": "2024-07-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03730722360882707,
+      "rmse_unconstrained": 0.003915259355019054,
+      "rmse_constrained": 0.003915259355019054
+    },
+    {
+      "date": "2024-06-10",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.02096583223073524,
+      "rmse_unconstrained": 0.0018874504832210352,
+      "rmse_constrained": 0.0018874504832210352
+    },
+    {
+      "date": "2024-06-12",
+      "expiry": "2024-06-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05199709494585357,
+      "rmse_unconstrained": 0.0030086737958839363,
+      "rmse_constrained": 0.0030086737958839363
+    },
+    {
+      "date": "2024-06-12",
+      "expiry": "2024-07-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0032674438324328467,
+      "rmse_unconstrained": 0.0012475213978506562,
+      "rmse_constrained": 0.0012475213978506562
+    },
+    {
+      "date": "2024-06-12",
+      "expiry": "2024-07-31",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.00393557807292675,
+      "rmse_unconstrained": 0.0009284849556841639,
+      "rmse_constrained": 0.0009284849556841639
+    },
+    {
+      "date": "2024-06-14",
+      "expiry": "2024-06-28",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01099645637527493,
+      "rmse_unconstrained": 0.0035535941001077517,
+      "rmse_constrained": 0.0035535941001077517
+    },
+    {
+      "date": "2024-06-14",
+      "expiry": "2024-07-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0013909692888274747,
+      "rmse_unconstrained": 0.002547191756452657,
+      "rmse_constrained": 0.002547191756452657
+    },
+    {
+      "date": "2024-06-14",
+      "expiry": "2024-08-02",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00014618191211893117,
+      "rmse_unconstrained": 0.0012256604562844518,
+      "rmse_constrained": 0.0013196693659996285
+    },
+    {
+      "date": "2024-06-17",
+      "expiry": "2024-07-01",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.05341955741871701,
+      "rmse_unconstrained": 0.003118478758208752,
+      "rmse_constrained": 0.003118478758208752
+    },
+    {
+      "date": "2024-06-17",
+      "expiry": "2024-07-12",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00020002932242783877,
+      "rmse_unconstrained": 0.002072362054744867,
+      "rmse_constrained": 0.0023697772467073885
+    },
+    {
+      "date": "2024-06-17",
+      "expiry": "2024-08-16",
+      "pre_arb_free": false,
+      "arb_free": true,
+      "method": "slsqp",
+      "min_g": 0.00015940450438809567,
+      "rmse_unconstrained": 0.001070434110599316,
+      "rmse_constrained": 0.0010994416944587948
+    },
+    {
+      "date": "2024-06-21",
+      "expiry": "2024-07-05",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.011846802415314793,
+      "rmse_unconstrained": 0.0026744014421935056,
+      "rmse_constrained": 0.0026744014421935056
+    },
+    {
+      "date": "2024-06-21",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.018735794035714168,
+      "rmse_unconstrained": 0.001973499744316272,
+      "rmse_constrained": 0.001973499744316272
+    },
+    {
+      "date": "2024-06-21",
+      "expiry": "2024-08-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.009681109667396506,
+      "rmse_unconstrained": 0.001861043474275916,
+      "rmse_constrained": 0.001861043474275916
+    },
+    {
+      "date": "2024-06-24",
+      "expiry": "2024-07-08",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.037104857158769225,
+      "rmse_unconstrained": 0.0007134728992565199,
+      "rmse_constrained": 0.0007134728992565199
+    },
+    {
+      "date": "2024-06-24",
+      "expiry": "2024-07-19",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005071960123500842,
+      "rmse_unconstrained": 0.0019468084987374456,
+      "rmse_constrained": 0.0019468084987374456
+    },
+    {
+      "date": "2024-06-24",
+      "expiry": "2024-08-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.006649781047127039,
+      "rmse_unconstrained": 0.001776191978299301,
+      "rmse_constrained": 0.001776191978299301
+    },
+    {
+      "date": "2024-06-26",
+      "expiry": "2024-07-10",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.01300016344965342,
+      "rmse_unconstrained": 0.0008565588443777181,
+      "rmse_constrained": 0.0008565588443777181
+    },
+    {
+      "date": "2024-06-26",
+      "expiry": "2024-07-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.0042338780676399596,
+      "rmse_unconstrained": 0.001531593022806055,
+      "rmse_constrained": 0.001531593022806055
+    },
+    {
+      "date": "2024-06-26",
+      "expiry": "2024-08-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.005613918948016536,
+      "rmse_unconstrained": 0.0016798909696084598,
+      "rmse_constrained": 0.0016798909696084598
+    },
+    {
+      "date": "2024-06-28",
+      "expiry": "2024-07-12",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.04226374129068523,
+      "rmse_unconstrained": 0.0019472386507636196,
+      "rmse_constrained": 0.0019472386507636196
+    },
+    {
+      "date": "2024-06-28",
+      "expiry": "2024-07-26",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.03936295107859726,
+      "rmse_unconstrained": 0.002174490373919746,
+      "rmse_constrained": 0.002174490373919746
+    },
+    {
+      "date": "2024-06-28",
+      "expiry": "2024-08-16",
+      "pre_arb_free": true,
+      "arb_free": true,
+      "method": "unconstrained",
+      "min_g": 0.011601261948672798,
+      "rmse_unconstrained": 0.0021428055433699526,
+      "rmse_constrained": 0.0021428055433699526
+    }
+  ]
+}

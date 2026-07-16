@@ -33,16 +33,21 @@ data/raw/*.gz
 # Processed data is generated — never tracked
 data/processed/*
 !data/processed/.gitkeep
+data/phase2/processed/*
+!data/phase2/processed/.gitkeep
 
 # Results — ignore generated artifacts except explicit deliverables
 results/*
 !results/data_quality.json
 !results/report.html
 
-# Phase-2 (SPY) gate deliverables — tracked like the v1 data_quality.json
+# Phase-2 (SPY) gate deliverables — tracked like their v1 counterparts
 !results/phase2/
 results/phase2/*
 !results/phase2/data_quality_spy.json
+!results/phase2/surface_qc_spy.json
+!results/phase2/arb_violations_spy.json
+!results/phase2/svi_butterfly_log_spy.json
 
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/
