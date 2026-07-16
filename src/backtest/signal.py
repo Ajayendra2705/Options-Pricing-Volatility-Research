@@ -119,18 +119,35 @@ def plot_signal(tab: pd.DataFrame, out_dir: Path = PLOTS_DIR) -> Path:
     return p
 
 
-def run_signal(ohlc_path: Path | None = None) -> pd.DataFrame:
-    """Day 18 deliverable: signal time-series + side assignment."""
-    params = pd.read_parquet(PROCESSED_DIR / "svi_params_joint.parquet")
+def run_signal(
+    ohlc_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    summary_path: Path | None = None,
+    make_plots: bool = True,
+    config_label: str = "config/primary.yaml (pre-registered)",
+) -> pd.DataFrame:
+    """Day 18 deliverable: signal time-series + side assignment.
+
+    Seams default to v1's constants (Day 32 convention) so v1's paths never
+    move; `summary_path` keeps a Phase-2 run out of the tracked
+    results/signal_summary.json, `config_label` names the pre-registration the
+    run answers to.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    summary_path = summary_path or RESULTS_DIR / "signal_summary.json"
+    params = pd.read_parquet(processed_dir / "svi_params_joint.parquet")
     ohlc = pd.read_parquet(ohlc_path or RAW_DIR / "aapl_ohlc.parquet")
     tab = build_signal(params, ohlc)
 
-    out = PROCESSED_DIR / "signal.parquet"
+    out = processed_dir / "signal.parquet"
+    out.parent.mkdir(parents=True, exist_ok=True)
     tab.to_parquet(out, index=False)
 
     ok = tab.dropna(subset=["signal_raw"])
     summary = {
-        "config": "config/primary.yaml (pre-registered)",
+        "config": config_label,
         "n_slices": int(len(tab)),
         "n_with_signal": int(len(ok)),
         "signal_volpts": {
@@ -143,16 +160,17 @@ def run_signal(ohlc_path: Path | None = None) -> pd.DataFrame:
             k: float(v * 100)
             for k, v in ok.groupby("bucket")["signal_raw"].mean().items()},
     }
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(RESULTS_DIR / "signal_summary.json", "w", newline="\n") as f:
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(summary_path, "w", newline="\n") as f:
         json.dump(summary, f, indent=2)
 
     print(f"signal: {len(ok)}/{len(tab)} slices, "
           f"mean {summary['signal_volpts']['mean']:.2f} volpts, "
           f"sides {summary['sides']}")
     print(f"-> {out}")
-    print(f"-> {RESULTS_DIR / 'signal_summary.json'}")
-    print(f"-> {plot_signal(tab)}")
+    print(f"-> {summary_path}")
+    if make_plots:
+        print(f"-> {plot_signal(tab, plots_dir)}")
     return tab
 
 

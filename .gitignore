@@ -48,6 +48,8 @@ results/phase2/*
 !results/phase2/surface_qc_spy.json
 !results/phase2/arb_violations_spy.json
 !results/phase2/svi_butterfly_log_spy.json
+!results/phase2/har_stats_spy.json
+!results/phase2/signal_summary_spy.json
 
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/

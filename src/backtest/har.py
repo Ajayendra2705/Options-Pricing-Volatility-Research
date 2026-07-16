@@ -156,8 +156,22 @@ def plot_har(tab: pd.DataFrame, out_dir: Path = PLOTS_DIR) -> Path:
     return p
 
 
-def run_har(ohlc_path: Path | None = None) -> pd.DataFrame:
-    """Day 17 deliverable: HAR forecast table + stats + plot."""
+def run_har(
+    ohlc_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    stats_path: Path | None = None,
+    make_plots: bool = True,
+) -> pd.DataFrame:
+    """Day 17 deliverable: HAR forecast table + stats + plot.
+
+    Seams default to v1's constants (Day 32 convention) so v1's paths never
+    move; `stats_path` overrides the results-json location so a Phase-2 run
+    cannot clobber the tracked results/har_stats.json.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    stats_path = stats_path or RESULTS_DIR / "har_stats.json"
     df = pd.read_parquet(ohlc_path or RAW_DIR / "aapl_ohlc.parquet")
     ds = har_dataset(df)
     fit = fit_har(ds)
@@ -165,7 +179,8 @@ def run_har(ohlc_path: Path | None = None) -> pd.DataFrame:
     ds["har_oos"] = expanding_forecast(ds)
     tab = ds.reset_index()
 
-    out = PROCESSED_DIR / "har_forecast.parquet"
+    out = processed_dir / "har_forecast.parquet"
+    out.parent.mkdir(parents=True, exist_ok=True)
     tab.to_parquet(out, index=False)
 
     both = tab.dropna(subset=["har_oos", "sig_fwd"])
@@ -185,8 +200,8 @@ def run_har(ohlc_path: Path | None = None) -> pd.DataFrame:
         "n_insample": fit["n"],
         "oos_expanding": oos,
     }
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(RESULTS_DIR / "har_stats.json", "w", newline="\n") as f:
+    stats_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(stats_path, "w", newline="\n") as f:
         json.dump(stats, f, indent=2)
 
     print(f"HAR: n={fit['n']} in-sample R2={fit['r2']:.3f} "
@@ -195,8 +210,9 @@ def run_har(ohlc_path: Path | None = None) -> pd.DataFrame:
         print(f"OOS expanding: n={oos['n']} corr={oos['corr']:.3f} "
               f"rmse={oos['rmse_volpts']:.2f} volpts")
     print(f"-> {out}")
-    print(f"-> {RESULTS_DIR / 'har_stats.json'}")
-    print(f"-> {plot_har(tab)}")
+    print(f"-> {stats_path}")
+    if make_plots:
+        print(f"-> {plot_har(tab, plots_dir)}")
     return tab
 
 

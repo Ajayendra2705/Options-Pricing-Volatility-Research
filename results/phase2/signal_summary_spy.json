@@ -1,0 +1,20 @@
+{
+  "config": "config/spy_phase2.yaml (pre-registered)",
+  "n_slices": 441,
+  "n_with_signal": 441,
+  "signal_volpts": {
+    "mean": -0.1223695548303915,
+    "min": -4.902550344240547,
+    "max": 4.867430794294764
+  },
+  "sides": {
+    "flat": 147,
+    "short_vol": 147,
+    "long_vol": 147
+  },
+  "by_bucket_mean_volpts": {
+    "long": -0.054034589355419216,
+    "mid": -0.0377076480202353,
+    "short": -0.27536642711551995
+  }
+}

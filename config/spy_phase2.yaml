@@ -1,0 +1,89 @@
+# =============================================================================
+# PHASE-2 PRE-REGISTERED CONFIGURATION — SPY walk-forward study
+# Derived from config/primary.yaml per the pre-registration (PLAN.md "Phase 2",
+# locked 2026-07-15 before any Phase-2 data beyond STRUCTURE was seen; window
+# corrected 155 -> 147 sessions on Day 32, a data-correctness fix made before
+# any SPY signal or PnL existed).
+# =============================================================================
+# Rules of engagement, inherited from primary.yaml (SPEC "Pre-registration"):
+#   - Only underlying, window, and the fold schedule differ from primary.yaml.
+#     Signal/side definitions, hedging, costs, margin, tenor buckets and sizing
+#     limits are UNCHANGED — restated here only where a value is a literal copy,
+#     referenced otherwise.
+#   - Any later edit must be additive + documented in HANDOFF.md with the reason.
+#   - DSR trial count carries over from v1/v2: all prior trials count.
+
+data:
+  underlying: SPY
+  options_chain: DoltHub post-no-preference/options, 2023-07 .. 2024-06
+    (cleaned Day 32; data/phase2/raw/spy_options.parquet)
+  quote_dates: 147 trading sessions 2023-07-05 .. 2024-06-28 (~3x/week M/W/F;
+    the raw pull's 155 dates include 8 US market holidays the DB quotes
+    anyway — dropped by the session filter, results/phase2/data_quality_spy.json)
+  ohlc: DoltHub post-no-preference/stocks ohlcv, 2022-01-03 .. 2024-06-28
+    (data/phase2/raw/spy_ohlc.parquet; ~18mo pre-history for HAR trailing
+    windows and the expanding-forecast MIN_TRAIN burn-in)
+
+signal:
+  # identical to primary.yaml — restated because this is the study's core claim
+  iv: ATM (k=0) implied vol from the joint arb-free SVI fit, per (date, expiry)
+  rv_forecast: HAR log-vol, EXPANDING out-of-sample column only (har_oos);
+    horizon matched to the option, h = clamp(round(252*T), 5, 63) trading days
+  raw: signal = atm_iv - har_forecast_h        # vol points
+  normalization: none
+  # 147 dates x 3 tenor buckets gives the z-score real sample sizes for the
+  # first time (~49/bucket vs v1's <=4) — it is COMPUTED and reported, but per
+  # the pre-registration it stays a DIAGNOSTIC: trade selection is raw ranking,
+  # same as v1, so the two studies compare like for like.
+  ranking: within each quote date, rank slices by raw signal, descending
+  sides:
+    rank_1: short_vol
+    rank_last: long_vol
+    middle: flat
+
+design:
+  type: walk-forward, out-of-sample, across the 147 sessions
+  # Folds are calendar quarters of the window: params/estimates that need
+  # fitting are fit in-sample only, evaluated on the held-out next fold,
+  # never refit on test. The HAR forecast is ALREADY expanding-OOS by
+  # construction (har_oos), so the fold structure primarily gates any
+  # portfolio/sizing calibration and the IS-vs-OOS haircut report.
+  folds: rolling quarters — train on all sessions < fold start, test the fold;
+    first fold starts 2023-10-01 (Q1 of the window is burn-in/train only)
+  test_folds: [2023Q4, 2024Q1, 2024Q2]
+  refit_on_test: never
+
+instrument:   # unchanged from primary.yaml
+  type: ATM straddle (nearest listed strike to forward), one per selected slice
+  hedge: delta with the underlying
+
+hedging:
+  frequency: each available observation date (~3x/week M/W/F) — the same
+    "hedge every data date" convention v1 used, not literal calendar-daily
+
+costs:        # unchanged from primary.yaml
+  options_fill: mid +/- half the quoted effective spread
+  commission_per_contract_usd: 0.65
+  underlying_fill: close, zero spread (SPY penny-wide; stress in robustness)
+
+margin:       # unchanged from primary.yaml
+  short_options: reg-T proxy, 20% underlying notional +/- OTM adjustment
+  capital_base: peak margin over the trade window
+
+tenor_buckets:   # unchanged from primary.yaml
+  short: T <= 0.06
+  mid:   0.06 < T <= 0.10
+  long:  T > 0.10
+
+gates:
+  # same as v1: attribution reconciliation must pass on SPY before any PnL
+  # claim; report IS-vs-OOS haircut + Deflated Sharpe with honest N.
+  attribution: residual gates <20% / <10%, as v1 Day 22
+  headline_metric: DSR-adjusted Sharpe; trial count N carries over v1/v2 trials
+
+sizing:       # unchanged from primary.yaml (inventory/risk controls)
+  vega_limit_per_position: 500
+  gamma_limit_per_position: 5000
+  portfolio_gross_vega_limit: 3000
+  portfolio_gross_gamma_limit: 30000
+  max_drawdown_pct: 0.15

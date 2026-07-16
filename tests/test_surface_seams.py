@@ -24,6 +24,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.backtest import har, realized_vol
+from src.backtest import signal as signal_mod
 from src.surface import assemble, clean, forwards, iv_surface, no_arb, svi
 from src.surface.clean import clean_chain
 
@@ -41,6 +43,10 @@ SEAMS = {
     no_arb.run_arb_check: ("processed_dir", "report_path"),
     assemble.run_assembly: ("processed_dir", "plots_dir", "qc_path", "make_plots"),
     clean.run_cleaning: ("raw_dir", "results_dir", "dq_path", "out_path"),
+    # Day 33: the backtest-front runners got the same treatment
+    realized_vol.run_realized_vol: ("processed_dir", "plots_dir", "make_plots"),
+    har.run_har: ("processed_dir", "plots_dir", "stats_path", "make_plots"),
+    signal_mod.run_signal: ("processed_dir", "plots_dir", "summary_path", "make_plots"),
 }
 
 
@@ -74,10 +80,12 @@ def test_seam_params_exist_and_default_to_none(fn, params):
 
 def test_module_constants_still_point_at_v1():
     # a seam that silently redirected the DEFAULT would move v1's artifacts
-    for mod in (clean, forwards, iv_surface, svi, no_arb, assemble):
+    for mod in (clean, forwards, iv_surface, svi, no_arb, assemble,
+                realized_vol, har, signal_mod):
         assert mod.PROCESSED_DIR == V1_PROCESSED, mod.__name__
     assert clean.RAW_DIR == V1_RAW
     assert clean.RESULTS_DIR == V1_RESULTS
+    assert realized_vol.RAW_DIR == V1_RAW
 
 
 # ── (2) a redirected run touches nothing of v1's ─────────────────────────────

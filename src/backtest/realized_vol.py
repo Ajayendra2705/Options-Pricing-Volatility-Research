@@ -91,7 +91,8 @@ def realized_vol_table(df: pd.DataFrame,
     return out.reset_index()
 
 
-def plot_realized_vol(tab: pd.DataFrame, out_dir: Path = PLOTS_DIR) -> Path:
+def plot_realized_vol(tab: pd.DataFrame, out_dir: Path = PLOTS_DIR,
+                      ticker: str = "AAPL") -> Path:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -102,18 +103,30 @@ def plot_realized_vol(tab: pd.DataFrame, out_dir: Path = PLOTS_DIR) -> Path:
         ax.plot(tab["date"], tab[col] * 100, style, lw=1.4, label=col)
     ax.set_ylabel("annualized vol (%)")
     ax.legend()
-    ax.set_title("AAPL trailing realized vol (Yang-Zhang vs close-to-close)")
+    ax.set_title(f"{ticker} trailing realized vol (Yang-Zhang vs close-to-close)")
     p = out_dir / "realized_vol.png"
     fig.savefig(p, dpi=110, bbox_inches="tight")
     plt.close(fig)
     return p
 
 
-def run_realized_vol(ohlc_path: Path | None = None) -> pd.DataFrame:
-    """Day 16 deliverable: trailing RV table + plot."""
+def run_realized_vol(
+    ohlc_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+    ticker: str = "AAPL",
+) -> pd.DataFrame:
+    """Day 16 deliverable: trailing RV table + plot.
+
+    Seams default to v1's constants (Day 32 convention) so v1's paths never move.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
     df = pd.read_parquet(ohlc_path or RAW_DIR / "aapl_ohlc.parquet")
     tab = realized_vol_table(df)
-    out = PROCESSED_DIR / "realized_vol.parquet"
+    out = processed_dir / "realized_vol.parquet"
+    out.parent.mkdir(parents=True, exist_ok=True)
     tab.to_parquet(out, index=False)
 
     last = tab.dropna().iloc[-1]
@@ -122,7 +135,8 @@ def run_realized_vol(ohlc_path: Path | None = None) -> pd.DataFrame:
     print(f"latest ({last['date'].date()}): YZ21 {last['yz_21']:.1%} | "
           f"CC21 {last['cc_21']:.1%} | YZ10 {last['yz_10']:.1%}")
     print(f"-> {out}")
-    print(f"-> {plot_realized_vol(tab)}")
+    if make_plots:
+        print(f"-> {plot_realized_vol(tab, plots_dir, ticker)}")
     return tab
 
 
