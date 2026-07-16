@@ -202,14 +202,23 @@ def plot_param_stability(fits: pd.DataFrame, out_path: Path) -> None:
     plt.close(fig)
 
 
-def run_svi_all(surface_path: Path | None = None) -> pd.DataFrame:
+def run_svi_all(
+    surface_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+) -> pd.DataFrame:
     """Day 10 deliverable: all-slice fit, RMSE table, param-stability plot."""
-    surf = pd.read_parquet(surface_path or PROCESSED_DIR / "iv_surface.parquet")
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    surf = pd.read_parquet(surface_path or processed_dir / "iv_surface.parquet")
     fits = fit_all_slices(surf)
 
-    out_path = PROCESSED_DIR / "svi_params.parquet"
+    out_path = processed_dir / "svi_params.parquet"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     fits.to_parquet(out_path, index=False)
-    plot_param_stability(fits, PLOTS_DIR / "svi_param_stability.png")
+    if make_plots:
+        plot_param_stability(fits, plots_dir / "svi_param_stability.png")
 
     ok = fits[fits["fit_ok"]]
     print(f"SVI all-slice fit: {len(ok)}/{len(fits)} slices fitted")
@@ -224,7 +233,8 @@ def run_svi_all(surface_path: Path | None = None) -> pd.DataFrame:
           f"max {ok['rmse_iv'].max() * 100:.2f} | "
           f"negative-w slices: {(ok['min_w_on_grid'] < 0).sum()}")
     print(f"-> {out_path}")
-    print(f"-> {PLOTS_DIR / 'svi_param_stability.png'}")
+    if make_plots:
+        print(f"-> {plots_dir / 'svi_param_stability.png'}")
     return fits
 
 

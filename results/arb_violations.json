@@ -2,13 +2,14 @@
   "n_slices_fitted": 15,
   "butterfly": {
     "n_violations": 0,
-    "min_g_across_slices": 0.0002000273866266042
+    "min_g_across_slices": 0.022972360284254693
   },
   "calendar": {
     "n_pairs_checked": 10,
     "n_pairs_violated": 0,
     "max_severity_w": 0.0,
-    "n_floor_failures_in_fit": 0
+    "n_floor_failures_in_fit": 0,
+    "checked_on": "overlap of the two slices' quoted log-moneyness"
   },
   "rmse_iv_median": 0.0033059312907856245,
   "pairs": [
@@ -16,6 +17,10 @@
       "date": "2023-06-02",
       "expiry_short": "2023-06-16",
       "expiry_long": "2023-06-30",
+      "k_checked": [
+        -0.369,
+        0.2550000000000001
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -24,6 +29,10 @@
       "date": "2023-06-02",
       "expiry_short": "2023-06-30",
       "expiry_long": "2023-07-21",
+      "k_checked": [
+        -0.3719999999999999,
+        0.2310000000000001
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -32,6 +41,10 @@
       "date": "2023-06-07",
       "expiry_short": "2023-06-23",
       "expiry_long": "2023-07-07",
+      "k_checked": [
+        -0.20399999999999996,
+        0.18599999999999994
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -40,6 +53,10 @@
       "date": "2023-06-07",
       "expiry_short": "2023-07-07",
       "expiry_long": "2023-07-21",
+      "k_checked": [
+        -0.24,
+        0.20999999999999996
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -48,6 +65,10 @@
       "date": "2023-06-09",
       "expiry_short": "2023-06-23",
       "expiry_long": "2023-07-07",
+      "k_checked": [
+        -0.258,
+        0.09600000000000009
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -56,6 +77,10 @@
       "date": "2023-06-09",
       "expiry_short": "2023-07-07",
       "expiry_long": "2023-07-28",
+      "k_checked": [
+        -0.1259999999999999,
+        0.09299999999999997
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -64,6 +89,10 @@
       "date": "2023-06-12",
       "expiry_short": "2023-06-23",
       "expiry_long": "2023-07-07",
+      "k_checked": [
+        -0.1379999999999999,
+        0.06899999999999995
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -72,6 +101,10 @@
       "date": "2023-06-12",
       "expiry_short": "2023-07-07",
       "expiry_long": "2023-07-28",
+      "k_checked": [
+        -0.2729999999999999,
+        0.1260000000000001
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -80,6 +113,10 @@
       "date": "2023-06-14",
       "expiry_short": "2023-06-30",
       "expiry_long": "2023-07-14",
+      "k_checked": [
+        -0.18900000000000006,
+        0.129
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false
@@ -88,6 +125,10 @@
       "date": "2023-06-14",
       "expiry_short": "2023-07-14",
       "expiry_long": "2023-08-18",
+      "k_checked": [
+        -0.276,
+        0.2370000000000001
+      ],
       "max_severity": 0.0,
       "frac_violating": 0.0,
       "violated": false

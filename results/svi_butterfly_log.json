@@ -89,10 +89,10 @@
       "expiry": "2023-07-28",
       "pre_arb_free": false,
       "arb_free": true,
-      "method": "slsqp",
-      "min_g": 0.9999951434610077,
+      "method": "penalty_100",
+      "min_g": 0.3621671984694876,
       "rmse_unconstrained": 0.00939414312017659,
-      "rmse_constrained": 0.02442083447120051
+      "rmse_constrained": 0.021444618121851517
     },
     {
       "date": "2023-06-12",

@@ -40,8 +40,16 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 PLOTS_DIR = PROJECT_ROOT / "results" / "plots"
 
-K_QC_SPAN = 1.0        # QC/plot range in log-moneyness (data lives within ~±0.5)
+K_QC_SPAN = 1.0        # fallback QC range when a fit carries no quoted k range
 N_T_QC = 21            # interpolated T slices per date in the QC scan
+
+# Day 32: the QC domain is the k range where EVERY node slice of the date is
+# quoted (their intersection), not a fixed span. Interpolating in T at a k
+# where only one expiry has quotes means interpolating against an extrapolated
+# wing — and the no-arb fit does not constrain the slices there (see the
+# CAL_DOMAIN note in no_arb.py), so checking there measures the extrapolation,
+# not the surface. v1 checked +-1.0 with data out to only ~+-0.25: it was
+# claiming arb-freedom over 4x the range it had quotes for.
 
 
 def _black_norm(k, w, cp):
@@ -101,6 +109,9 @@ class VolSurface:
     F_nodes: np.ndarray            # implied forwards, sorted by F_Ts
     expiries: list = field(default_factory=list)
     F_Ts: np.ndarray | None = None  # forward node times; defaults to Ts
+    # k range quoted on EVERY node slice: the domain the surface is claimed on
+    k_lo: float | None = None
+    k_hi: float | None = None
 
     def w(self, k, T: float):
         """Total variance at forward moneyness k, time T (interp/extrap in T)."""
@@ -143,6 +154,7 @@ def build_surfaces(fits: pd.DataFrame, forwards: pd.DataFrame) -> dict:
     """One VolSurface per quote date from joint fits + implied forwards."""
     surfaces = {}
     ok = fits[fits["fit_ok"] == True]  # noqa: E712 (object dtype)
+    has_range = {"k_lo", "k_hi"} <= set(ok.columns)
     for date, g in ok.groupby("date"):
         g = g.sort_values("T")
         fw = forwards[forwards["date"] == date].sort_values("T")
@@ -153,6 +165,10 @@ def build_surfaces(fits: pd.DataFrame, forwards: pd.DataFrame) -> dict:
             F_nodes=fw["F"].to_numpy(float),
             expiries=list(g["expiry"]),
             F_Ts=fw["T"].to_numpy(float),
+            # intersection: quoted on every node, so T-interpolation between any
+            # pair of them is backed by quotes on both sides
+            k_lo=float(g["k_lo"].max()) if has_range else None,
+            k_hi=float(g["k_hi"].min()) if has_range else None,
         )
     return surfaces
 
@@ -169,8 +185,16 @@ def _g_fd(w_fun, k, h: float = 1e-5):
 
 def qc_surface(vs: VolSurface, market: pd.DataFrame,
                k_span: float = K_QC_SPAN, n_t: int = N_T_QC) -> dict:
-    """QC one date: market residuals + arb checks on interpolated slices."""
-    kg = np.linspace(-k_span, k_span, 801)
+    """QC one date: market residuals + arb checks on interpolated slices.
+
+    The arb scan runs on the date's quoted k domain (see the K_QC_SPAN note);
+    `k_span` is the fallback when the fits carry no quoted range.
+    """
+    if vs.k_lo is not None and vs.k_hi is not None:
+        k_lo, k_hi = vs.k_lo, vs.k_hi
+    else:
+        k_lo, k_hi = -k_span, k_span
+    kg = np.linspace(k_lo, k_hi, 801)
 
     # fit-vs-market residuals on the OTM quotes the fits were built from
     resid = []
@@ -193,6 +217,7 @@ def qc_surface(vs: VolSurface, market: pd.DataFrame,
         "date": str(pd.Timestamp(vs.date).date()),
         "n_expiries": len(vs.Ts),
         "T_range": [float(vs.Ts[0]), float(vs.Ts[-1])],
+        "k_checked": [float(k_lo), float(k_hi)],
         "n_market_quotes": int(all_err.size),
         "rmse_iv": float(np.sqrt(np.mean(all_err**2))),
         "max_abs_err_iv": float(np.abs(all_err).max()),
@@ -209,7 +234,8 @@ def qc_surface(vs: VolSurface, market: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 
-def plot_surface_3d(vs: VolSurface, out_dir: Path = PLOTS_DIR) -> Path:
+def plot_surface_3d(vs: VolSurface, out_dir: Path = PLOTS_DIR,
+                    ticker: str = "AAPL") -> Path:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -230,7 +256,7 @@ def plot_surface_3d(vs: VolSurface, out_dir: Path = PLOTS_DIR) -> Path:
     ax.set_ylabel("T (years)")
     ax.set_zlabel("implied vol (%)")
     d = pd.Timestamp(vs.date).date()
-    ax.set_title(f"AAPL SVI surface — {d}")
+    ax.set_title(f"{ticker} SVI surface — {d}")
     ax.view_init(elev=22, azim=-60)
     p = out_dir / f"surface_3d_{d}.png"
     fig.savefig(p, dpi=110, bbox_inches="tight")
@@ -279,11 +305,20 @@ def plot_smiles_vs_market(vs: VolSurface, market: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 
-def run_assembly(fits_path: Path | None = None) -> dict:
+def run_assembly(
+    fits_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    qc_path: Path | None = None,
+    make_plots: bool = True,
+    ticker: str = "AAPL",
+) -> dict:
     """Day 14 deliverable: surfaces + QC json + 3D/smile plots."""
-    fits = pd.read_parquet(fits_path or PROCESSED_DIR / "svi_params_joint.parquet")
-    forwards = pd.read_parquet(PROCESSED_DIR / "forwards.parquet")
-    market = pd.read_parquet(PROCESSED_DIR / "iv_surface.parquet")
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    fits = pd.read_parquet(fits_path or processed_dir / "svi_params_joint.parquet")
+    forwards = pd.read_parquet(processed_dir / "forwards.parquet")
+    market = pd.read_parquet(processed_dir / "iv_surface.parquet")
 
     surfaces = build_surfaces(fits, forwards)
     per_date = [qc_surface(vs, market) for vs in surfaces.values()]
@@ -291,6 +326,13 @@ def run_assembly(fits_path: Path | None = None) -> dict:
     report = {
         "n_dates": len(per_date),
         "n_slices_total": int(sum(d["n_expiries"] for d in per_date)),
+        # the arb claims below hold on this domain, per date: the log-moneyness
+        # range quoted on every one of that date's expiries (Day 32)
+        "arb_checked_on": "intersection of the date's quoted log-moneyness",
+        "narrowest_k_checked": [
+            float(max(d["k_checked"][0] for d in per_date)),
+            float(min(d["k_checked"][1] for d in per_date)),
+        ],
         "all_interp_butterfly_ok": bool(all(d["interp_butterfly_ok"] for d in per_date)),
         "all_interp_calendar_ok": bool(all(d["interp_calendar_ok"] for d in per_date)),
         "worst_interp_min_g": float(min(d["interp_min_g"] for d in per_date)),
@@ -299,14 +341,18 @@ def run_assembly(fits_path: Path | None = None) -> dict:
         "frac_within_1volpt": float(np.mean([d["frac_within_1volpt"] for d in per_date])),
         "dates": per_date,
     }
-    qc_path = PROJECT_ROOT / "results" / "surface_qc.json"
+    qc_path = qc_path or PROJECT_ROOT / "results" / "surface_qc.json"
+    qc_path.parent.mkdir(parents=True, exist_ok=True)
     qc_path.write_text(json.dumps(report, indent=2), newline="\n")
 
+    # 155 SPY dates would emit 310 figures for a stage whose deliverable is the
+    # QC json — plots stay on for v1 (14 tracked pngs), off for bulk runs.
     n_plots = 0
-    for vs in surfaces.values():
-        plot_surface_3d(vs)
-        plot_smiles_vs_market(vs, market)
-        n_plots += 2
+    if make_plots:
+        for vs in surfaces.values():
+            plot_surface_3d(vs, plots_dir, ticker)
+            plot_smiles_vs_market(vs, market, plots_dir)
+            n_plots += 2
 
     print(f"surface assembly: {report['n_dates']} dates, {report['n_slices_total']} slices | "
           f"interp butterfly ok {report['all_interp_butterfly_ok']} "
@@ -316,7 +362,7 @@ def run_assembly(fits_path: Path | None = None) -> dict:
           f"max abs err {report['max_abs_err_iv'] * 100:.2f} | "
           f"within 1 volpt {report['frac_within_1volpt']:.1%}")
     print(f"-> {qc_path}")
-    print(f"-> {n_plots} plots in {PLOTS_DIR}")
+    print(f"-> {n_plots} plots in {plots_dir}")
     return report
 
 

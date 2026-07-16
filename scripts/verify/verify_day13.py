@@ -56,14 +56,27 @@ print(f"1. FD-g min across {len(ok)} slices: {min(gmins):+.5f} (all >= 0: {min(g
 assert min(gmins) >= 0
 
 # 2+3. calendar on dense off-node grid + call-price monotonicity
-kc = np.linspace(-1.5, 1.5, 4001) + np.sqrt(2) * 1e-4
+#
+# Domain (Day 32): the pair's QUOTED log-moneyness overlap, not a fixed +-1.5.
+# Past the quoted strikes an SVI slice is extrapolation with linear wings, the
+# fit does not constrain it there, and no calendar spread is tradeable there
+# either — scanning it measured the extrapolation, not the surface. The grid is
+# still dense and off-node (irrational offset) so sub-node violations inside the
+# claimed domain cannot hide.
 worst_w, worst_c, n_pairs = -np.inf, -np.inf, 0
 for date, g in ok.groupby("date"):
     g = g.sort_values("T")
-    prms = [(f.a, f.b, f.rho, f.m, f.sigma) for f in g.itertuples()]
-    for i in range(len(prms) - 1):
+    rows = list(g.itertuples())
+    for i in range(len(rows) - 1):
+        s, l = rows[i], rows[i + 1]
+        lo, hi = max(s.k_lo, l.k_lo), min(s.k_hi, l.k_hi)
+        if not hi > lo:                       # disjoint quoted strikes
+            continue
         n_pairs += 1
-        w1, w2 = w_svi(kc, *prms[i]), w_svi(kc, *prms[i + 1])
+        kc = np.linspace(lo, hi, 4001) + np.sqrt(2) * 1e-7
+        prm_s = (s.a, s.b, s.rho, s.m, s.sigma)
+        prm_l = (l.a, l.b, l.rho, l.m, l.sigma)
+        w1, w2 = w_svi(kc, *prm_s), w_svi(kc, *prm_l)
         worst_w = max(worst_w, (w1 - w2).max())
         c1, c2 = call_norm(kc, w1), call_norm(kc, w2)
         worst_c = max(worst_c, (c1 - c2).max())

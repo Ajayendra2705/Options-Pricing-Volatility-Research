@@ -13,20 +13,20 @@
 
 | | |
 |---|---|
-| Gross PnL (pre-cost) | **$3.75** |
+| Gross PnL (pre-cost) | **-$23.33** |
 | Costs (half-spread + commission) | **-$419.00** |
-| **Net PnL** | **-$415.25** |
-| Net return on capital | **-1.53%** (base $27,106 = peak Reg-T margin) |
-| Sharpe (daily, ann.) | -1.70, NW t = -0.86, bootstrap 95% CI [-7.43, +2.00] — **spans zero** |
-| Alpha vs delta-hedged VRP factor | -0.00019/day, NW t = -0.95 — **statistically zero** |
-| Per-trade skew / win rate | -0.83 / 60% (wins often, loses overall) |
+| **Net PnL** | **-$442.33** |
+| Net return on capital | **-1.63%** (base $27,139 = peak Reg-T margin) |
+| Sharpe (daily, ann.) | -1.81, NW t = -0.90, bootstrap 95% CI [-7.62, +1.95] — **spans zero** |
+| Alpha vs delta-hedged VRP factor | -0.00021/day, NW t = -1.00 — **statistically zero** |
+| Per-trade skew / win rate | -0.79 / 60% (wins often, loses overall) |
 
-The variance risk premium is visible in the quotes, and it is *not* exploitable: the book is near-flat gross and **-$415.25 net** once costs are paid (5.3% of the premium traded, $406 of it entry half-spread). Strip the vol beta out and no alpha remains.
+The variance risk premium is visible in the quotes, and it is *not* exploitable: the book is near-flat gross and **-$442.33 net** once costs are paid (5.2% of the premium traded, $406 of it entry half-spread). Strip the vol beta out and no alpha remains.
 
 ### Validation gates (all passed)
 
-- **Arb-free surface:** 15 SVI slices, 0 butterfly and 0/10 calendar violations; interpolated surface arb-free by construction (worst Durrleman g = 2.0e-04).
-- **Surface vs market:** median error 0.39 vol pts, 98.0% of quotes within 1 vol pt.
+- **Arb-free surface:** 15 SVI slices, 0 butterfly and 0/10 calendar violations; interpolated surface arb-free by construction (worst Durrleman g = 7.4e-02).
+- **Surface vs market:** median error 0.39 vol pts, 97.4% of quotes within 1 vol pt.
 - **Attribution reconciles:** Greeks decomposition + exact ledger terms leave a residual of 14.4% of Σ|daily PnL| (gate < 20%), worst position 7.3% of premium (gate < 10%) — pure Taylor error, proven to 1e-9 by test.
 - **Pre-registered:** signal, costs, margin and sizing locked in `config/primary.yaml` before any PnL existed.
 

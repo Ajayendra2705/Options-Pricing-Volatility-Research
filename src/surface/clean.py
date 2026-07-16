@@ -42,6 +42,15 @@ DAYS_PER_YEAR = 365.0
 # raise rather than silently cleaning nothing.
 CHAIN_GLOB = "*options*.parquet"
 
+# The DB quotes options on market holidays too — it carries the previous
+# session's chain forward under the holiday's date. Four of SPY's eight
+# holidays in the Phase-2 window are byte-identical repeats and die on the
+# `stale` filter; the other four (Good Friday, Juneteenth, New Year, MLK) are
+# NOT identical and would otherwise survive as if they were real sessions.
+# A quote date with no bar for the underlying is not a session: there is no
+# hedge to trade, so it cannot be an observation date. The underlying's own
+# OHLC is therefore the trading calendar (`sessions_path`).
+
 # canonical column -> accepted source names (lowercased)
 COLUMN_ALIASES = {
     "date": ["date", "quote_date", "trade_date", "quotedate", "datadate"],
@@ -109,14 +118,31 @@ def flag_quality(df: pd.DataFrame, max_spread_pct: float = MAX_SPREAD_PCT) -> pd
 
 
 def clean_chain(
-    df: pd.DataFrame, max_spread_pct: float = MAX_SPREAD_PCT
+    df: pd.DataFrame,
+    max_spread_pct: float = MAX_SPREAD_PCT,
+    sessions: pd.Series | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """Normalize + filter a raw chain. Returns (clean_df, report).
 
     clean_df gains: mid, T (ACT/365 year fraction). report holds per-filter
     counts (pre-union), union drop count and drop rate.
+
+    `sessions`: trading dates of the underlying. Quote dates outside it are
+    market holidays the DB carried forward and are dropped wholesale, before
+    the quality filters (a holiday's quotes are not bad quotes — they are last
+    session's quotes under the wrong date).
     """
     df = normalize_columns(df)
+    n_raw = len(df)
+    dates_raw = df["date"].nunique()
+
+    n_nonsession = 0
+    if sessions is not None:
+        valid = pd.to_datetime(pd.Series(sessions)).dt.normalize().unique()
+        on_session = df["date"].dt.normalize().isin(valid)
+        n_nonsession = int((~on_session).sum())
+        df = df[on_session].reset_index(drop=True)
+
     flags = flag_quality(df, max_spread_pct)
     drop = flags.any(axis=1)
 
@@ -127,16 +153,18 @@ def clean_chain(
     n_nonpos_T = int(nonpos_T.sum())
     clean = clean[~nonpos_T].reset_index(drop=True)
 
-    n_total = len(df)
-    n_dropped = int(drop.sum()) + n_nonpos_T
+    n_dropped = n_nonsession + int(drop.sum()) + n_nonpos_T
     report = {
-        "total_rows": n_total,
+        "total_rows": n_raw,
         "max_spread_pct": max_spread_pct,
+        "non_session_rows": n_nonsession,
         "filters": {k: int(flags[k].sum()) for k in flags.columns},
         "expired_nonpos_T": n_nonpos_T,
         "total_dropped": n_dropped,
         "total_clean": len(clean),
-        "drop_rate": round(n_dropped / n_total, 4) if n_total else 0.0,
+        "drop_rate": round(n_dropped / n_raw, 4) if n_raw else 0.0,
+        "dates_raw": dates_raw,
+        "dates_clean": int(clean["date"].nunique()),
     }
     return clean, report
 
@@ -147,6 +175,8 @@ def run_cleaning(
     max_spread_pct: float = MAX_SPREAD_PCT,
     chain_glob: str = CHAIN_GLOB,
     results_dir: Path | None = None,
+    dq_path: Path | None = None,
+    sessions_path: Path | None = None,
 ) -> Path:
     """Load the raw option chain(s), clean, persist parquet + drop counts.
 
@@ -154,7 +184,13 @@ def run_cleaning(
     directory are not option chains and must not be concatenated into one.
 
     `results_dir` is overridable so an ad-hoc or test run cannot write its drop
-    counts into the tracked results/data_quality.json.
+    counts into the tracked results/data_quality.json. `dq_path` overrides the
+    filename too — Phase 2's audit block lives in data_quality_spy.json, and the
+    drop counts belong in the same file (as they do for v1).
+
+    `sessions_path`: OHLC parquet for the underlying, used as the trading
+    calendar (see the CHAIN_GLOB note above). Omitted -> no session filter,
+    which is v1's behaviour: its 5 AAPL quote dates are all real sessions.
     """
     results_dir = RESULTS_DIR if results_dir is None else results_dir
     files = sorted(
@@ -167,15 +203,20 @@ def run_cleaning(
     frames = [pd.read_csv(f) if f.suffix == ".csv" else pd.read_parquet(f) for f in files]
     raw = pd.concat(frames, ignore_index=True)
 
-    clean, report = clean_chain(raw, max_spread_pct)
+    sessions = None
+    if sessions_path is not None:
+        bars = pd.read_parquet(sessions_path)
+        sessions = pd.to_datetime(bars["date"])
+
+    clean, report = clean_chain(raw, max_spread_pct, sessions=sessions)
 
     out_path = out_path or PROCESSED_DIR / "chain_clean.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     clean.to_parquet(out_path, index=False)
 
     # append real drop counts to results/data_quality.json
-    results_dir.mkdir(parents=True, exist_ok=True)
-    dq_path = results_dir / "data_quality.json"
+    dq_path = dq_path or results_dir / "data_quality.json"
+    dq_path.parent.mkdir(parents=True, exist_ok=True)
     dq = json.loads(dq_path.read_text()) if dq_path.exists() else {}
     # no timestamp: keeps the tracked json byte-stable across identical reruns
     try:
@@ -187,6 +228,7 @@ def run_cleaning(
     dq["cleaning"] = {
         "source_files": [f.name for f in files],
         "output": out_str,
+        "sessions_file": sessions_path.name if sessions_path else None,
         **report,
     }
     dq_path.write_text(json.dumps(dq, indent=2, default=str), newline="\n")
@@ -195,6 +237,10 @@ def run_cleaning(
         f"clean_chain: {report['total_rows']} raw -> {report['total_clean']} clean "
         f"(drop rate {report['drop_rate']:.1%}); filters {report['filters']}"
     )
+    if report["non_session_rows"]:
+        print(f"  non-session quote dates dropped (no bar in {sessions_path.name}): "
+              f"{report['dates_raw'] - report['dates_clean']} dates, "
+              f"{report['non_session_rows']} rows")
     print(f"-> {out_path}")
     print(f"-> {dq_path}")
     return out_path

@@ -1,12 +1,17 @@
 {
   "n_dates": 5,
   "n_slices_total": 15,
+  "arb_checked_on": "intersection of the date's quoted log-moneyness",
+  "narrowest_k_checked": [
+    -0.1280822314625936,
+    0.07006103875015218
+  ],
   "all_interp_butterfly_ok": true,
   "all_interp_calendar_ok": true,
-  "worst_interp_min_g": 0.00019999674617553892,
+  "worst_interp_min_g": 0.073868699472708,
   "rmse_iv_median": 0.0038943845258223044,
-  "max_abs_err_iv": 0.014427667303872876,
-  "frac_within_1volpt": 0.9799858135905801,
+  "max_abs_err_iv": 0.022279324067975226,
+  "frac_within_1volpt": 0.9742715278762943,
   "dates": [
     {
       "date": "2023-06-02",
@@ -15,11 +20,15 @@
         0.038356164383561646,
         0.13424657534246576
       ],
+      "k_checked": [
+        -0.3716603787534138,
+        0.23344176063454028
+      ],
       "n_market_quotes": 69,
       "rmse_iv": 0.0038943845258223044,
       "max_abs_err_iv": 0.00946302633528917,
       "frac_within_1volpt": 1.0,
-      "interp_min_g": 0.055569972370221696,
+      "interp_min_g": 0.073868699472708,
       "interp_butterfly_ok": true,
       "interp_max_calendar_decrease": 0.0,
       "interp_calendar_ok": true
@@ -31,11 +40,15 @@
         0.043835616438356165,
         0.12054794520547946
       ],
+      "k_checked": [
+        -0.20627038796580843,
+        0.18763389774127986
+      ],
       "n_market_quotes": 53,
       "rmse_iv": 0.0036003734911011294,
       "max_abs_err_iv": 0.010417897772541568,
       "frac_within_1volpt": 0.9811320754716981,
-      "interp_min_g": 0.02297133989644721,
+      "interp_min_g": 0.12015949587312641,
       "interp_butterfly_ok": true,
       "interp_max_calendar_decrease": 0.0,
       "interp_calendar_ok": true
@@ -47,11 +60,15 @@
         0.038356164383561646,
         0.13424657534246576
       ],
+      "k_checked": [
+        -0.1280822314625936,
+        0.09506131985161623
+      ],
       "n_market_quotes": 35,
-      "rmse_iv": 0.0040359702988670455,
-      "max_abs_err_iv": 0.014427667303872876,
-      "frac_within_1volpt": 0.9714285714285714,
-      "interp_min_g": 0.00019999674617553892,
+      "rmse_iv": 0.005455969543534008,
+      "max_abs_err_iv": 0.022279324067975226,
+      "frac_within_1volpt": 0.9428571428571428,
+      "interp_min_g": 0.16069614022259343,
       "interp_butterfly_ok": true,
       "interp_max_calendar_decrease": 0.0,
       "interp_calendar_ok": true
@@ -63,11 +80,15 @@
         0.030136986301369864,
         0.12602739726027398
       ],
+      "k_checked": [
+        -0.1405037303571974,
+        0.07006103875015218
+      ],
       "n_market_quotes": 38,
-      "rmse_iv": 0.004127065230256647,
+      "rmse_iv": 0.004141116812164798,
       "max_abs_err_iv": 0.011110367754310013,
       "frac_within_1volpt": 0.9473684210526315,
-      "interp_min_g": 0.01866418868846926,
+      "interp_min_g": 0.1368979003383679,
       "interp_butterfly_ok": true,
       "interp_max_calendar_decrease": 0.0,
       "interp_calendar_ok": true
@@ -79,11 +100,15 @@
         0.043835616438356165,
         0.1780821917808219
       ],
+      "k_checked": [
+        -0.19001674784577227,
+        0.12992618682423013
+      ],
       "n_market_quotes": 55,
       "rmse_iv": 0.0030753669187940447,
       "max_abs_err_iv": 0.00612499833032748,
       "frac_within_1volpt": 1.0,
-      "interp_min_g": 0.03330699458225395,
+      "interp_min_g": 0.13315411855089787,
       "interp_butterfly_ok": true,
       "interp_max_calendar_decrease": 0.0,
       "interp_calendar_ok": true

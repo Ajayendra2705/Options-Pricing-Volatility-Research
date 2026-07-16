@@ -137,17 +137,22 @@ def run_iv_surface(
     chain_path: Path | None = None,
     forwards_path: Path | None = None,
     out_path: Path | None = None,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
 ) -> pd.DataFrame:
-    chain = pd.read_parquet(chain_path or PROCESSED_DIR / "chain_clean.parquet")
-    forwards = pd.read_parquet(forwards_path or PROCESSED_DIR / "forwards.parquet")
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    chain = pd.read_parquet(chain_path or processed_dir / "chain_clean.parquet")
+    forwards = pd.read_parquet(forwards_path or processed_dir / "forwards.parquet")
 
     surf = build_iv_surface(chain, forwards)
     report = surface_report(surf)
 
-    out_path = out_path or PROCESSED_DIR / "iv_surface.parquet"
+    out_path = out_path or processed_dir / "iv_surface.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     surf.to_parquet(out_path, index=False)
-    paths = plot_iv_scatter(surf, PLOTS_DIR)
+    paths = plot_iv_scatter(surf, plots_dir) if make_plots else []
 
     print(f"iv_surface: {report['n_rows']} quotes ({len(chain)} cleaned, "
           f"{len(chain) - report['n_rows']} without Day-7 forward) | "
@@ -157,7 +162,7 @@ def run_iv_surface(
           f"median wing coverage (of +-4sig) "
           f"{np.median([s['wing_coverage_4sig'] for s in report['slices']]):.2f}")
     print(f"-> {out_path}")
-    print(f"-> {len(paths)} scatter panels in {PLOTS_DIR}")
+    print(f"-> {len(paths)} scatter panels in {plots_dir}")
     return surf
 
 

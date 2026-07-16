@@ -136,18 +136,29 @@ def run_forwards(
     out_path: Path | None = None,
     plot_path: Path | None = None,
     r: float = RISK_FREE_RATE,
+    processed_dir: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
 ) -> pd.DataFrame:
-    """Load cleaned chain -> forwards table + carry + curve plot."""
-    chain_path = chain_path or PROCESSED_DIR / "chain_clean.parquet"
+    """Load cleaned chain -> forwards table + carry + curve plot.
+
+    `processed_dir`/`plots_dir` redirect the whole stage (Phase 2 runs the same
+    code on SPY into data/phase2/**); explicit *_path args still win. Defaults
+    are v1's constants, so v1's paths cannot move.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    plots_dir = plots_dir or PLOTS_DIR
+    chain_path = chain_path or processed_dir / "chain_clean.parquet"
     chain = pd.read_parquet(chain_path)
     fwd = imply_forwards(chain, r)
     if fwd.empty:
         raise RuntimeError("No slice produced a parity forward — check the cleaned chain.")
 
-    out_path = out_path or PROCESSED_DIR / "forwards.parquet"
+    out_path = out_path or processed_dir / "forwards.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fwd.to_parquet(out_path, index=False)
-    plot_forward_curves(fwd, plot_path or PLOTS_DIR / "forward_curves.png")
+    if make_plots:
+        plot_forward_curves(fwd, plot_path or plots_dir / "forward_curves.png")
 
     carry = implied_carry(fwd)
     rel_stab = (fwd["F_std_atm"] / fwd["F"]).max()
