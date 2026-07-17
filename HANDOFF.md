@@ -585,6 +585,24 @@ So unlike the option costs, the book **is** sensitive to underlying slippage bec
 
 **Next — Day 38:** the honest-N Deflated Sharpe (v1/v2 + Phase-2 trials counted), bootstrap CIs, then the v2 tag / final report. SABR second calibration (surface-family robustness, PLAN v2 Day 31–32) still open as the remaining un-run appendix piece.
 
+### Day 38 — DEFLATED SHARPE with HONEST N (Done, v2 capstone)
+
+**Status:** Completed. Resolves the item deferred since v1 Day 28 and pinned "deferred, not faked" through Phase-2 Day 34: the Deflated Sharpe needs an honest multiple-testing trial count N, and the regime/cost/hedge-frequency sweeps (Days 35–37) are those trials, so N is now **enumerated on the record**, not asserted. New PSR/DSR math (Bailey & López de Prado) added to `src/backtest/stats.py` — `probabilistic_sharpe_ratio`, `expected_max_sharpe_period`, `deflated_sharpe_ratio`, plus an Acklam inverse-normal (`_norm_ppf`, |err|<1e-9) so no new dependency. Driver `scripts/run_phase2_dsr.py` → `results/phase2/deflated_sharpe_spy.json`; reads the SPY metrics + fold/regime/hedge artifacts + v1 metrics, writes only the DSR artifact, and it supersedes the deferred stub in `metrics_spy.json`.
+
+**Explicit trial ledger (N=12).** Every distinct Sharpe examined across the project, enumerated with its source: v1 AAPL primary (−1.81), SPY walk-forward primary (−1.21), the four non-daily hedge cadences (−1.92/−1.71/−1.60/−1.15), the three folds (+0.43/+2.14/+1.90), the three regime day-buckets (+2.79/−1.80/−2.47). Sharpe dispersion 1.84 (annualized units). Trials share data (folds/regimes/cadences are cuts of one book), so **N over-counts independent trials and the deflation is therefore conservative** — which only strengthens a disproof.
+
+**The capstone result — nothing survives deflation:**
+- **PSR vs zero = 0.083.** Skew/kurtosis-corrected, P(true Sharpe > 0) is 8%: the pre-registered headline cannot even clear zero, let alone a deflated bar.
+- **Every standalone configuration is negative** (best −1.15). No full-book strategy the search tried reached positive Sharpe at all.
+- **The single most favourable number the whole project produced — the low-vol day subset at +2.79 — is below the deflated bar +3.07** (the Sharpe expected from the luckiest of N=12 null trials). Even the best data-mined slice sits within multiple-testing noise. (At an implausibly small N=6 the bar is +2.39 and the slice would nominally clear it, but the honest enumerated N≥12 puts the bar above it; and it is a conditional subset, not a strategy.)
+- **DSR ≈ 0 across every plausible N** — the deflated bar rises monotonically (+2.39 at N=6 → +4.66 at N=100) while the headline DSR stays ~0 (headline Sharpe is negative). Sensitivity table in the artifact.
+
+So the SPY confirmatory study closes exactly as the v1 disproof did, now multiple-testing-robust: **there is no vol-arb edge in this data, and the honest Deflated Sharpe — the metric most likely to expose a lucky cherry-pick — confirms even the most favorable slice is noise.** This is the honest capstone the whole pre-registration was built to reach.
+
+**Tests:** `tests/test_phase2_dsr.py` (10) — unit tests on the math (inverse-normal inverts the CDF + known quantiles, PSR monotone/bounded, expected-max grows in N, DSR penalises more trials) and artifact honesty (trial ledger explicit + N matches its length, deferral now resolved/computed=True, headline can't clear zero, best slice does not survive honest deflation, DSR ~0 across all N with a monotone bar). Suite green.
+
+**v2 status:** the robustness appendix is now substantially complete — regime split, cost sweep, hedge-frequency sweep, and the honest-N Deflated Sharpe are all done and on the record. **Remaining before a `v2` tag:** the SABR second calibration (PLAN v2 Day 31–32, the surface-family robustness check — still the one un-run appendix piece) and the final report/README pass. **Do not tag `v2` until SABR + the report are done.**
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

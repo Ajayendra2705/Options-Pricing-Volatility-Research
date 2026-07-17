@@ -1,0 +1,107 @@
+{
+  "method": "Deflated Sharpe (Bailey & Lopez de Prado 2014): PSR evaluated at the expected max Sharpe of N null trials. Sharpes are annualized for display; the computation is per-period.",
+  "headline_book": {
+    "sharpe_annualized": -1.2146387179001084,
+    "n_obs": 283,
+    "skew": -2.176214907524396,
+    "excess_kurtosis": 16.226404636859375,
+    "psr_vs_zero": 0.08296233066300107,
+    "psr_note": "P(true Sharpe > 0), skew/kurtosis-corrected. Below 0.5 means the point Sharpe cannot even clear zero."
+  },
+  "trial_ledger": {
+    "note": "every distinct Sharpe examined across v1 + Phase-2 walk-forward + v2 sweeps. Trials share data (folds/regimes/cadences are cuts of one book), so N over-counts independent trials and the deflation is conservative.",
+    "n_trials": 12,
+    "trials": [
+      {
+        "name": "v1 AAPL primary (daily hedge)",
+        "sharpe_ann": -1.8056465422969266
+      },
+      {
+        "name": "SPY walk-forward primary (daily hedge)",
+        "sharpe_ann": -1.2146387179001084
+      },
+      {
+        "name": "SPY hedge every 2 bars",
+        "sharpe_ann": -1.9222440470186692
+      },
+      {
+        "name": "SPY hedge every 3 bars",
+        "sharpe_ann": -1.7045499097306431
+      },
+      {
+        "name": "SPY hedge every 5 bars",
+        "sharpe_ann": -1.5995580468439028
+      },
+      {
+        "name": "SPY hedge every 10 bars",
+        "sharpe_ann": -1.1525451903561335
+      },
+      {
+        "name": "SPY fold 2023Q4",
+        "sharpe_ann": 0.4305261808205512
+      },
+      {
+        "name": "SPY fold 2024Q1",
+        "sharpe_ann": 2.1434854397495617
+      },
+      {
+        "name": "SPY fold 2024Q2",
+        "sharpe_ann": 1.8986443114794338
+      },
+      {
+        "name": "SPY regime low_vol",
+        "sharpe_ann": 2.7899301420991724
+      },
+      {
+        "name": "SPY regime mid_vol",
+        "sharpe_ann": -1.796136975057667
+      },
+      {
+        "name": "SPY regime high_vol",
+        "sharpe_ann": -2.470200296372958
+      }
+    ],
+    "sharpe_dispersion_annualized": 1.8415197005729158,
+    "best_trial": {
+      "name": "SPY regime low_vol",
+      "sharpe_ann": 2.7899301420991724
+    },
+    "best_standalone_config_sharpe_ann": -1.1525451903561335
+  },
+  "deflated_sharpe": {
+    "computed": true,
+    "supersedes": "the 'deferred, not faked' stub in metrics_spy.json (resolved on Phase-2 Day 38)",
+    "n_trials": 12,
+    "expected_max_sharpe_ann": 3.0657829669412244,
+    "dsr": 5.244025694239873e-07,
+    "sensitivity_over_n": [
+      {
+        "n_trials": 6,
+        "expected_max_sharpe_ann": 2.394234875052349,
+        "dsr_headline": 1.9251432564371118e-05
+      },
+      {
+        "n_trials": 12,
+        "expected_max_sharpe_ann": 3.0657829669412244,
+        "dsr_headline": 5.244025694239873e-07
+      },
+      {
+        "n_trials": 24,
+        "expected_max_sharpe_ann": 3.645791190774215,
+        "dsr_headline": 1.4797910341535214e-08
+      },
+      {
+        "n_trials": 50,
+        "expected_max_sharpe_ann": 4.191856991872069,
+        "dsr_headline": 3.487502509003093e-10
+      },
+      {
+        "n_trials": 100,
+        "expected_max_sharpe_ann": 4.660155085322007,
+        "dsr_headline": 1.0364376024085686e-11
+      }
+    ],
+    "best_data_mined_slice_survives_deflation": false
+  },
+  "interpretation": "The pre-registered SPY Sharpe is negative (PSR vs zero = 0.08 < 0.5): it cannot even clear zero. Every standalone configuration tried is also negative (best -1.15). The single most favourable number the whole search produced -- the 'SPY regime low_vol' subset at +2.79 -- is below the deflated bar (+3.07, the Sharpe expected from the luckiest of N=12 null trials), so even the best data-mined slice sits within multiple-testing noise. DSR ~ 0 for every plausible N (6..100). Nothing in the project survives deflation: the disproof is complete and multiple-testing-robust."
+}
