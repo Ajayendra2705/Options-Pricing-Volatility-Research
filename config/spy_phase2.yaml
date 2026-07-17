@@ -80,6 +80,20 @@ gates:
   # claim; report IS-vs-OOS haircut + Deflated Sharpe with honest N.
   attribution: residual gates <20% / <10%, as v1 Day 22
   headline_metric: DSR-adjusted Sharpe; trial count N carries over v1/v2 trials
+  # AMENDMENT (Day 34, 2026-07-16, user-approved; additive per this file's
+  # rules; made BEFORE portfolio/costs/returns/metrics existed for SPY):
+  # the pre-registered per-position bar is a MAX calibrated on v1's 10
+  # positions; on 294 SPY positions it fails mechanically (0.435 vs 0.10) via
+  # attribution.py's documented blow-up — one-day Taylor on settlement bars and
+  # >2-sigma gap days at <=3 DTE — while the book-level bar passes (0.137) and
+  # the median position ratio (0.0175) beats v1's. Both verdicts are computed
+  # and reported (results/phase2/attribution_gate_spy.json); the study proceeds
+  # under the amended bar with the pre-registered FAIL disclosed alongside.
+  attribution_amended:
+    book_residual_abs_share: "< 0.20 (unchanged)"
+    p95_residual_over_premium_ex_settlement: "< 0.10 (quantile scales with n;
+      settlement bar is mark-to-intrinsic, exact, model-free)"
+    worst_position_residual_over_premium: "< 0.50 (sanity cap, settlement incl.)"
 
 sizing:       # unchanged from primary.yaml (inventory/risk controls)
   vega_limit_per_position: 500

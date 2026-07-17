@@ -145,13 +145,24 @@ def distribution_stats(returns: np.ndarray, ppy: float | None,
 
 # ── runner ──────────────────────────────────────────────────────────────────
 
-def run_metrics() -> dict:
+def run_metrics(
+    processed_dir: Path | None = None,
+    results_dir: Path | None = None,
+    notes: dict | None = None,
+) -> dict:
     """Compute the co-headline distribution block at daily/weekly/per-trade
-    horizons -> results/metrics.json."""
-    ret = pd.read_parquet(PROCESSED_DIR / "returns.parquet")
-    with open(RESULTS_DIR / "returns_summary.json") as fh:
+    horizons -> results/metrics.json.
+
+    Seams default to v1's constants (Day-32 convention). `notes` overrides the
+    prose block — the default text states v1's facts (negative net PnL, 10
+    trades), which are not automatically true of another study's numbers.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    results_dir = results_dir or RESULTS_DIR
+    ret = pd.read_parquet(processed_dir / "returns.parquet")
+    with open(results_dir / "returns_summary.json") as fh:
         rsum = json.load(fh)
-    with open(RESULTS_DIR / "costs_summary.json") as fh:
+    with open(results_dir / "costs_summary.json") as fh:
         csum = json.load(fh)
 
     capital_base = rsum["capital_base_usd"]
@@ -180,7 +191,7 @@ def run_metrics() -> dict:
             "weekly": distribution_stats(weekly, WEEKS, annualize=True),
             "per_trade": distribution_stats(per_trade, None, annualize=False),
         },
-        "notes": {
+        "notes": notes if notes is not None else {
             "headline": "Sharpe is NOT the headline for a short-vol book "
                         "(flatters negative skew); read skew/kurtosis/CVaR/"
                         "Calmar/Sortino as co-headlines.",
@@ -191,7 +202,7 @@ def run_metrics() -> dict:
                     "(skew/kurtosis) still describe the payoff.",
         },
     }
-    metrics = merge_metrics(metrics)
+    metrics = merge_metrics(metrics, results_dir)
 
     d = metrics["horizons"]["daily"]
     print(f"metrics: daily Sharpe {d['sharpe']:.2f} (ann), "
@@ -202,7 +213,7 @@ def run_metrics() -> dict:
     print(f"  per-trade (n={pt['n']}): mean {pt['mean']:+.4f}, "
           f"skew {pt['skew']:+.2f}, win-rate {pt['win_rate']:.0%}, "
           f"worst {pt['worst']:.4f}")
-    print(f"-> {RESULTS_DIR / 'metrics.json'}")
+    print(f"-> {results_dir / 'metrics.json'}")
     return metrics
 
 

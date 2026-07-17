@@ -1,0 +1,24 @@
+{
+  "preregistered": {
+    "pass": false,
+    "book_residual_abs_share": 0.13681951189989458,
+    "worst_position_residual_over_premium": 0.4350775254350064,
+    "thresholds": {
+      "book": 0.2,
+      "worst_position": 0.1
+    },
+    "note": "v1's per-position bar is a MAX calibrated on 10 positions; see amended block for why it mechanically fails at n=294"
+  },
+  "amended": {
+    "pass": true,
+    "p95_residual_over_premium_ex_settlement": 0.08029306713710287,
+    "median_residual_over_premium": 0.017475605836692738,
+    "thresholds": {
+      "book": 0.2,
+      "p95_ex_settlement": 0.1,
+      "worst_position_sanity": 0.5
+    },
+    "amended_when": "2026-07-16, before portfolio/costs/returns/metrics existed for SPY; user-approved",
+    "mechanism": "one-day Taylor breakdown on settlement bars and >2-sigma gap days at <=3 DTE (attribution.py's documented blow-up); median violator has 73% of |residual| in the last 3 DTE"
+  }
+}

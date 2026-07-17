@@ -1,0 +1,93 @@
+{
+  "capital_base_usd": 267204.2218757136,
+  "denominator": "peak book Reg-T margin over the trade window (config margin.capital_base)",
+  "risk_free_rate": 0.0,
+  "return_convention": "arithmetic on fixed capital base (non-compounding)",
+  "net_pnl_usd": -8936.192839557987,
+  "net_return_on_capital": -0.03344330705865319,
+  "horizons": {
+    "daily": {
+      "n": 283,
+      "mean": -0.0001181742298892339,
+      "std": 0.0015444573883040109,
+      "sharpe": -1.2146387179001084,
+      "sharpe_annualized": true,
+      "skew": -2.176214907524396,
+      "excess_kurtosis": 16.226404636859375,
+      "cvar_5pct": -0.0046248296438237595,
+      "max_drawdown": 0.047834780055943535,
+      "calmar": -0.6225576013364934,
+      "sortino": -1.4324030382856825,
+      "worst": -0.010707830850725509,
+      "best": 0.00690532295928343,
+      "win_rate": 0.5265017667844523
+    },
+    "weekly": {
+      "n": 59,
+      "mean": -0.0005668357128585286,
+      "std": 0.003445631852566201,
+      "sharpe": -1.1862876331105896,
+      "sharpe_annualized": true,
+      "skew": -2.2522843102082466,
+      "excess_kurtosis": 6.132751182924249,
+      "cvar_5pct": -0.011712058317604605,
+      "max_drawdown": 0.047201365314124354,
+      "calmar": -0.6244619593625054,
+      "sortino": -1.2699210479252587,
+      "worst": -0.014908111868812085,
+      "best": 0.004863209411253667,
+      "win_rate": 0.5084745762711864
+    },
+    "per_trade": {
+      "n": 294,
+      "mean": -0.0001137527450974599,
+      "std": 0.0011951921182903023,
+      "sharpe": -0.09517528048978507,
+      "sharpe_annualized": false,
+      "skew": -2.7863769289245117,
+      "excess_kurtosis": 13.995690100996768,
+      "cvar_5pct": -0.003611500822114135,
+      "max_drawdown": 0.047703079399311954,
+      "calmar": -0.7010722888287079,
+      "sortino": -0.10754850551773279,
+      "worst": -0.006846974471356532,
+      "best": 0.003835106563978296,
+      "win_rate": 0.4931972789115646
+    }
+  },
+  "notes": {
+    "headline": "Sharpe is NOT the headline for a short-vol book (flatters negative skew); read skew/kurtosis/CVaR/Calmar/Sortino as co-headlines.",
+    "per_trade_sample": "294 trades across 147 sessions \u2014 29x v1's sample; tail stats now have real support.",
+    "settlement": "price path through 2024-08-30 (spy_ohlc_ext) covers every traded expiry."
+  },
+  "statistical_honesty": {
+    "horizon": "daily net margin returns",
+    "sharpe": {
+      "sharpe_annualized": -1.2146387179001084,
+      "nw_se": 1.4159750186703701,
+      "nw_tstat": -0.8578108383865976,
+      "n_lags": 20,
+      "n_obs": 283
+    },
+    "bootstrap_ci_95": {
+      "ci_2.5": -2.7837396460359445,
+      "ci_50": -0.495852160477406,
+      "ci_97.5": 1.764289245478978,
+      "block": 17,
+      "n_boot": 2000
+    },
+    "is_oos_haircut": {
+      "sharpe_is": -0.027106453832256423,
+      "sharpe_oos": -1.9642560326631564,
+      "haircut_is_minus_oos": 1.9371495788308999,
+      "n_is": 141,
+      "n_oos": 142,
+      "note": "chronological split-half; indicative only at this sample size."
+    },
+    "deflated_sharpe": {
+      "computed": false,
+      "reason": "Deflated Sharpe requires an honest multiple-testing trial count N; N is only complete after the v2 robustness sweeps (PLAN v2 Day 37). Deferred, not faked."
+    },
+    "interpretation": "Point Sharpe is negative but its 95% bootstrap CI spans zero and |NW t| = 0.86 < 2 -> not statistically distinguishable from zero: no reliable edge either way."
+  }
+}

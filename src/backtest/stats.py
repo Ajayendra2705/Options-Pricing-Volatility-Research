@@ -141,14 +141,42 @@ def is_oos_haircut(returns: np.ndarray, ppy: int = TRADING_DAYS) -> dict:
 
 # ── runner ──────────────────────────────────────────────────────────────────
 
-def run_stats() -> dict:
-    """Compute Sharpe uncertainty block -> merge into metrics.json."""
-    ret = pd.read_parquet(PROCESSED_DIR / "returns.parquet")
+def _auto_interpretation(sh: dict, boot: dict) -> str:
+    """Sign-aware reading of the Sharpe uncertainty block, built from the
+    numbers instead of asserting v1's facts about another study's returns."""
+    sign = "negative" if sh["sharpe_annualized"] < 0 else "positive"
+    spans = boot["ci_2.5"] < 0 < boot["ci_97.5"]
+    signif = abs(sh["nw_tstat"]) >= 2
+    if not signif and spans:
+        return (f"Point Sharpe is {sign} but its 95% bootstrap CI spans zero "
+                f"and |NW t| = {abs(sh['nw_tstat']):.2f} < 2 -> not "
+                "statistically distinguishable from zero: no reliable edge "
+                "either way.")
+    return (f"Point Sharpe is {sign} with |NW t| = {abs(sh['nw_tstat']):.2f} "
+            f"and bootstrap CI [{boot['ci_2.5']:+.2f}, {boot['ci_97.5']:+.2f}]"
+            " -> read with the co-headline tail stats before concluding.")
+
+
+def run_stats(
+    processed_dir: Path | None = None,
+    results_dir: Path | None = None,
+    price_path: pd.DataFrame | None = None,
+    interpretation: str | None = None,
+) -> dict:
+    """Compute Sharpe uncertainty block -> merge into metrics.json.
+
+    Seams default to v1's constants (Day-32 convention). `interpretation`:
+    None keeps v1's exact tracked prose; "auto" derives sign-aware text from
+    the computed numbers (Phase 2); any other string is used verbatim.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    results_dir = results_dir or RESULTS_DIR
+    ret = pd.read_parquet(processed_dir / "returns.parquet")
     daily = ret["daily_return"].to_numpy()
 
     # lags = ceil(median holding horizon), same convention as Day 27
-    positions = build_positions()
-    path = load_price_path()
+    path = load_price_path() if price_path is None else price_path
+    positions = build_positions(processed_dir=processed_dir, price_path=path)
     hold = [len(path[(path["date"] >= p["date"])
                      & (path["date"] <= p["expiry"])]) for p in positions]
     n_lags = int(np.ceil(np.median(hold)))
@@ -157,6 +185,18 @@ def run_stats() -> dict:
     sh = sharpe_with_nw(daily, n_lags)
     boot = block_bootstrap_sharpe(daily, block)
     haircut = is_oos_haircut(daily)
+
+    if interpretation is None:
+        text = ("Point Sharpe is negative but its 95% bootstrap CI "
+                "spans zero and the NW t-stat is small in magnitude "
+                "(|t|<1) -> the Sharpe is not statistically "
+                "distinguishable from zero: no reliable edge either "
+                "way, consistent with the disproof thesis. The "
+                "negative IS->OOS haircut sign is noise at n=27/side.")
+    elif interpretation == "auto":
+        text = _auto_interpretation(sh, boot)
+    else:
+        text = interpretation
 
     stats = {
         "horizon": "daily net margin returns",
@@ -169,16 +209,11 @@ def run_stats() -> dict:
                       "trial count N; N is only complete after the v2 "
                       "robustness sweeps (PLAN v2 Day 37). Deferred, not faked.",
         },
-        "interpretation": "Point Sharpe is negative but its 95% bootstrap CI "
-                          "spans zero and the NW t-stat is small in magnitude "
-                          "(|t|<1) -> the Sharpe is not statistically "
-                          "distinguishable from zero: no reliable edge either "
-                          "way, consistent with the disproof thesis. The "
-                          "negative IS->OOS haircut sign is noise at n=27/side.",
+        "interpretation": text,
     }
 
-    mpath = RESULTS_DIR / "metrics.json"
-    metrics = merge_metrics({"statistical_honesty": stats})
+    mpath = results_dir / "metrics.json"
+    metrics = merge_metrics({"statistical_honesty": stats}, results_dir)
 
     print(f"stats: Sharpe {sh['sharpe_annualized']:+.2f} "
           f"(NW SE {sh['nw_se']:.2f}, t {sh['nw_tstat']:+.2f}, lags {n_lags}); "

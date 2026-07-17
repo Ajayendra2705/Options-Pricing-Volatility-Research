@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.backtest import har, realized_vol
+from src.backtest import costs, har, metrics, portfolio, realized_vol, reconcile, returns, stats
 from src.backtest import signal as signal_mod
 from src.surface import assemble, clean, forwards, iv_surface, no_arb, svi
 from src.surface.clean import clean_chain
@@ -47,6 +47,18 @@ SEAMS = {
     realized_vol.run_realized_vol: ("processed_dir", "plots_dir", "make_plots"),
     har.run_har: ("processed_dir", "plots_dir", "stats_path", "make_plots"),
     signal_mod.run_signal: ("processed_dir", "plots_dir", "summary_path", "make_plots"),
+    # Day 34: the backtest chain
+    reconcile.run_reconcile: ("processed_dir", "price_path", "report_path",
+                              "plots_dir", "make_plots"),
+    portfolio.run_portfolio: ("processed_dir", "price_path", "summary_path",
+                              "plots_dir", "make_plots", "config_path"),
+    costs.run_costs: ("processed_dir", "price_path", "summary_path",
+                      "plots_dir", "make_plots", "config_path"),
+    returns.run_returns: ("processed_dir", "price_path", "summary_path",
+                          "plots_dir", "make_plots", "config_path"),
+    metrics.run_metrics: ("processed_dir", "results_dir", "notes"),
+    stats.run_stats: ("processed_dir", "results_dir", "price_path",
+                      "interpretation"),
 }
 
 
@@ -81,11 +93,16 @@ def test_seam_params_exist_and_default_to_none(fn, params):
 def test_module_constants_still_point_at_v1():
     # a seam that silently redirected the DEFAULT would move v1's artifacts
     for mod in (clean, forwards, iv_surface, svi, no_arb, assemble,
-                realized_vol, har, signal_mod):
+                realized_vol, har, signal_mod,
+                reconcile, portfolio, costs, returns, metrics, stats):
         assert mod.PROCESSED_DIR == V1_PROCESSED, mod.__name__
     assert clean.RAW_DIR == V1_RAW
     assert clean.RESULTS_DIR == V1_RESULTS
     assert realized_vol.RAW_DIR == V1_RAW
+    assert reconcile.RAW_DIR == V1_RAW
+    # the config seams must default to v1's pre-registration
+    assert portfolio.CONFIG_PATH.name == "primary.yaml"
+    assert costs.CONFIG_PATH.name == "primary.yaml"
 
 
 # ── (2) a redirected run touches nothing of v1's ─────────────────────────────

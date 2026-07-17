@@ -1,10 +1,14 @@
 {
-  "generated": "2026-07-16T00:33:47.185289",
+  "generated": "2026-07-16T17:49:29.067085",
   "root": "data\\phase2\\raw",
   "files": {
     "spy_ohlc.parquet": {
       "sha256": "674285b95d78b3b71a849569bd041e1c48f58d4fc5faf90aced3068bdf6108ac",
       "size_bytes": 28373
+    },
+    "spy_ohlc_ext.parquet": {
+      "sha256": "2ed26d4d440547d5e57e4bd7e01a6f169bc59f3b038f44b36c87b664caa2a733",
+      "size_bytes": 5726
     },
     "spy_options.parquet": {
       "sha256": "aed9313b6dcc41b05088050118bb985fc6e59aa4b455a38a221d2a89e116f727",

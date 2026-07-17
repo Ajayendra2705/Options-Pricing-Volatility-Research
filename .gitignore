@@ -50,6 +50,13 @@ results/phase2/*
 !results/phase2/svi_butterfly_log_spy.json
 !results/phase2/har_stats_spy.json
 !results/phase2/signal_summary_spy.json
+!results/phase2/attribution_reconcile_spy.json
+!results/phase2/attribution_gate_spy.json
+!results/phase2/portfolio_summary_spy.json
+!results/phase2/costs_summary_spy.json
+!results/phase2/returns_summary_spy.json
+!results/phase2/metrics_spy.json
+!results/phase2/walkforward_spy.json
 
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/

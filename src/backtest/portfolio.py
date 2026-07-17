@@ -56,14 +56,16 @@ MULT = 100.0  # contract multiplier (matches Leg default)
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
-def _load_sizing_params() -> dict:
+def _load_sizing_params(config_path: Path | None = None) -> dict:
     """Load sizing parameters from primary.yaml, with safe defaults.
 
     The pre-registered primary.yaml contains informal prose with unquoted
     colons (e.g. 'SPEC: margin-based returns') which makes the whole file
     unparseable by strict YAML.  We extract only the 'sizing:' block
-    and parse it in isolation.
+    and parse it in isolation.  `config_path` lets Phase 2 read its own
+    pre-registration (spy_phase2.yaml) instead of v1's.
     """
+    config_path = config_path or CONFIG_PATH
     defaults = {
         "vega_limit_per_position": 500.0,
         "gamma_limit_per_position": 5000.0,
@@ -71,9 +73,9 @@ def _load_sizing_params() -> dict:
         "portfolio_gross_gamma_limit": 30000.0,
         "max_drawdown_pct": 0.15,
     }
-    if CONFIG_PATH.exists():
+    if config_path.exists():
         try:
-            lines = CONFIG_PATH.read_text().splitlines()
+            lines = config_path.read_text().splitlines()
             # Find the sizing block and extract it
             sizing_lines = []
             in_sizing = False
@@ -190,16 +192,28 @@ def drawdown_kill(equity: pd.Series, max_dd_pct: float
 
 # ── portfolio runner ─────────────────────────────────────────────────────────
 
-def run_portfolio(params: dict | None = None) -> dict:
+def run_portfolio(
+    params: dict | None = None,
+    processed_dir: Path | None = None,
+    price_path: pd.DataFrame | None = None,
+    summary_path: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+    config_path: Path | None = None,
+) -> dict:
     """Full Day-23 deliverable: sized positions → portfolio equity curve.
 
-    Returns the summary dict (also written to JSON).
+    Returns the summary dict (also written to JSON). Seams default to v1's
+    constants (Day-32 convention) so v1's paths never move.
     """
+    processed_dir = processed_dir or PROCESSED_DIR
+    summary_path = summary_path or RESULTS_DIR / "portfolio_summary.json"
+    plots_dir = plots_dir or PLOTS_DIR
     if params is None:
-        params = _load_sizing_params()
+        params = _load_sizing_params(config_path)
 
-    positions = build_positions()
-    path = load_price_path()
+    path = load_price_path() if price_path is None else price_path
+    positions = build_positions(processed_dir=processed_dir, price_path=path)
 
     # ── 1. size each position ────────────────────────────────────────────
     for pos in positions:
@@ -275,8 +289,8 @@ def run_portfolio(params: dict | None = None) -> dict:
     })
 
     # ── 6. outputs ───────────────────────────────────────────────────────
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    portfolio_df.to_parquet(PROCESSED_DIR / "portfolio.parquet", index=False)
+    processed_dir.mkdir(parents=True, exist_ok=True)
+    portfolio_df.to_parquet(processed_dir / "portfolio.parquet", index=False)
 
     total_pnl = float(portfolio_eq_killed.iloc[-1])
     max_dd = float(dd.max())
@@ -295,29 +309,31 @@ def run_portfolio(params: dict | None = None) -> dict:
         "date_range": [str(date_idx[0].date()), str(date_idx[-1].date())],
         "n_bars": len(portfolio_df),
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "portfolio_summary.json", "w", newline="\n") as fh:
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(summary_path, "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
     # ── 7. plot ──────────────────────────────────────────────────────────
-    _plot_portfolio(portfolio_df, summary)
+    if make_plots:
+        _plot_portfolio(portfolio_df, summary, plots_dir)
 
     print(f"portfolio: {len(positions)} positions, "
           f"total PnL ${total_pnl:.2f}, max DD ${max_dd:.2f} "
           f"({max_dd_pct_val:.1%})"
           + (f", killed on {kill_date}" if kill_date else ""))
-    print(f"-> {PROCESSED_DIR / 'portfolio.parquet'}")
-    print(f"-> {RESULTS_DIR / 'portfolio_summary.json'}")
+    print(f"-> {processed_dir / 'portfolio.parquet'}")
+    print(f"-> {summary_path}")
     return summary
 
 
-def _plot_portfolio(df: pd.DataFrame, summary: dict):
+def _plot_portfolio(df: pd.DataFrame, summary: dict,
+                    plots_dir: Path = PLOTS_DIR):
     """Equity curve + drawdown subplot."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+    plots_dir.mkdir(parents=True, exist_ok=True)
     fig, (ax, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True,
                                   height_ratios=[2, 1])
     ax.plot(df["date"], df["equity"], lw=1.5, label="portfolio equity (killed)"
@@ -338,7 +354,7 @@ def _plot_portfolio(df: pd.DataFrame, summary: dict):
     ax2.set_ylabel("drawdown ($)")
     ax2.set_xlabel("date")
 
-    p = PLOTS_DIR / "portfolio_equity.png"
+    p = plots_dir / "portfolio_equity.png"
     fig.savefig(p, dpi=110, bbox_inches="tight")
     plt.close(fig)
     print(f"-> {p}")

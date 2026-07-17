@@ -1,0 +1,59 @@
+{
+  "design": "walk-forward evaluation slices per config/spy_phase2.yaml; nothing in the primary chain is refit on the window (HAR is expanding-OOS by construction), so folds are honest out-of-sample quarters, not refit boundaries",
+  "capital_base_usd": 267204.2218757136,
+  "burn_in": {
+    "through": "2023-09-30",
+    "n_days": 62,
+    "net_pnl_usd": -2186.7995708062917,
+    "sharpe_annualized": -1.4898190027962976,
+    "nw_tstat": -0.8508555234600902,
+    "worst_day_usd": -1388.2028494557328,
+    "best_day_usd": 1845.1314481358288
+  },
+  "folds": {
+    "2023Q4": {
+      "n_days": 63,
+      "net_pnl_usd": 365.067636095672,
+      "sharpe_annualized": 0.4305261808205512,
+      "nw_tstat": 0.21728311610443748,
+      "worst_day_usd": -683.2713647134542,
+      "best_day_usd": 635.7686680147767
+    },
+    "2024Q1": {
+      "n_days": 61,
+      "net_pnl_usd": 2639.2562983373696,
+      "sharpe_annualized": 2.1434854397495617,
+      "nw_tstat": 1.0632743532901443,
+      "worst_day_usd": -827.8612953875858,
+      "best_day_usd": 1732.7297014385151
+    },
+    "2024Q2": {
+      "n_days": 63,
+      "net_pnl_usd": 1902.0060305063973,
+      "sharpe_annualized": 1.8986443114794338,
+      "nw_tstat": 1.2069409692097621,
+      "worst_day_usd": -725.8559856059064,
+      "best_day_usd": 714.0864812266309
+    }
+  },
+  "settlement_tail": {
+    "note": "expiry run-off of positions entered by 2024-06-28; contains the 2024-08-05 vol spike",
+    "from": "2024-07-01",
+    "n_days": 34,
+    "net_pnl_usd": -11655.723233691135,
+    "sharpe_annualized": -6.589809228758383,
+    "nw_tstat": -2.363663791448428,
+    "worst_day_usd": -2861.17761044487,
+    "best_day_usd": 680.1229719043884
+  },
+  "all_test_folds": {
+    "n_days": 221,
+    "net_pnl_usd": -6749.393268751695,
+    "sharpe_annualized": -1.1454579787641423,
+    "nw_tstat": -0.6924329860536826,
+    "worst_day_usd": -2861.17761044487,
+    "best_day_usd": 1732.7297014385151
+  },
+  "positive_folds": 3,
+  "n_folds": 3
+}

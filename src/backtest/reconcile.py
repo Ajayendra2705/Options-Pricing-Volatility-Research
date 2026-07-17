@@ -46,10 +46,19 @@ PLOTS_DIR = RESULTS_DIR / "plots"
 SVI_COLS = ["a", "b", "rho", "m", "sigma"]
 
 
-def load_price_path() -> pd.DataFrame:
-    """Signal-window OHLC + post-June extension, close-only, deduped."""
-    base = pd.read_parquet(RAW_DIR / "aapl_ohlc.parquet")[["date", "close"]]
-    ext_p = RAW_DIR / "aapl_ohlc_ext.parquet"
+def load_price_path(raw_dir: Path | None = None,
+                    base_name: str = "aapl_ohlc.parquet",
+                    ext_name: str = "aapl_ohlc_ext.parquet") -> pd.DataFrame:
+    """Signal-window OHLC + post-window extension, close-only, deduped.
+
+    Defaults are v1's files (Day-32 seam convention); Phase 2 passes its own
+    raw dir + names. The extension stays a SEPARATE file in both studies —
+    the no-lookahead boundary between "data the signal saw" and "path the
+    trade lives on" is physical.
+    """
+    raw_dir = raw_dir or RAW_DIR
+    base = pd.read_parquet(raw_dir / base_name)[["date", "close"]]
+    ext_p = raw_dir / ext_name
     if ext_p.exists():
         ext = pd.read_parquet(ext_p)[["date", "close"]]
         base = pd.concat([base, ext])
@@ -57,17 +66,22 @@ def load_price_path() -> pd.DataFrame:
             .reset_index(drop=True))
 
 
-def build_positions(signal: pd.DataFrame | None = None) -> list[dict]:
+def build_positions(signal: pd.DataFrame | None = None,
+                    processed_dir: Path | None = None,
+                    price_path: pd.DataFrame | None = None) -> list[dict]:
     """One straddle per non-flat pre-registered signal row.
 
     Returns dicts: date, expiry, side, qty, K, F, S0, r, q, mark_vol, T.
     """
+    processed_dir = processed_dir or PROCESSED_DIR
     if signal is None:
-        signal = pd.read_parquet(PROCESSED_DIR / "signal.parquet")
-    fwd = pd.read_parquet(PROCESSED_DIR / "forwards.parquet")
-    svi = pd.read_parquet(PROCESSED_DIR / "svi_params_joint.parquet")
-    chain = pd.read_parquet(PROCESSED_DIR / "chain_clean.parquet")
-    path = load_price_path().set_index("date")["close"]
+        signal = pd.read_parquet(processed_dir / "signal.parquet")
+    fwd = pd.read_parquet(processed_dir / "forwards.parquet")
+    svi = pd.read_parquet(processed_dir / "svi_params_joint.parquet")
+    chain = pd.read_parquet(processed_dir / "chain_clean.parquet")
+    if price_path is None:
+        price_path = load_price_path()
+    path = price_path.set_index("date")["close"]
 
     out = []
     for _, row in signal.iterrows():
@@ -114,18 +128,36 @@ def run_position(pos: dict, path: pd.DataFrame):
     return led, book, legs
 
 
-def run_reconcile() -> dict:
+def run_reconcile(
+    processed_dir: Path | None = None,
+    price_path: pd.DataFrame | None = None,
+    report_path: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+    settlement_split: bool = False,
+) -> dict:
     """Full real-data reconciliation -> results/attribution_reconcile.json
-    + residual plot. Returns the report dict (the Day-22 gate numbers)."""
-    path = load_price_path()
-    positions = build_positions()
+    + residual plot. Returns the report dict (the Day-22 gate numbers).
+
+    Seams default to v1's constants (Day-32 convention) so v1's paths never move.
+
+    `settlement_split` (Phase 2, Day 34): additionally report each position's
+    residual EXCLUDING its settlement bar, plus the p95 of that ratio. The
+    settlement bar is mark-to-intrinsic — exact, model-free — so its Taylor
+    error says nothing about whether the Greeks explained the LIVING book;
+    v1's report is unchanged when False (default).
+    """
+    report_path = report_path or RESULTS_DIR / "attribution_reconcile.json"
+    plots_dir = plots_dir or PLOTS_DIR
+    path = load_price_path() if price_path is None else price_path
+    positions = build_positions(processed_dir=processed_dir, price_path=path)
 
     reports, resid_bars = [], []
     for pos in positions:
         led, book, _ = run_position(pos, path)
         live = book.iloc[1:]                      # entry bar is all zeros
         prem = float(abs(led["V_opt"].iloc[0]))
-        reports.append({
+        rep = {
             "date": str(pos["date"].date()),
             "expiry": str(pos["expiry"].date()),
             "side": pos["side"], "K": pos["K"],
@@ -139,7 +171,12 @@ def run_reconcile() -> dict:
             "residual_abs_sum": float(live["residual"].abs().sum()),
             "actual_abs_sum": float(live["actual"].abs().sum()),
             "residual_over_premium": float(abs(book["residual"].sum()) / prem),
-        })
+        }
+        if settlement_split:
+            pre_settle = live[[d < pos["expiry"] for d in live["date"]]]
+            rep["residual_over_premium_ex_settlement"] = float(
+                abs(pre_settle["residual"].sum()) / prem)
+        reports.append(rep)
         resid_bars.append(live["residual"])
 
     resid = pd.concat(resid_bars)
@@ -154,27 +191,34 @@ def run_reconcile() -> dict:
         "total_pnl": float(sum(r["pnl"] for r in reports)),
         "total_residual": float(sum(r["residual_sum"] for r in reports)),
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "attribution_reconcile.json", "w", newline="\n") as fh:
+    if settlement_split:
+        ex = sorted(r["residual_over_premium_ex_settlement"] for r in reports)
+        report["p95_residual_over_premium_ex_settlement"] = float(
+            np.percentile(ex, 95))
+        report["median_residual_over_premium"] = float(np.median(
+            [r["residual_over_premium"] for r in reports]))
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(report_path, "w", newline="\n") as fh:
         json.dump(report, fh, indent=2)
 
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11, 4))
-    ax.hist(resid, bins=40, color="steelblue", edgecolor="0.3")
-    ax.set_xlabel("per-bar residual ($)")
-    ax.set_title(f"Attribution residuals, all positions "
-                 f"(abs share {report['book_residual_abs_share']:.1%})")
-    labels = [f"{r['date']}\n{r['expiry']}" for r in reports]
-    ax2.bar(range(len(reports)),
-            [r["residual_sum"] for r in reports], color="firebrick")
-    ax2.set_xticks(range(len(reports)), labels, fontsize=6, rotation=45)
-    ax2.set_title("cumulative residual per position ($)")
-    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
-    fig.savefig(PLOTS_DIR / "attribution_residuals.png", dpi=110,
-                bbox_inches="tight")
-    plt.close(fig)
+    if make_plots:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11, 4))
+        ax.hist(resid, bins=40, color="steelblue", edgecolor="0.3")
+        ax.set_xlabel("per-bar residual ($)")
+        ax.set_title(f"Attribution residuals, all positions "
+                     f"(abs share {report['book_residual_abs_share']:.1%})")
+        labels = [f"{r['date']}\n{r['expiry']}" for r in reports]
+        ax2.bar(range(len(reports)),
+                [r["residual_sum"] for r in reports], color="firebrick")
+        ax2.set_xticks(range(len(reports)), labels, fontsize=6, rotation=45)
+        ax2.set_title("cumulative residual per position ($)")
+        plots_dir.mkdir(parents=True, exist_ok=True)
+        fig.savefig(plots_dir / "attribution_residuals.png", dpi=110,
+                    bbox_inches="tight")
+        plt.close(fig)
     return report
 
 

@@ -95,14 +95,28 @@ def straddle_margin(S: float, K: float, T: float, sig: float,
 
 # ── runner ──────────────────────────────────────────────────────────────────
 
-def run_returns(params: dict | None = None) -> dict:
-    """Margin-based return series on the pre-registered unit-qty book."""
-    if params is None:
-        params = _load_cost_params()
+def run_returns(
+    params: dict | None = None,
+    processed_dir: Path | None = None,
+    price_path: pd.DataFrame | None = None,
+    summary_path: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+    config_path: Path | None = None,
+) -> dict:
+    """Margin-based return series on the pre-registered unit-qty book.
 
-    positions = build_positions()
-    path = load_price_path()
-    chain = pd.read_parquet(PROCESSED_DIR / "chain_clean.parquet")
+    Seams default to v1's constants (Day-32 convention) so v1's paths never move.
+    """
+    processed_dir = processed_dir or PROCESSED_DIR
+    summary_path = summary_path or RESULTS_DIR / "returns_summary.json"
+    plots_dir = plots_dir or PLOTS_DIR
+    if params is None:
+        params = _load_cost_params(config_path)
+
+    path = load_price_path() if price_path is None else price_path
+    positions = build_positions(processed_dir=processed_dir, price_path=path)
+    chain = pd.read_parquet(processed_dir / "chain_clean.parquet")
 
     # per-position: engine equity path + margin path + entry cost
     per_pos = []
@@ -201,8 +215,8 @@ def run_returns(params: dict | None = None) -> dict:
         "gross_return": gross_ret.values,
         "daily_return": daily_ret.values,
     })
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    out.to_parquet(PROCESSED_DIR / "returns.parquet", index=False)
+    processed_dir.mkdir(parents=True, exist_ok=True)
+    out.to_parquet(processed_dir / "returns.parquet", index=False)
 
     summary = {
         "capital_base_usd": capital_base,
@@ -230,11 +244,12 @@ def run_returns(params: dict | None = None) -> dict:
         "date_range": [str(idx[0].date()), str(idx[-1].date())],
         "n_bars": len(out),
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "returns_summary.json", "w", newline="\n") as fh:
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(summary_path, "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
-    _plot(out, summary)
+    if make_plots:
+        _plot(out, summary, plots_dir)
 
     print(f"returns: capital base ${capital_base:,.0f} (peak margin, "
           f"{peak_margin_date}); net PnL ${summary['net_pnl_usd']:.2f} "
@@ -243,16 +258,16 @@ def run_returns(params: dict | None = None) -> dict:
           f"max {stress_ratio_max:.2f}x / mean {stress_ratio_mean:.2f}x, "
           f"corr(dMargin,dEquity) {procyc_corr:+.2f} "
           f"({'procyclical' if procyc_corr < 0 else 'not procyclical'})")
-    print(f"-> {RESULTS_DIR / 'returns_summary.json'}")
+    print(f"-> {summary_path}")
     return summary
 
 
-def _plot(df: pd.DataFrame, summary: dict):
+def _plot(df: pd.DataFrame, summary: dict, plots_dir: Path = PLOTS_DIR):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+    plots_dir.mkdir(parents=True, exist_ok=True)
     fig, (ax, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True,
                                   height_ratios=[1, 1])
     ax.plot(df["date"], df["net_return"] * 100, color="firebrick",
@@ -273,7 +288,7 @@ def _plot(df: pd.DataFrame, summary: dict):
     ax2.set_xlabel("date")
     ax2.legend(fontsize=8)
 
-    p = PLOTS_DIR / "margin_returns.png"
+    p = plots_dir / "margin_returns.png"
     fig.savefig(p, dpi=110, bbox_inches="tight")
     plt.close(fig)
     print(f"-> {p}")

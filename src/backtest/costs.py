@@ -55,22 +55,23 @@ MULT = 100.0
 
 # ── config ─────────────────────────────────────────────────────────────────
 
-def _load_cost_params() -> dict:
+def _load_cost_params(config_path: Path | None = None) -> dict:
     """Parse the `costs:` block from primary.yaml in isolation.
 
     The full file mixes prose with unquoted colons (unparseable by strict
     YAML), so — like `portfolio._load_sizing_params` — we slice out just the
     costs block.  `underlying_slippage_bps` is not in the pre-registered file
     (primary declares zero underlying spread); it defaults to 0 here and is a
-    robustness-only knob.
+    robustness-only knob.  `config_path` lets Phase 2 read spy_phase2.yaml.
     """
+    config_path = config_path or CONFIG_PATH
     defaults = {
         "commission_per_contract_usd": 0.65,
         "underlying_slippage_bps": 0.0,   # primary: AAPL penny-wide, zero
     }
-    if CONFIG_PATH.exists():
+    if config_path.exists():
         try:
-            lines = CONFIG_PATH.read_text().splitlines()
+            lines = config_path.read_text().splitlines()
             block, in_block = [], False
             for line in lines:
                 if line.strip().startswith("costs:"):
@@ -136,17 +137,29 @@ def hedge_slippage_cost(ledger: pd.DataFrame, params: dict) -> float:
 
 # ── runner ──────────────────────────────────────────────────────────────────
 
-def run_costs(params: dict | None = None) -> dict:
+def run_costs(
+    params: dict | None = None,
+    processed_dir: Path | None = None,
+    price_path: pd.DataFrame | None = None,
+    summary_path: Path | None = None,
+    plots_dir: Path | None = None,
+    make_plots: bool = True,
+    config_path: Path | None = None,
+) -> dict:
     """Gross vs net PnL on the pre-registered unit-qty book.
 
-    Returns the summary dict (also written to costs_summary.json).
+    Returns the summary dict (also written to costs_summary.json). Seams
+    default to v1's constants (Day-32 convention) so v1's paths never move.
     """
+    processed_dir = processed_dir or PROCESSED_DIR
+    summary_path = summary_path or RESULTS_DIR / "costs_summary.json"
+    plots_dir = plots_dir or PLOTS_DIR
     if params is None:
-        params = _load_cost_params()
+        params = _load_cost_params(config_path)
 
-    positions = build_positions()
-    path = load_price_path()
-    chain = pd.read_parquet(PROCESSED_DIR / "chain_clean.parquet")
+    path = load_price_path() if price_path is None else price_path
+    positions = build_positions(processed_dir=processed_dir, price_path=path)
+    chain = pd.read_parquet(processed_dir / "chain_clean.parquet")
 
     reports = []
     for pos in positions:
@@ -195,27 +208,29 @@ def run_costs(params: dict | None = None) -> dict:
         "cost_as_pct_of_premium": float(
             cost_total / sum(r["premium"] for r in reports)),
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    with open(RESULTS_DIR / "costs_summary.json", "w", newline="\n") as fh:
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(summary_path, "w", newline="\n") as fh:
         json.dump(summary, fh, indent=2)
 
-    _plot_gross_vs_net(reports, summary)
+    if make_plots:
+        _plot_gross_vs_net(reports, summary, plots_dir)
 
     print(f"costs: {len(reports)} positions | gross ${gross_total:.2f} "
           f"- costs ${cost_total:.2f} = net ${net_total:.2f}")
     print(f"  half-spread ${summary['total_half_spread']:.2f}, "
           f"commission ${summary['total_commission']:.2f}, "
           f"hedge slippage ${summary['total_hedge_slippage']:.2f}")
-    print(f"-> {RESULTS_DIR / 'costs_summary.json'}")
+    print(f"-> {summary_path}")
     return summary
 
 
-def _plot_gross_vs_net(reports: list[dict], summary: dict):
+def _plot_gross_vs_net(reports: list[dict], summary: dict,
+                       plots_dir: Path = PLOTS_DIR):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+    plots_dir.mkdir(parents=True, exist_ok=True)
     labels = [f"{r['date']}\n{r['expiry']}" for r in reports]
     x = np.arange(len(reports))
     w = 0.4
@@ -237,7 +252,7 @@ def _plot_gross_vs_net(reports: list[dict], summary: dict):
     ax2.set_xticks([0, 1], ["gross", "net"])
     ax2.set_title(f"Book: ${summary['gross_pnl']:.0f} -> "
                   f"${summary['net_pnl']:.0f}")
-    p = PLOTS_DIR / "gross_vs_net.png"
+    p = plots_dir / "gross_vs_net.png"
     fig.savefig(p, dpi=110, bbox_inches="tight")
     plt.close(fig)
     print(f"-> {p}")
