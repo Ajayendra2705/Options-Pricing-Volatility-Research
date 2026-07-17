@@ -531,6 +531,36 @@ Sum = −$7,493 = gross total, exact. The loss concentrates in the **mid-vol ent
 
 **Next — Day 36:** cost sensitivity sweep (×0.5/1/2 → PnL-vs-cost curve) and/or hedge-frequency sweep, then the honest-N Deflated Sharpe once the trial count closes. SABR second calibration (PLAN v2 Day 31–32) still open as the surface-family robustness check.
 
+### Day 36 — SPY COST SENSITIVITY SWEEP (Done, v2 robustness #2)
+
+**Status:** Completed. PLAN v2 "cost sensitivity sweep (×0.5/1/2) → PnL-vs-cost curve", run via `scripts/run_phase2_cost_sweep.py` → `results/phase2/cost_sweep_spy.json`. Reads the Day-34 cost decomposition + capital base; re-runs `run_costs` **once at 1 bp to a scratch temp dir** (make_plots=False) only to recover the hedge notional — the tracked `costs_summary_spy.json` and the plots are untouched (pinned by a test). The question: is the −$8,936 disproof an artifact of the cost assumption? **No — and two different reasons why.**
+
+**Cost-multiplier sweep (exact ×k cost model, not a linearisation).** Net PnL is exactly linear in a cost multiplier: gross is cost-independent and every option-cost component (½ the quoted spread on both legs + $0.65/contract commission) scales linearly, so `net(k) = gross − k·realized_cost` *is* the ×0.5/1/2 result. The ×1 point reproduces the Day-34 net to 1e-6 (pinned).
+| ×k | cost | net PnL | net return |
+|----|-----:|--------:|-----------:|
+| ×0 | $0 | **−$7,493** | −2.80% |
+| ×0.5 | $722 | −$8,215 | −3.07% |
+| ×1 | $1,443 | −$8,936 | −3.34% |
+| ×2 | $2,886 | −$10,379 | −3.88% |
+
+**Break-even multiplier k\* = −5.19 (negative): the book loses even at ZERO transaction cost** (−$7,493 gross), so no cost reduction saves it. The SPY disproof is *not* a transaction-cost artifact — costs only deepen a loss that already exists gross. (Option costs are tiny anyway: total $1,443 = **0.37% of premium**.)
+
+**Hedge-slippage stress — the honest surprise, and where the book IS cost-sensitive.** The pre-registration sets `underlying_slippage_bps = 0` (SPY penny-wide). Stressing it exposes that the M/W/F delta-hedge programme **turns over $49.2M of underlying notional — ~184× the $267k capital base**. Slippage is linear in bps (one 1-bp rerun gives the notional):
+| bps | slippage | net PnL | net return |
+|-----|---------:|--------:|-----------:|
+| 0 | $0 | −$8,936 | −3.34% |
+| 1 | $4,918 | −$13,854 | −5.18% |
+| 2 | $9,836 | −$18,773 | −7.03% |
+| 5 | $24,591 | −$33,527 | −12.55% |
+
+So unlike the option costs, the book **is** sensitive to underlying slippage because of hedge turnover. At SPY's *realistic* penny-wide half-spread (~0.1 bp on a ~$450 stock) the drag is only ~$500, so the primary's zero is nearly right; the 1–5 bps stress is deliberately harsh and, while it materially deepens the loss, **never flips the sign** — the book is negative before any slippage. The disclosure that matters for the CV: the cost-sensitive dimension is **hedge turnover, not the option spread/commission**, which also flags hedge-frequency as the natural next robustness axis. (This corrected another pre-written note that had guessed "modest drag" — artifact reflects the $49M turnover, not the guess.)
+
+**Bearing on the DSR:** robustness trial #2 of the SPY appendix; trial count N keeps accumulating, DSR still deferred to PLAN v2 Day 37.
+
+**Tests:** `tests/test_phase2_cost_sweep.py` (5) — ×1 reproduces the actual costs run exactly (and ×0 = gross), cost curve monotone decreasing, break-even multiplier negative + loses at zero cost, hedge slippage linear in bps with turnover disclosed (>1× capital), the 1-bp rerun did not clobber the tracked base artifact. Suite green.
+
+**Next — Day 37:** hedge-frequency sweep (daily / N-daily / band → variance + turnover sensitivity — directly probes the $49M turnover found here), then the honest-N Deflated Sharpe once the trial count closes. SABR second calibration (surface-family robustness) still open.
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

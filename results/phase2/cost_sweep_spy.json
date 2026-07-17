@@ -1,0 +1,74 @@
+{
+  "base": {
+    "gross_pnl_usd": -7492.99283955799,
+    "half_spread_usd": 1061.0,
+    "commission_usd": 382.20000000000203,
+    "realized_cost_usd": 1443.1999999999973,
+    "net_pnl_usd": -8936.192839558009,
+    "capital_base_usd": 267204.2218757136,
+    "cost_as_pct_of_premium": 0.0036929178194411794
+  },
+  "cost_multiplier_sweep": {
+    "note": "net(k) = gross - k * realized_cost. EXACT, not a linearisation: gross is cost-independent and every option-cost component scales linearly in the multiplier, so this is the x0.5/1/2 cost-model result.",
+    "curve": [
+      {
+        "multiplier": 0.0,
+        "total_cost_usd": 0.0,
+        "net_pnl_usd": -7492.99283955799,
+        "net_return_on_capital": -0.028042194793775576
+      },
+      {
+        "multiplier": 0.5,
+        "total_cost_usd": 721.5999999999987,
+        "net_pnl_usd": -8214.592839557989,
+        "net_return_on_capital": -0.030742750926214386
+      },
+      {
+        "multiplier": 1.0,
+        "total_cost_usd": 1443.1999999999973,
+        "net_pnl_usd": -8936.192839557987,
+        "net_return_on_capital": -0.03344330705865319
+      },
+      {
+        "multiplier": 2.0,
+        "total_cost_usd": 2886.3999999999946,
+        "net_pnl_usd": -10379.392839557984,
+        "net_return_on_capital": -0.03884441932353081
+      }
+    ],
+    "break_even_multiplier": -5.191929628296843,
+    "finding": "gross is already negative (-$7,493), so net < 0 at every k >= 0 -- the book loses even at ZERO transaction cost (break-even multiplier is negative). The Day-34 SPY disproof is NOT a transaction-cost artifact; costs only deepen a loss that exists gross."
+  },
+  "hedge_slippage_stress": {
+    "note": "pre-registration sets underlying_slippage_bps=0 (SPY penny-wide); this stresses it. slippage = bps/1e4 * total hedge notional, linear in bps (one 1-bp engine re-run gives the notional).",
+    "total_hedge_notional_usd": 49181894.92472949,
+    "hedge_notional_over_capital": 184.06106976710038,
+    "curve": [
+      {
+        "underlying_slippage_bps": 0.0,
+        "hedge_slippage_usd": 0.0,
+        "net_pnl_usd": -8936.192839557987,
+        "net_return_on_capital": -0.03344330705865319
+      },
+      {
+        "underlying_slippage_bps": 1.0,
+        "hedge_slippage_usd": 4918.1894924729495,
+        "net_pnl_usd": -13854.382332030937,
+        "net_return_on_capital": -0.05184941403536323
+      },
+      {
+        "underlying_slippage_bps": 2.0,
+        "hedge_slippage_usd": 9836.378984945899,
+        "net_pnl_usd": -18772.571824503888,
+        "net_return_on_capital": -0.07025552101207327
+      },
+      {
+        "underlying_slippage_bps": 5.0,
+        "hedge_slippage_usd": 24590.947462364744,
+        "net_pnl_usd": -33527.14030192273,
+        "net_return_on_capital": -0.12547384194220337
+      }
+    ],
+    "finding": "the M/W/F hedge programme turns over $49,181,895 of underlying notional -- 184x the $267,204 capital base -- so unlike the option costs the book IS sensitive to underlying slippage. At SPY's realistic penny-wide half-spread (~0.1 bp on a ~$450 stock) the drag is only ~$500; the 1-5 bps stress is deliberately harsh and materially deepens the loss (to -5% .. -13%), but never flips the sign -- the book is negative before any slippage. The cost-sensitive dimension here is hedge TURNOVER, not the option spread or commission."
+  }
+}
