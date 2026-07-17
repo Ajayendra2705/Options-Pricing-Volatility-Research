@@ -603,6 +603,26 @@ So the SPY confirmatory study closes exactly as the v1 disproof did, now multipl
 
 **v2 status:** the robustness appendix is now substantially complete — regime split, cost sweep, hedge-frequency sweep, and the honest-N Deflated Sharpe are all done and on the record. **Remaining before a `v2` tag:** the SABR second calibration (PLAN v2 Day 31–32, the surface-family robustness check — still the one un-run appendix piece) and the final report/README pass. **Do not tag `v2` until SABR + the report are done.**
 
+### Day 39 — SABR SECOND CALIBRATION (Done, v2 surface-family robustness)
+
+**Status:** Completed. PLAN v2 Day 31–32 "SABR second calibration; SVI-vs-SABR RMSE table" — the last un-run appendix piece. New `src/surface/sabr.py` (Hagan 2002 lognormal β=1; α/ρ/ν free — same effective smile freedom as SVI) fits the **same OTM quotes** SVI uses, per slice, via `svi.fit_points`. Driver `scripts/run_phase2_sabr.py` → `results/phase2/svi_vs_sabr_spy.json`. Isolated: writes only the comparison JSON. Fitting is unconstrained (we test agreement of two independent fits, not re-impose no-arb).
+
+**Three comparisons, and the honest result is more interesting than "the surface is robust":**
+
+1. **Fit quality:** SABR fits **all 441 slices** to a sub-volpt median (**0.77 volpts**), but **looser than SVI's arb-constrained 0.21** — SVI is smile-purpose-built and arb-constrained, so it fits tighter. The families are *not* interchangeable at the quote level, but SABR is a valid independent description.
+
+2. **ATM mark (what the signal reads):** SABR and SVI ATM IVs correlate **0.966**, median abs difference **0.82 volpts** (p95 2.08, max 2.98). **The *level* of the signal is not an SVI-specific artifact.**
+
+3. **Trade selection (the deepest check):** re-ranking the signal (`ATM IV − HAR`) under SABR marks reproduces the SVI short/long pick only **56% / 52%** of the 147 dates — above the 33% random baseline for one-of-three, but **far from robust**. The within-date signal spread between the three slices is smaller than the ~0.8-volpt inter-model mark noise, so the rank flips about half the time.
+
+**The finding (corrected from a too-optimistic pre-written note — the mark survives the model change, the trades do not):** the signal's ATM *level* is model-robust, but the *tradeable* signal is fragile to the surface family. This does **not** overturn the walk-forward null (already negative under SVI); it **reinforces the disproof** — a genuine edge would be robust to an equally-valid surface, whereas a signal whose trades are near a coin-flip between SVI and SABR is noise at the tradeable level, not merely at the PnL level. (Counts conceptually alongside the DSR trials; the DSR was already computed Day 38 and the conclusion is unchanged.)
+
+**Tests:** `tests/test_phase2_sabr.py` (5) — unit: Hagan ATM continuity across the forward, self-recovery of a known smile to rmse 0; artifact: all slices fit sub-volpt with SVI tighter (honest, not equal), ATM marks agree (corr > 0.95, sub-volpt median), trade selection above-chance-but-not-robust (0.33 < frac < 0.75, pinning the fragility). Suite green.
+
+### v2 COMPLETE — the pre-registered study and its robustness appendix
+
+The Phase-2 SPY confirmatory study and the full v2 robustness appendix are done and on the record: SPY data gate → arb-free surface → RV/HAR/signal → walk-forward backtest (attribution gate prereg-FAIL disclosed + amended-PASS) → regime split → cost sweep → hedge-frequency sweep → honest-N Deflated Sharpe → SABR second calibration. **Every gate that failed stayed on the record; every deferral was resolved or documented, never faked.** The conclusion is a clean, multiple-testing-robust **disproof**: no exploitable vol-arb edge in SPY (or AAPL), the ATM signal level is surface-model-robust but its trades are not, and the Deflated Sharpe confirms even the most favorable data-mined slice is noise. Tagged `v2`.
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

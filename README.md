@@ -149,14 +149,44 @@ twice), asserts the pipeline is byte-deterministic on a rerun, runs the suite
 key results (finite-difference Greeks, Breeden–Litzenberger densities from Black
 prices, ledger identities), a second pair of eyes on the first.
 
+## Phase 2 — pre-registered SPY confirmatory study + v2 robustness (tag `v2`)
+
+The v1 disproof rests on one underlying (AAPL) over a short window. Phase 2 is a
+**separate, pre-registered confirmatory study** — SPY, 147 trading sessions
+(2023-07 → 2024-06), a genuine **walk-forward** — run end-to-end through the same
+machinery (seamed to Phase-2 paths so v1's artifacts never move), with the DSR
+trial count carrying over. It is not a re-run or a cherry-pick: the config was
+locked before any SPY signal or PnL existed.
+
+**Same conclusion, on 29× the sample and out-of-sample:**
+
+| | |
+|---|---|
+| Net PnL | **−$8,936** (−3.34% on $267,204 peak Reg-T margin) |
+| Sharpe (daily, ann.) | −1.21, NW t = −0.86, bootstrap 95% CI [−2.78, +1.76] — **spans zero** |
+| Walk-forward | three test folds all positive (+$365 / +$2,639 / +$1,902), then a **−$11,656 settlement tail** carrying the 2024-08-05 VIX-65 spike |
+| Deflated Sharpe (honest N=12) | best data-mined slice (+2.79) **below** the deflated bar (+3.07); **DSR ≈ 0** across N — nothing survives multiple-testing |
+
+**Honesty artifacts, all on the record in `results/phase2/`:**
+
+- **Attribution gate ran first and the pre-registered per-position bar *failed* on SPY** (worst residual 0.435 vs < 0.10) — a max statistic calibrated on v1's 10 positions blows up on 294 via the documented one-day-Taylor breakdown on settlement/gap bars. The book-level bar passed (0.137) and the median (0.018) beat v1. The failure is **kept on the record**; the study proceeded under a documented, user-approved amendment (p95 ex-settlement 0.080 < 0.10) with the pre-registered FAIL reported alongside, never buried.
+- **Running v1's surface code on 30× the data found two real v1 bugs** (a feasible-≠-optimal SVI fit, and calendar-floor extrapolation past the quoted strikes) — both fixed *before* any SPY signal existed; v1's tracked numbers moved, its conclusions did not.
+- **v2 robustness appendix** — regime split (the edge does **not** survive high vol: day-level loss is monotone in the vol tercile), cost sweep (loses even at **zero** transaction cost; break-even multiplier −5.19), hedge-frequency sweep (clean turnover-vs-variance trade-off; **no** rebalance schedule turns the book profitable), and **SABR second calibration** (the ATM mark the signal reads is model-robust — corr 0.966 with SVI — but the *trade selection* agrees only ~54%, so the tradeable signal is noise at the surface-model level too).
+
+Every failed gate stayed on the record; every deferral (above all the Deflated
+Sharpe) was resolved with an honest trial count or documented, never faked.
+
 ## Status
 
 **v1 shipped** (tag `v1`): surface, backtest, attribution, costs, margin, statistics and
-report — reproducible from a clean clone, 662 tests green.
+report — reproducible from a clean clone.
 
-Next (v2, planned): SABR cross-calibration, regime split, cost and hedge-frequency
-sensitivity sweeps, and a Deflated Sharpe computed with an honest multiple-testing
-trial count — deliberately deferred rather than faked with N=1.
+**v2 shipped** (tag `v2`): the pre-registered SPY walk-forward confirmatory study and the
+full robustness appendix — regime split, cost and hedge-frequency sweeps, honest-N
+Deflated Sharpe (the item deliberately deferred from v1, now resolved), and SABR
+second calibration. The disproof is confirmed out-of-sample on a second underlying
+and is multiple-testing-robust. Phase-2 lives isolated under `data/phase2/**` +
+`results/phase2/**`; v1's artifacts are byte-unchanged.
 
-See [HANDOFF.md](HANDOFF.md) for progress and [PLAN.md](PLAN.md) for the day-by-day
+See [HANDOFF.md](HANDOFF.md) for the full day-by-day record and [PLAN.md](PLAN.md) for the
 plan. [SPEC.md](SPEC.md) states the thesis and the honesty rules the project is held to.

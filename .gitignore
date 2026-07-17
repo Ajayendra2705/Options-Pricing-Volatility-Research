@@ -12,9 +12,10 @@ venv/
 .venv/
 env/
 
-# IDE
+# IDE / local tooling
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 
@@ -61,6 +62,7 @@ results/phase2/*
 !results/phase2/cost_sweep_spy.json
 !results/phase2/hedge_sweep_spy.json
 !results/phase2/deflated_sharpe_spy.json
+!results/phase2/svi_vs_sabr_spy.json
 
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/

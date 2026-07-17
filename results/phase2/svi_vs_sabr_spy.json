@@ -1,0 +1,26 @@
+{
+  "method": "SABR (Hagan 2002, lognormal beta=1; alpha/rho/nu free) fit to the same OTM quotes as SVI, per (date, expiry).",
+  "fit_quality": {
+    "n_slices_fit": 441,
+    "n_slices_total": 441,
+    "sabr_median_rmse_iv": 0.007704173604188599,
+    "svi_median_rmse_iv": 0.0020884605093853385,
+    "sabr_p95_rmse_iv": 0.012603134608207991,
+    "note": "SABR is UNCONSTRAINED and fit in vol space; SVI RMSE is the joint arb-free fit. SVI (smile-purpose-built + arb-constrained) fits tighter; SABR still reaches sub-volpt median RMSE, so it is a valid independent description of the surface -- but the two families are NOT interchangeable at the quote level."
+  },
+  "atm_agreement": {
+    "corr_atm_iv": 0.9661538018452375,
+    "median_abs_diff_volpts": 0.815728385511806,
+    "p95_abs_diff_volpts": 2.0848089627533346,
+    "max_abs_diff_volpts": 2.982435746482988
+  },
+  "trade_selection": {
+    "n_dates": 147,
+    "same_short_selection": 83,
+    "same_long_selection": 76,
+    "short_agreement_frac": 0.564625850340136,
+    "long_agreement_frac": 0.5170068027210885,
+    "note": "re-rank the raw signal (ATM IV - HAR forecast) using SABR ATM marks; compare which expiry is shorted (rank 1) / longed (rank last) per date to the SVI-based selection in signal.parquet."
+  },
+  "finding": "An independent parametric family (SABR, beta=1) fits all 441 SPY slices to a sub-volpt median (0.77 volpts), though looser than SVI's arb-constrained 0.21. The ATM mark the signal READS is not SVI-specific: SABR and SVI ATM IVs correlate 0.966 with a median difference of 0.82 volpts. BUT the tradeable signal is fragile to the surface model: re-ranking under SABR marks reproduces the SVI trade selection only 56% (short) / 52% (long) of the time -- above the 33% you'd get at random for one-of-three, but far from robust, because the within-date signal spread between the three slices is smaller than the ~0.8-volpt inter-model mark noise, so the rank flips about half the time. This does NOT overturn the walk-forward null (negative under SVI); it REINFORCES the disproof -- a genuine edge would be robust to an equally-valid surface, whereas a signal whose trades are near a coin-flip between SVI and SABR is noise at the tradeable level, not just at the PnL level."
+}
