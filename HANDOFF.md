@@ -498,6 +498,39 @@ The tail is its **own labelled bucket**, never folded into an aggregate or dropp
 
 **Next — Day 35:** per PLAN, the v2 robustness appendix begins (SABR cross-calibration, regime split, cost/hedge-frequency sweeps) which completes the honest DSR trial count N and lets the deferred Deflated Sharpe finally be computed on both studies.
 
+### Day 35 — SPY VOL-REGIME SPLIT (Done, v2 robustness appendix opens)
+
+**Status:** Completed. First piece of the v2 robustness appendix (PLAN "regime split — does edge survive high-vol?"), run on the Day-34 SPY book via `scripts/run_phase2_regime.py` → `results/phase2/regime_split_spy.json`. Purely additive read of Phase-2 processed artifacts + the reconcile positions; **no v1 or v2 artifact is written or moved.**
+
+**Regime variable — trailing 21-day Yang-Zhang RV, self-contained and no-lookahead.** VIX is **not** in the DoltHub `post-no-preference/stocks` table (probed `^VIX`/`VIX`/`VIXY`/`$VIX.X` → all Error/empty), so the pre-reg's "VIX terciles" uses the study's own `yang_zhang_vol` on the **full OHLC path (base + ext, through 2024-08-30**, so the crash tail is covered). The estimate at *t* uses bars *t−20..t*, so bucketing a day/position by it uses only information available by that day's close. Cross-check: **corr(trailing RV, entry ATM IV) = +0.52** — the realized-vol regime and the study's implied-vol (VIX-like) regime pick out substantially the same days, so the substitution is faithful.
+
+**Two cuts, each reconciled exactly to a study total:**
+
+**Day-level (net daily returns by that day's vol tercile; edges 10.4% / 11.8% RV) — the rigorous cut. The loss is monotone in the contemporaneous regime:**
+| regime | net PnL | Sharpe | NW t | days | mean RV |
+|--------|--------:|-------:|-----:|-----:|--------:|
+| low_vol  | **+$3,407** | +2.79 | +1.77 | 95 | 9.7% |
+| mid_vol  | −$4,528 | −1.80 | −1.00 | 94 | 11.0% |
+| high_vol | **−$7,815** | −2.47 | −1.10 | 94 | 14.4% |
+| ALL | −$8,936 | −1.21 | −0.88 | 283 | — |
+
+Sum of regimes = −$8,936 = the net total, to 1e-6. **The pre-registered question is answered plainly: the edge does NOT survive high vol.** A short-vol book makes money on calm days (low-vol Sharpe +2.79) and gives it all back and more as vol rises — textbook short-gamma behaviour, now measured, not asserted. The one positive-Sharpe subset (low-vol days) is exactly the regime where a naive reading of the fold story ("three positive quarters") lived.
+
+**Entry-level (gross PnL by the vol regime at ENTRY; edges 10.5% / 11.8%) — the entry-timing complement:**
+| regime | gross PnL | positions | mean entry RV |
+|--------|----------:|----------:|--------------:|
+| low_vol  | +$3,335 | 98 | 9.9% |
+| mid_vol  | **−$11,891** | 98 | 11.0% |
+| high_vol | +$1,062 | 98 | 13.2% |
+
+Sum = −$7,493 = gross total, exact. The loss concentrates in the **mid-vol entry bucket** — positions sold in *ordinary* (~11% RV) early-summer 2024 that then ran into the 2024-08-05 spike in their settlement tail. **Entries made when vol was already high were not the losers**, so the damage was not avoidable by refusing to sell in high vol; it came from selling ordinary vol that then spiked. (This corrected a placeholder note I'd pre-written predicting the *low* bucket — the artifact reflects the data, not the prediction.)
+
+**Bearing on the DSR:** this is robustness trial #1 of the SPY appendix; each sweep (regime, cost, hedge-freq) adds to the honest multiple-testing trial count N. Deflated Sharpe stays deferred until the sweeps are complete (PLAN v2 Day 37) — the count is now being accumulated, not faked.
+
+**Tests:** `tests/test_phase2_regime.py` (9) — regime variable backward-looking + tracks implied vol (corr > 0.3), day-level partitions all 283 return days and reconciles to the net total, terciles ordered by vol, high-vol subset loses more than low-vol with negative Sharpe (the pre-reg finding), entry-level partitions all 294 positions and reconciles to gross, finding documented, phase2-isolated. Suite green.
+
+**Next — Day 36:** cost sensitivity sweep (×0.5/1/2 → PnL-vs-cost curve) and/or hedge-frequency sweep, then the honest-N Deflated Sharpe once the trial count closes. SABR second calibration (PLAN v2 Day 31–32) still open as the surface-family robustness check.
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

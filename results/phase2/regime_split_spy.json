@@ -1,0 +1,85 @@
+{
+  "regime_variable": {
+    "name": "trailing 21-day Yang-Zhang realized vol",
+    "source": "src.backtest.realized_vol.yang_zhang_vol on the full OHLC path (spy_ohlc + spy_ohlc_ext, through 2024-08-30)",
+    "backward_looking": true,
+    "note": "estimate at t uses bars t-20..t, so bucketing day/position t uses only information available by t's close; no lookahead",
+    "vix_proxy_cross_check": {
+      "corr_trailing_rv_vs_entry_atm_iv": 0.5190209417759388,
+      "note": "SPY entry ATM IV is the study's implied-vol (VIX-like) level; a high correlation means the realized-vol regime and the implied-vol regime pick out the same days"
+    }
+  },
+  "capital_base_usd": 267204.2218757136,
+  "day_level": {
+    "question": "on which days does the book make or lose money?",
+    "reconciles_to": "net PnL over all 283 return days (incl. burn-in and settlement tail)",
+    "tercile_edges_rv": {
+      "low|mid": 0.1037468791434472,
+      "mid|high": 0.1183167146568337
+    },
+    "regimes": {
+      "low_vol": {
+        "n_days": 95,
+        "net_pnl_usd": 3407.030108152191,
+        "sharpe_annualized": 2.7899301420991724,
+        "nw_tstat": 1.7749086609174765,
+        "worst_day_usd": -827.8612953875858,
+        "best_day_usd": 578.9572847182872,
+        "mean_trailing_rv": 0.09697953529882676
+      },
+      "mid_vol": {
+        "n_days": 94,
+        "net_pnl_usd": -4527.926483422154,
+        "sharpe_annualized": -1.796136975057667,
+        "nw_tstat": -1.002978752505605,
+        "worst_day_usd": -2148.647800703126,
+        "best_day_usd": 1845.1314481358288,
+        "mean_trailing_rv": 0.11022926976088929
+      },
+      "high_vol": {
+        "n_days": 94,
+        "net_pnl_usd": -7815.296464288023,
+        "sharpe_annualized": -2.470200296372958,
+        "nw_tstat": -1.1024253899402263,
+        "worst_day_usd": -2861.17761044487,
+        "best_day_usd": 803.4732683013145,
+        "mean_trailing_rv": 0.14380370631296882
+      }
+    },
+    "all_days": {
+      "n_days": 283,
+      "net_pnl_usd": -8936.192839557987,
+      "sharpe_annualized": -1.2146387179001084,
+      "nw_tstat": -0.8804025796082378,
+      "worst_day_usd": -2861.17761044487,
+      "best_day_usd": 1845.1314481358288,
+      "mean_trailing_rv": 0.11693341202943888
+    }
+  },
+  "entry_level": {
+    "question": "does selling into a given vol regime pay? (gross, by the regime at ENTRY)",
+    "reconciles_to": "gross PnL over all 294 positions",
+    "finding": "the loss concentrates in the MID-vol entry bucket (~11% entry RV): those positions ran into the 2024-08-05 spike in their settlement tail. Entries made when vol was ALREADY high were not the losers, so the damage was not avoidable by refusing to sell in high vol \u2014 it came from selling ordinary vol that then spiked. This is the entry-timing complement to the day-level cut, where the loss is monotone in the contemporaneous regime.",
+    "tercile_edges_rv": {
+      "low|mid": 0.10538450107788887,
+      "mid|high": 0.11771384395049732
+    },
+    "regimes": {
+      "low_vol": {
+        "n_positions": 98,
+        "gross_pnl_usd": 3335.4573969957164,
+        "mean_entry_trailing_rv": 0.09865463913320745
+      },
+      "mid_vol": {
+        "n_positions": 98,
+        "gross_pnl_usd": -11890.764448511438,
+        "mean_entry_trailing_rv": 0.11017446874069343
+      },
+      "high_vol": {
+        "n_positions": 98,
+        "gross_pnl_usd": 1062.3142119577305,
+        "mean_entry_trailing_rv": 0.13187081252033547
+      }
+    }
+  }
+}
