@@ -59,6 +59,7 @@ results/phase2/*
 !results/phase2/walkforward_spy.json
 !results/phase2/regime_split_spy.json
 !results/phase2/cost_sweep_spy.json
+!results/phase2/hedge_sweep_spy.json
 
 # Plots: regenerable, so ignored — except the three the README embeds
 !results/plots/

@@ -561,6 +561,30 @@ So unlike the option costs, the book **is** sensitive to underlying slippage bec
 
 **Next — Day 37:** hedge-frequency sweep (daily / N-daily / band → variance + turnover sensitivity — directly probes the $49M turnover found here), then the honest-N Deflated Sharpe once the trial count closes. SABR second calibration (surface-family robustness) still open.
 
+### Day 37 — SPY HEDGE-FREQUENCY SWEEP (Done, v2 robustness #3)
+
+**Status:** Completed. PLAN v2 "hedge-frequency sweep (daily/N-daily/band) → variance sensitivity", run via `scripts/run_phase2_hedge_sweep.py` → `results/phase2/hedge_sweep_spy.json`. Re-runs the same per-position `run_hedged` engine at each `hedge_every ∈ {1,2,3,5,10}` daily bars, aggregates onto the union calendar exactly as `returns.py`, capital base held fixed at the Day-34 peak margin. Self-contained: writes only the sweep JSON, touches no tracked artifact.
+
+**Record correction (on the record, not buried): the baseline hedges DAILY, not "M/W/F".** The price path is daily OHLC (a ~30-day straddle has ~23 hedge bars), so `hedge_every=1` rebalances every trading day; the M/W/F cadence is the *options quote* schedule. Day 36's "M/W/F hedge programme" label mischaracterised the underlying hedge — this sweep makes the true frequency explicit and the `hedge_every=1` point reproduces the Day-34 numbers exactly (below), which is also the correctness pin on the re-implemented aggregation.
+
+| hedge every | turnover | ×capital | net PnL | return vol | Sharpe |
+|-------------|---------:|---------:|--------:|-----------:|-------:|
+| 1 bar (daily) | $49.2M | 184× | **−$8,936** | 2.5% | −1.21 |
+| 2 bars | $39.3M | 147× | −$17,114 | 3.0% | −1.92 |
+| 3 bars | $34.0M | 127× | −$20,833 | 4.1% | −1.70 |
+| 5 bars (~weekly) | $26.3M | 99× | −$21,222 | 4.4% | −1.60 |
+| 10 bars (~biweekly) | $16.4M | 61× | −$20,802 | 6.0% | −1.15 |
+
+**The cost/variance trade-off, cleanly measured:** turnover falls **monotonically** (49.2M → 16.4M as spacing 1→10) while return volatility rises **monotonically** (2.5% → 6.0%) — exactly the textbook hedging trade-off. **Net PnL is negative at every cadence**, so no rebalance schedule turns the short-vol book profitable. And **daily hedging is the least-bad** (−$8.9k daily vs −$17k…−$21k less often): a short-gamma book left under-hedged through adverse moves — above all the 2024-08-05 spike — bleeds *more*, not less. The `hedge_every=1` row matches Day-34 net −$8,936 and Day-36 turnover $49.2M to 1e-6 (pinned).
+
+**Band hedging (no-trade delta band) — the one PLAN variant NOT implemented, deferred and documented, not faked.** The self-financing engine supports only periodic rebalancing; a band trigger is an engine change, not a caller option (`band_hedging.implemented = false` with the reason in the artifact — same discipline as the deferred DSR).
+
+**Bearing on the DSR:** robustness trial #3 of the SPY appendix; N keeps accumulating, DSR deferred to PLAN v2 Day 37's honest-count close-out (now imminent — regime + cost + hedge-freq sweeps are the trials).
+
+**Tests:** `tests/test_phase2_hedge_sweep.py` (7) — daily point reproduces Day-34 gross/net and Day-36 turnover exactly, turnover monotone down + return-vol monotone up in spacing, no cadence makes the book profitable (daily is least-bad), band variant disclosed-not-faked, capital base matches Day-34. Suite green.
+
+**Next — Day 38:** the honest-N Deflated Sharpe (v1/v2 + Phase-2 trials counted), bootstrap CIs, then the v2 tag / final report. SABR second calibration (surface-family robustness, PLAN v2 Day 31–32) still open as the remaining un-run appendix piece.
+
 ### Next — v2 robustness appendix (PLAN Days 31–38)
 
 SABR cross-calibration, regime split, cost/hedge-frequency sweeps, Deflated Sharpe with an honest trial count N (deliberately deferred from Day 28), then tag `v2`. Also open: the pre-registered Phase-2 expansion (SPY, 6–12 months, walk-forward).

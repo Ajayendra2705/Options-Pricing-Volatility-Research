@@ -1,0 +1,67 @@
+{
+  "design": "hedge-frequency sweep on the Day-34 unit book; hedge_every counts DAILY price-path bars (1 = daily rebalance). Capital base held fixed at the Day-34 peak margin so frequencies are comparable. Turnover = sum |traded_t| * S_t over the book; net PnL = gross - entry costs (underlying_slippage_bps=0, as pre-registered).",
+  "baseline_is_daily_note": "Day-34/36 hedge_every=1 = DAILY hedging on the daily OHLC path; the M/W/F cadence is the options quote schedule. Day 36's 'M/W/F hedge' label was a mischaracterisation, corrected here.",
+  "capital_base_usd": 267204.2218757136,
+  "curve": [
+    {
+      "hedge_every_bars": 1,
+      "turnover_usd": 49181894.92472946,
+      "turnover_over_capital": 184.06106976710026,
+      "gross_pnl_usd": -7492.99283955799,
+      "net_pnl_usd": -8936.192839557987,
+      "net_return_on_capital": -0.03344330705865319,
+      "return_vol_annualized": 0.02451750095993238,
+      "sharpe_annualized": -1.2146387179001084,
+      "nw_tstat": -0.8804025796082378
+    },
+    {
+      "hedge_every_bars": 2,
+      "turnover_usd": 39335708.55073595,
+      "turnover_over_capital": 147.21215209328696,
+      "gross_pnl_usd": -15671.10198605478,
+      "net_pnl_usd": -17114.30198605478,
+      "net_return_on_capital": -0.06404951937479215,
+      "return_vol_annualized": 0.029670267088470943,
+      "sharpe_annualized": -1.9222440470186692,
+      "nw_tstat": -1.579364537422438
+    },
+    {
+      "hedge_every_bars": 3,
+      "turnover_usd": 33970656.14840931,
+      "turnover_over_capital": 127.13368041097155,
+      "gross_pnl_usd": -19389.862803522516,
+      "net_pnl_usd": -20833.062803522513,
+      "net_return_on_capital": -0.07796681750489978,
+      "return_vol_annualized": 0.040729979409157936,
+      "sharpe_annualized": -1.7045499097306431,
+      "nw_tstat": -1.4582468776429507
+    },
+    {
+      "hedge_every_bars": 5,
+      "turnover_usd": 26333074.6679916,
+      "turnover_over_capital": 98.55036901415454,
+      "gross_pnl_usd": -19778.75989612357,
+      "net_pnl_usd": -21221.959896123568,
+      "net_return_on_capital": -0.07942224769934463,
+      "return_vol_annualized": 0.044213640330204786,
+      "sharpe_annualized": -1.5995580468439028,
+      "nw_tstat": -1.5916820473873643
+    },
+    {
+      "hedge_every_bars": 10,
+      "turnover_usd": 16415019.0582255,
+      "turnover_over_capital": 61.43248389937761,
+      "gross_pnl_usd": -19359.20579670223,
+      "net_pnl_usd": -20802.405796702227,
+      "net_return_on_capital": -0.07785208501076073,
+      "return_vol_annualized": 0.06014872013828268,
+      "sharpe_annualized": -1.1525451903561335,
+      "nw_tstat": -1.4055096638635938
+    }
+  ],
+  "band_hedging": {
+    "implemented": false,
+    "reason": "the self-financing engine supports only periodic rehedging; a no-trade delta band is an engine change, not a caller option. Deferred and documented, not faked (same discipline as the deferred Deflated Sharpe)."
+  },
+  "finding": "turnover falls monotonically with rebalance spacing (daily $49M -> ~$16M at every 10 bars, 184x -> 61x capital) while return volatility rises monotonically (2.5% -> 6.0%) -- the textbook hedging cost/variance trade-off, now measured on SPY. Net PnL stays negative at EVERY cadence, so no rebalance schedule turns the short-vol book profitable; and daily hedging is the LEAST-BAD (net -$8.9k daily vs -$17k..-$21k less often) because a short-gamma book left under-hedged through adverse moves -- above all the 2024-08-05 spike -- bleeds more, not less. Robustness trial #3 -> DSR trial count N."
+}
