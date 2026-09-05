@@ -26,14 +26,24 @@ QC_JSON = P2_RESULTS / "surface_qc_spy.json"
 ARB_JSON = P2_RESULTS / "arb_violations_spy.json"
 DQ_JSON = P2_RESULTS / "data_quality_spy.json"
 JOINT = P2_PROCESSED / "svi_params_joint.parquet"
+CONSTRAINED = P2_PROCESSED / "svi_params_constrained.parquet"
 
 # 155 raw quote dates minus the 8 US market holidays the DB quotes anyway
 # (no bar for the underlying = not a session = not an observation date, Day 32)
 N_SESSIONS = 147
 
+# The committed Phase-2 deliverables (results/phase2/*.json) gate most of this
+# file. A few tests also read the per-slice SVI parquets under
+# data/phase2/processed/ — those are gitignored and CI reproduces only v1, so
+# they run only where someone has built the Phase-2 surface locally.
 pytestmark = pytest.mark.skipif(
     not (QC_JSON.exists() and ARB_JSON.exists()),
     reason="Phase-2 SPY surface not built (run scripts/run_phase2_surface.py)",
+)
+needs_processed = pytest.mark.skipif(
+    not (JOINT.exists() and CONSTRAINED.exists()),
+    reason="Phase-2 SPY surface parquets not built — gitignored, not in CI; "
+           "run scripts/run_phase2_surface.py",
 )
 
 
@@ -89,6 +99,7 @@ def test_surface_tracks_market_to_v1_standard(qc):
     assert qc["rmse_iv_median"] < 0.01                     # < 1 volpt median RMSE
 
 
+@needs_processed
 def test_every_date_meets_the_gate(qc, inverted_dates):
     # the aggregate can hide a bad day across 147 of them — check per-date
     bad = [d for d in qc["dates"]
@@ -122,9 +133,11 @@ def inverted_dates() -> set[str]:
     longer slice on that date must clear the raised one, so a later pair can
     carry cost without being inverted itself. Hence the exemption is per DATE.
     """
+    if not CONSTRAINED.exists():
+        pytest.skip("Phase-2 SPY surface parquets not built (gitignored, not in CI)")
     from src.surface.svi import svi_total_variance
 
-    per_slice = pd.read_parquet(P2_PROCESSED / "svi_params_constrained.parquet")
+    per_slice = pd.read_parquet(CONSTRAINED)
     per_slice = per_slice[per_slice["fit_ok"]]
     ivs = pd.read_parquet(P2_PROCESSED / "iv_surface.parquet")
     ivs = ivs[ivs["status"] == "ok"]
@@ -153,6 +166,7 @@ def inverted_dates() -> set[str]:
     return out
 
 
+@needs_processed
 def test_floor_only_costs_where_the_market_is_inverted(inverted_dates):
     """The Day-32 bugs, pinned.
 
@@ -165,7 +179,7 @@ def test_floor_only_costs_where_the_market_is_inverted(inverted_dates):
     binds: on dates whose quotes are themselves calendar-inverted.
     """
     joint = pd.read_parquet(JOINT)
-    per_slice = pd.read_parquet(P2_PROCESSED / "svi_params_constrained.parquet")
+    per_slice = pd.read_parquet(CONSTRAINED)
     m = (joint[joint["fit_ok"]]
          .merge(per_slice[per_slice["fit_ok"]][["date", "expiry", "rmse_iv"]],
                 on=["date", "expiry"], suffixes=("_joint", "_perslice")))
@@ -206,6 +220,7 @@ def test_v1_surface_untouched():
     assert v1["n_slices_total"] == 15
 
 
+@needs_processed
 def test_joint_params_are_spy_window():
     fits = pd.read_parquet(JOINT)
     dates = pd.to_datetime(fits["date"])
