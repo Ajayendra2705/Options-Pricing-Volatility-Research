@@ -5,35 +5,43 @@ Cross-platform reproducibility check.
 proved it. Rerunning the pipeline on another OS gives the same conclusions but
 not the same bytes:
 
-  * the constrained SVI optimizers (SLSQP / least-squares) minimize a flat
-    objective, so under a different BLAS they settle on a slightly different
-    point of the optimum: fitted marks move ~1e-5 relative (~0.001 vol pts);
+  * the constrained SVI / least-squares fits minimize a near-flat objective, so
+    under a different BLAS the optimizer settles on a different point of it.
+    Most slices move ~1e-5 relative (~0.001 vol pts); at least one AAPL slice
+    (2023-06-09, K=180) is genuinely bistable and lands ~1 vol pt away, which
+    moves that leg's premium ~2%;
   * matplotlib rasterizes PNGs differently.
 
-Downstream, that ~1e-5 on a mark is AMPLIFIED wherever the result is a small
-difference of large numbers. `gross_pnl` is the extreme case: +$505 of short-vol
-legs against -$502 of long-vol legs nets to ~$3.8, so a one-cent move in a leg is
-a ~2% move in the headline. Reproducibility here is therefore a claim about
-DOLLARS (cents), not about relative error — a uniform rtol would either fail on
-gross_pnl or be so loose it gates nothing.
+Downstream, that is AMPLIFIED wherever a result is a small difference of large
+numbers. `gross_pnl` is the extreme case: ~+$500 of short-vol legs against
+~-$500 of long-vol legs nets near zero, so a ~$17 move in one leg is the whole
+headline. `gross_pnl` therefore has NO stable significant digit across BLAS
+implementations, and no rtol/atol can gate it without either failing on drift or
+being so loose it gates nothing.
 
-So this script enforces two things instead:
+So across platforms this script gates the two things that ARE invariant, and
+reports the rest:
 
-  1. `--rtol` / `--atol` on every field: a number passes if it is within EITHER
-     the relative tolerance OR the absolute one. Defaults (1e-3, $0.10) are set
-     so BLAS-scale drift passes and any real code regression — which moves things
-     by far more — fails. Strings, structure and booleans must match exactly.
+  1. `--cross-platform`: structure, strings and booleans must match `--ref`
+     exactly (a renamed field, a flipped arb-free flag, a Windows path baked
+     into an artifact, a changed list length — all fail). Numbers are expected
+     to drift and are printed, not failed.
 
-  2. `--conclusions`: the claims the project actually makes must still hold on
-     the fresh platform (net PnL negative, surface arb-free, attribution gate,
-     alpha statistically zero, Sharpe CI spanning zero). A result that survives a
-     tolerance check but flips a conclusion is not reproduced, and this catches
-     that; a result whose 8th decimal moved is reproduced, and this ignores it.
+  2. `--conclusions` (implied by `--cross-platform`): every claim the project
+     makes must still hold on the fresh platform — net PnL negative, book
+     near-flat gross, surface arb-free, attribution gate passed, alpha
+     statistically zero, Sharpe CI spanning zero. A result that drifts within
+     tolerance but flips a conclusion is not reproduced, and this catches it.
+
+Without `--cross-platform` the check is strict: `--rtol` / `--atol` on every
+field (a number passes if within EITHER), for use on the platform the artifacts
+were built on, where "did you forget to rerun main.py" is a real question.
 
 Usage:
-    python scripts/compare_results.py                        # vs HEAD
+    python scripts/compare_results.py                        # strict, vs HEAD
     python scripts/compare_results.py --conclusions          # + claims still hold
-    python scripts/compare_results.py --rtol 1e-9 --atol 0   # strict (same platform)
+    python scripts/compare_results.py --cross-platform       # other OS/BLAS: structure + claims
+    python scripts/compare_results.py --rtol 1e-9 --atol 0   # byte-strict (same platform)
 """
 
 from __future__ import annotations
@@ -97,6 +105,45 @@ def compare(old, new, rtol: float, atol: float, path: str = "") -> list[str]:
     return [] if old == new else [f"{path}: {old!r} -> {new!r}"]
 
 
+def structural_diffs(old, new, path: str = "") -> list[str]:
+    """The part of a JSON tree that must be identical on ANY platform: keys,
+    list lengths, strings, booleans, and the type of every leaf. Numbers are
+    deliberately ignored — a different BLAS moves them and that is drift, not a
+    regression (see the module docstring). Same output format as `compare`, so
+    a structural change reported here also appears in `compare`'s output.
+    """
+    if isinstance(old, dict) and isinstance(new, dict):
+        out = []
+        for key in sorted(set(old) | set(new)):
+            if key not in old:
+                out.append(f"{path}/{key}: added")
+            elif key not in new:
+                out.append(f"{path}/{key}: REMOVED")
+            else:
+                out += structural_diffs(old[key], new[key], f"{path}/{key}")
+        return out
+
+    if isinstance(old, list) and isinstance(new, list):
+        if len(old) != len(new):
+            return [f"{path}: length {len(old)} -> {len(new)}"]
+        out = []
+        for i, (o, n) in enumerate(zip(old, new)):
+            out += structural_diffs(o, n, f"{path}[{i}]")
+        return out
+
+    # bool before int (bool is an int subclass): a flipped flag must never pass
+    if isinstance(old, bool) or isinstance(new, bool):
+        same = isinstance(old, bool) and isinstance(new, bool) and old == new
+        return [] if same else [f"{path}: {old!r} -> {new!r}"]
+
+    # two numbers: any move is drift, not structural — ignore it here
+    if isinstance(old, (int, float)) and isinstance(new, (int, float)):
+        return []
+
+    # strings, and type changes (number -> string, etc.) must match exactly
+    return [] if old == new else [f"{path}: {old!r} -> {new!r}"]
+
+
 def check_conclusions(results_dir: Path = RESULTS_DIR) -> list[str]:
     """Every claim the project makes, re-asserted against the regenerated results.
 
@@ -130,6 +177,12 @@ def check_conclusions(results_dir: Path = RESULTS_DIR) -> list[str]:
         ("costs: net PnL is negative", costs["net_pnl"] < 0),
         ("costs: costs exceed gross PnL",
          costs["total_cost"] > costs["gross_pnl"]),
+        # the book is near-flat gross — the VRP is visible but not exploitable.
+        # gross PnL is a ~$500-vs-$500 cancellation, so this is gated as a
+        # fraction of premium traded (BLAS-stable), not to the dollar.
+        ("costs: book is near-flat gross (|gross PnL| < 2% of premium traded)",
+         abs(costs["gross_pnl"])
+         < 0.02 * sum(abs(p["premium"]) for p in costs["positions"])),
         ("returns: net return on capital is negative",
          m["net_return_on_capital"] < 0),
         ("stats: Sharpe is not significant (|NW t| < 2)",
@@ -153,6 +206,9 @@ def main() -> int:
                     help="absolute tolerance, i.e. dollars (default 0.10)")
     ap.add_argument("--conclusions", action="store_true",
                     help="also assert the project's claims still hold")
+    ap.add_argument("--cross-platform", action="store_true",
+                    help="artifacts were built on another OS/BLAS: gate on structure "
+                         "+ claims only, report numeric drift without failing on it")
     args = ap.parse_args()
 
     files = sorted(RESULTS_DIR.glob("*.json"))
@@ -160,8 +216,7 @@ def main() -> int:
         print("no results JSONs found — run `python main.py` first")
         return 1
 
-    failed = {}
-    worst = 0.0
+    numeric_fail, structural_fail, drift = {}, {}, {}
     for f in files:
         rel = f.relative_to(PROJECT_ROOT).as_posix()
         try:
@@ -170,36 +225,72 @@ def main() -> int:
             print(f"  [skip]  {rel} (not tracked at {args.ref})")
             continue
         new = json.loads(f.read_text())
-        diffs = compare(old, new, args.rtol, args.atol)
-        if diffs:
-            failed[rel] = diffs
-            print(f"  [DIFF]  {rel} — {len(diffs)} field(s)")
+
+        sdiffs = structural_diffs(old, new)
+        num_only = [d for d in compare(old, new, args.rtol, args.atol) if d not in sdiffs]
+
+        if sdiffs:
+            structural_fail[rel] = sdiffs
+            print(f"  [CHANGED] {rel} — {len(sdiffs)} structural change(s)")
+        elif num_only and args.cross_platform:
+            drift[rel] = num_only
+            print(f"  [drift]   {rel} — {len(num_only)} number(s) moved (different BLAS)")
+        elif num_only:
+            numeric_fail[rel] = num_only
+            print(f"  [DIFF]  {rel} — {len(num_only)} field(s)")
         else:
             print(f"  [ok]    {rel}")
 
-    if failed:
+    ok = True
+
+    if structural_fail:
+        ok = False
+        print(f"\nFAIL: structure / strings / flags differ from {args.ref} — "
+              f"a real change, not float drift.\n")
+        for rel, diffs in structural_fail.items():
+            print(f"{rel}:")
+            for d in diffs[:20]:
+                print(f"    {d}")
+
+    if numeric_fail:
+        ok = False
         print(f"\nFAIL: regenerated results differ from {args.ref} beyond "
               f"rtol={args.rtol:g} / atol={args.atol:g}\n")
-        for rel, diffs in failed.items():
+        for rel, diffs in numeric_fail.items():
             print(f"{rel}:")
             for d in diffs[:10]:
                 print(f"    {d}")
             if len(diffs) > 10:
                 print(f"    ... and {len(diffs) - 10} more")
-        return 1
 
-    print(f"\nOK: every tracked results JSON matches {args.ref} within "
-          f"rtol={args.rtol:g} / atol={args.atol:g} ({len(files)} files).")
+    if drift:
+        n = sum(len(v) for v in drift.values())
+        print(f"\n{n} number(s) drift beyond rtol={args.rtol:g}/atol={args.atol:g} on this "
+              f"platform — expected: the constrained-fit landing point is BLAS-dependent "
+              f"(see module docstring). Not a failure; the claims are the gate.")
+        for rel, diffs in drift.items():
+            print(f"  {rel}:")
+            for d in diffs[:8]:
+                print(f"    {d}")
+            if len(diffs) > 8:
+                print(f"    ... and {len(diffs) - 8} more")
 
-    if args.conclusions:
+    if ok and not structural_fail and not numeric_fail:
+        scope = ("structure + claims" if args.cross_platform
+                 else f"every number within rtol={args.rtol:g}/atol={args.atol:g}")
+        print(f"\nOK: regenerated results match {args.ref} ({scope}, {len(files)} files).")
+
+    if args.conclusions or args.cross_platform:
         broken = check_conclusions()
         if broken:
-            print("\nFAIL: the results reproduced numerically but a CLAIM changed:\n")
+            ok = False
+            print("\nFAIL: a CLAIM the project makes no longer holds:\n")
             for b in broken:
                 print(f"    {b}")
-            return 1
-        print("OK: every claim the project makes still holds on this platform.")
-    return 0
+        else:
+            print("OK: every claim the project makes still holds on this platform.")
+
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

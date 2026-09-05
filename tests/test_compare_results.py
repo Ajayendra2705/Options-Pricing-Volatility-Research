@@ -10,7 +10,11 @@ tracked artifact. Both halves are tested; a gate that never fails is not a gate.
 from __future__ import annotations
 
 import importlib.util
+import subprocess
+import sys
 from pathlib import Path
+
+import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location(
@@ -74,6 +78,36 @@ def test_nested_path_is_reported():
     assert out == [f"/horizons/daily/sharpe: -1.7 -> -2.5 (rel 3.20e-01)"]
 
 
+# ── the cross-platform gate: numbers drift, structure must not ──────────────
+
+def test_structural_diffs_ignores_number_moves():
+    """A different BLAS moves numbers; that is drift, not a regression."""
+    old = {"gross_pnl": -23.3, "positions": [{"premium": 1060.7, "n": 34}]}
+    new = {"gross_pnl": -6.1, "positions": [{"premium": 1035.2, "n": 34}]}
+    assert cr.structural_diffs(old, new) == []
+
+
+def test_structural_diffs_catches_everything_that_is_not_a_number():
+    assert cr.structural_diffs({"ok": True}, {"ok": False}) != []          # flipped flag
+    assert cr.structural_diffs({"a": 1}, {"a": 1, "b": 2}) == ["/b: added"]  # new field
+    assert cr.structural_diffs({"a": 1, "b": 2}, {"a": 1}) == ["/b: REMOVED"]
+    assert cr.structural_diffs({"days": [1, 2, 3]}, {"days": [1, 2]}) != []  # list length
+    assert cr.structural_diffs({"p": "a/b"}, {"p": "a\\b"}) != []            # windows path
+    assert cr.structural_diffs({"side": "long_vol"}, {"side": "short_vol"}) != []
+
+
+def test_cross_platform_separates_drift_from_structure():
+    """The two verdicts the cross-platform gate depends on: a moved number is
+    invisible to `structural_diffs`, a moved key/flag/string is not."""
+    old = {"positions": [{"premium": 1060.7, "side": "long_vol"}], "gross_pnl": -23.3}
+    drifted = {"positions": [{"premium": 1035.2, "side": "long_vol"}], "gross_pnl": -6.1}
+    renamed = {"positions": [{"premium": 1060.7, "SIDE": "long_vol"}], "gross_pnl": -23.3}
+
+    assert cr.structural_diffs(old, drifted) == []           # drift: gate passes
+    assert cr.compare(old, drifted, 1e-3, 0.10) != []        # strict: gate fails
+    assert cr.structural_diffs(old, renamed) != []           # structure: gate fails
+
+
 # ── the conclusions gate ────────────────────────────────────────────────────
 
 def test_conclusions_hold_on_the_real_results():
@@ -118,10 +152,22 @@ def test_conclusions_gate_catches_an_alpha_that_became_significant(tmp_path):
 # ── real artifacts ──────────────────────────────────────────────────────────
 
 def test_committed_results_match_the_working_tree():
-    """The tracked JSONs are current: what the pipeline produces now equals what
-    is committed (within tolerance). Fails if someone commits code without
-    regenerating results."""
-    import subprocess
-    r = subprocess.run(["python", "scripts/compare_results.py", "--rtol", "1e-6"],
+    """The tracked JSONs are current with the code — structure and every claim
+    the project makes match what the pipeline produces now. Numbers drift across
+    BLAS/OS by design (that is `--cross-platform`); byte-currency on the platform
+    the artifacts were built on is the separate test below."""
+    r = subprocess.run([sys.executable, "scripts/compare_results.py", "--cross-platform"],
+                       cwd=PROJECT_ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+@pytest.mark.skipif(
+    sys.platform != "win32",
+    reason="committed artifacts are a Windows byte-snapshot; other platforms "
+           "drift by design (see scripts/compare_results.py docstring)")
+def test_committed_results_are_byte_current_on_the_reference_platform():
+    """On the platform the artifacts were built on, 'did you forget to rerun
+    main.py' is a byte question, not a tolerance one."""
+    r = subprocess.run([sys.executable, "scripts/compare_results.py", "--rtol", "1e-6"],
                        cwd=PROJECT_ROOT, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr

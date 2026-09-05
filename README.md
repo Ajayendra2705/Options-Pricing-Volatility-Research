@@ -121,31 +121,37 @@ Two claims, deliberately separated, because they are not the same claim:
 - **Within a platform, the pipeline is byte-deterministic.** Rerunning it reproduces
   all 24 tracked artifacts (processed parquets, results JSONs, `report.html`)
   bit-identically — no timestamps anywhere, fixed seed, dependencies pinned exactly.
-- **Across platforms, the conclusions reproduce; the bytes do not, and the low
-  decimals do not either.** The committed artifacts are built on Windows. On Linux
-  the constrained SVI optimizers minimize a flat objective and settle on a slightly
-  different point of it under a different BLAS — about **1e-5 relative on a fitted
-  mark (~0.001 vol pts)**. That is then *amplified* wherever a result is a small
-  difference of large numbers: `gross_pnl` nets +$505 of short-vol legs against
-  −$502 of long-vol legs, so a one-cent move in a leg is a ~2% move in the headline
-  (observed: $3.751 on Windows, $3.823 on Linux — 7 cents apart). Net PnL, which is
-  not a cancellation, agrees to 7 cents in $415.
+- **Across platforms, the conclusions reproduce; the bytes and the low decimals do
+  not.** The committed artifacts are built on Windows. On Linux the constrained
+  SVI / least-squares fits minimize a near-flat objective and settle on a different
+  point of it under a different BLAS. Most slices move ~1e-5 relative (~0.001 vol
+  pts); one AAPL slice (2023-06-09, K=180) is genuinely *bistable* and lands ~1 vol
+  pt away, moving that leg's premium ~2%. That is then *amplified* by the headline
+  cancellation — `gross_pnl` nets ~+$500 of short-vol legs against ~−$500 of
+  long-vol legs, so it has no stable significant digit across BLAS: −$23.33 on
+  Windows, roughly −$6 to −$18 on Linux CI runners. Net PnL, not a cancellation,
+  moves ~$17 in $442 and stays solidly negative; every conclusion is unmoved.
 
-  So the cross-platform gate is not byte equality and not a bare relative tolerance —
-  it is `scripts/compare_results.py`, which requires every number to land within a
-  stated tolerance (relative **or** absolute — dollars, not decimals) **and** requires
-  every *claim* the project makes to still hold: surface arb-free, attribution gate
-  passed, net PnL negative, Sharpe insignificant, bootstrap CI spanning zero, alpha
-  statistically zero. A number whose 8th decimal moved has reproduced. A number that
-  flipped a conclusion has not, whatever its relative error says.
+  So the cross-platform gate (`scripts/compare_results.py --cross-platform`) is not
+  byte equality and not a per-field tolerance — a hand-tuned tolerance on an
+  ill-conditioned cancellation either fails on drift or gates nothing. It requires
+  the two things that *are* invariant: **structure, strings and flags identical**
+  to the committed artifacts (a renamed field, a flipped arb-free flag, a Windows
+  path in an artifact, a changed list length — all fail), and **every claim the
+  project makes still holds** — surface arb-free, attribution gate passed, net PnL
+  negative, book near-flat gross, Sharpe insignificant, bootstrap CI spanning zero,
+  alpha statistically zero. Numeric drift is printed for inspection, not failed.
+  A number that flipped a conclusion has not reproduced; a number whose landing
+  point moved under a different LAPACK has.
 
 Raw-data immutability is enforced by a SHA256 manifest (`data/raw/manifest.json`).
 
 CI (ubuntu) does not just run tests. It verifies the manifest, **reproduces every
-result from the raw data**, runs the gate above (numbers + claims), asserts the
-**test suite does not mutate any tracked artifact** (this repo has had that bug
-twice), asserts the pipeline is byte-deterministic on a rerun, runs the suite
-(673 tests), and finally runs `scripts/verify/` — independent re-derivations of the
+result from the raw data**, runs the cross-platform gate above (structure +
+claims), asserts the **test suite does not mutate any tracked artifact** (this
+repo has had that bug twice), asserts the pipeline is **byte-deterministic on a
+rerun** (same machine, so bytes *must* match — the strict half of the gate), runs
+the suite, and finally runs `scripts/verify/` — independent re-derivations of the
 key results (finite-difference Greeks, Breeden–Litzenberger densities from Black
 prices, ledger identities), a second pair of eyes on the first.
 
